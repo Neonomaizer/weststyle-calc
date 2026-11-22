@@ -28,12 +28,54 @@ let state = {
 
 const fmtRub = (n) => Math.round(Number(n) || 0).toLocaleString('ru-RU') + ' ₽';
 
+function ensureSummaryContainers() {
+  const summaryCard = document.getElementById('summaryCard') || document.querySelector('.summary-card');
+  if (!summaryCard) return;
+
+  // Если в HTML остался старый #breakdownList — превращаем его в #retailBreakdownList и создаём #factorySection
+  const oldBreakdown = document.getElementById('breakdownList');
+  if (oldBreakdown && !document.getElementById('retailBreakdownList')) {
+    oldBreakdown.id = 'retailBreakdownList';
+  }
+
+  const oldFactoryBox = document.getElementById('factoryPriceBox');
+  if (oldFactoryBox) {
+    oldFactoryBox.remove();
+  }
+
+  if (!document.getElementById('factorySection')) {
+    const fSec = document.createElement('div');
+    fSec.id = 'factorySection';
+    fSec.className = 'factory-box hidden';
+    fSec.style.marginBottom = '12px';
+    fSec.innerHTML = `
+      <div class="factory-title">Цены завода (без наценки)</div>
+      <div class="breakdown-list" id="factoryBreakdownList" style="margin-top: 6px; margin-bottom: 6px;"></div>
+      <div class="breakdown-row" style="font-weight: 700;">
+        <span>Итого с завода (за 1 позицию):</span>
+        <span id="factoryUnitTotal">0 ₽</span>
+      </div>
+    `;
+    const rList = document.getElementById('retailBreakdownList');
+    if (rList && rList.parentNode) {
+      rList.parentNode.insertBefore(fSec, rList);
+    } else {
+      summaryCard.appendChild(fSec);
+    }
+  }
+}
+
 async function initApp() {
+  ensureSummaryContainers();
+  bindEvents();
+
   try {
-    const res = await fetch('data.json');
+    const res = await fetch('data.json?v=' + Date.now());
     DB = await res.json();
     state.markupPct = Number(DB.meta?.default_markup_pct ?? 70);
-    document.getElementById('priceMeta').textContent = DB.meta?.price_title || 'Прайс WestStyle';
+
+    const metaEl = document.getElementById('priceMeta');
+    if (metaEl) metaEl.textContent = DB.meta?.price_title || 'Прайс WestStyle';
 
     const indIdx = DB.collections.findIndex(c => c.name.toLowerCase() === 'industrial');
     if (indIdx >= 0) {
@@ -45,18 +87,19 @@ async function initApp() {
     populatePogonazhSelects();
     renderCollectionsBar();
     selectCollection(state.collectionIdx, state.modelId);
-    bindEvents();
     updateBoxQtyVisibility();
     recalculate();
   } catch (err) {
-    console.error('Ошибка инициализации:', err);
+    console.error('Ошибка загрузки data.json:', err);
   }
 }
 
 function populatePogonazhSelects() {
+  if (!DB) return;
   const boxSel = document.getElementById('boxSelect');
   const casSel = document.getElementById('casingSelect');
   const extSel = document.getElementById('extSelect');
+  if (!boxSel || !casSel || !extSel) return;
 
   boxSel.innerHTML = '';
   casSel.innerHTML = '';
@@ -83,10 +126,11 @@ function isBoxKit(item) {
 
 function updateBoxQtyVisibility() {
   const boxSel = document.getElementById('boxSelect');
-  const item = (DB.pogonazh || []).find(p => p.id === boxSel.value);
   const qtyWrap = document.getElementById('boxQtyWrap');
   const qtyInput = document.getElementById('boxQty');
-  if (!qtyWrap || !qtyInput) return;
+  if (!boxSel || !qtyWrap || !qtyInput || !DB) return;
+
+  const item = (DB.pogonazh || []).find(p => p.id === boxSel.value);
   if (isBoxKit(item)) {
     qtyWrap.classList.add('hidden');
     qtyInput.value = '1';
@@ -110,6 +154,7 @@ function modelHasGlazing(model) {
 
 function renderCollectionsBar() {
   const bar = document.getElementById('collectionsBar');
+  if (!bar || !DB) return;
   bar.innerHTML = '';
   DB.collections.forEach((col, idx) => {
     const btn = document.createElement('button');
@@ -122,29 +167,32 @@ function renderCollectionsBar() {
 }
 
 function selectCollection(colIdx, preferredModelId = null) {
+  if (!DB) return;
   state.collectionIdx = colIdx;
   const col = DB.collections[colIdx];
   renderCollectionsBar();
 
   const chips = document.getElementById('modelChips');
-  chips.innerHTML = '';
+  if (chips) chips.innerHTML = '';
 
   const targetModel = (preferredModelId && col.models.find(m => m.id === preferredModelId)) || col.models[0];
   state.modelId = targetModel ? targetModel.id : null;
   state.variantIdx = 0;
 
-  col.models.forEach(m => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'model-chip' + (m.id === state.modelId ? ' active' : '');
-    btn.textContent = m.code;
-    btn.addEventListener('click', () => {
-      state.modelId = m.id;
-      state.variantIdx = 0;
-      selectCollection(colIdx, m.id);
+  if (chips) {
+    col.models.forEach(m => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'model-chip' + (m.id === state.modelId ? ' active' : '');
+      btn.textContent = m.code;
+      btn.addEventListener('click', () => {
+        state.modelId = m.id;
+        state.variantIdx = 0;
+        selectCollection(colIdx, m.id);
+      });
+      chips.appendChild(btn);
     });
-    chips.appendChild(btn);
-  });
+  }
 
   syncEdgeFieldVisibility(col);
   renderModelDetails();
@@ -232,49 +280,62 @@ function renderModelDetails() {
   const model = getCurrentModel();
   if (!model) return;
 
-  document.getElementById('modelCollection').textContent = col.name;
-  document.getElementById('modelTitle').textContent = model.full_title;
+  const colEl = document.getElementById('modelCollection');
+  const titleEl = document.getElementById('modelTitle');
+  if (colEl) colEl.textContent = col.name;
+  if (titleEl) titleEl.textContent = model.full_title;
+
   const imgEl = document.getElementById('modelImg');
-  if (model.image) {
-    imgEl.src = model.image;
-    imgEl.style.display = 'block';
-  } else {
-    imgEl.style.display = 'none';
+  if (imgEl) {
+    if (model.image) {
+      imgEl.src = model.image;
+      imgEl.style.display = 'block';
+    } else {
+      imgEl.style.display = 'none';
+    }
   }
 
   const notesBox = document.getElementById('modelNotes');
-  notesBox.innerHTML = '';
-  (model.notes || []).forEach(n => {
-    const div = document.createElement('div');
-    div.textContent = '• ' + n;
-    notesBox.appendChild(div);
-  });
+  if (notesBox) {
+    notesBox.innerHTML = '';
+    (model.notes || []).forEach(n => {
+      const div = document.createElement('div');
+      div.textContent = '• ' + n;
+      notesBox.appendChild(div);
+    });
+  }
 
   const varCard = document.getElementById('variantCard');
-  const hasGlaz = modelHasGlazing(model);
-  varCard.classList.toggle('hidden', !hasGlaz);
+  if (varCard) {
+    const hasGlaz = modelHasGlazing(model);
+    varCard.classList.toggle('hidden', !hasGlaz);
+  }
 
   const varSel = document.getElementById('variantSelect');
-  varSel.innerHTML = '';
-  model.variants.forEach((v, idx) => {
-    const opt = document.createElement('option');
-    opt.value = idx;
-    opt.textContent = v.full_name;
-    varSel.appendChild(opt);
-  });
-  varSel.value = String(state.variantIdx);
+  if (varSel) {
+    varSel.innerHTML = '';
+    model.variants.forEach((v, idx) => {
+      const opt = document.createElement('option');
+      opt.value = idx;
+      opt.textContent = v.full_name;
+      varSel.appendChild(opt);
+    });
+    varSel.value = String(state.variantIdx);
+  }
 
   renderColorsForType();
   recalculate();
 }
 
 function renderColorsForType() {
+  if (!DB) return;
   const col = getCurrentCollection();
   const model = getCurrentModel();
   const colorSel = document.getElementById('colorSelect');
   const ralBox = document.getElementById('ralOptionsBox');
+  if (!colorSel) return;
 
-  ralBox.classList.toggle('hidden', state.coatingType !== 'enamel');
+  if (ralBox) ralBox.classList.toggle('hidden', state.coatingType !== 'enamel');
 
   const filtered = DB.coatings.filter(c => {
     if (state.coatingType === 'enamel') {
@@ -314,6 +375,7 @@ function updateCoatingRestrictionMessage() {
   const model = getCurrentModel();
   const coating = DB.coatings.find(c => c.id === state.coatingId);
   const box = document.getElementById('coatingRestrictionBox');
+  if (!box) return;
   if (!coating) {
     box.textContent = '';
     return;
@@ -387,6 +449,8 @@ function getPogonazhItemPrice(item) {
 
 function recalculate() {
   if (!DB) return;
+  ensureSummaryContainers();
+
   const col = getCurrentCollection();
   const model = getCurrentModel();
   if (!model) return;
@@ -415,17 +479,19 @@ function recalculate() {
     }
   }
 
-  const w = Number(document.getElementById('widthInput').value) || 800;
-  const h = Number(document.getElementById('heightInput').value) || 2000;
+  const w = Number(document.getElementById('widthInput')?.value) || 800;
+  const h = Number(document.getElementById('heightInput')?.value) || 2000;
   const sizeRes = calcSizeSurcharge(col, baseLeaf, w, h);
   leafExtra += sizeRes.amount;
   if (sizeRes.amount > 0) {
     leafSubLines.push({ name: sizeRes.label, val: sizeRes.amount });
   }
-  document.getElementById('sizeRuleHint').textContent =
-    'Наценки за нестандартную ширину и высоту не суммируются — применяется наибольшая.';
+  const sizeHint = document.getElementById('sizeRuleHint');
+  if (sizeHint) {
+    sizeHint.textContent = 'Наценки за нестандартную ширину и высоту не суммируются — применяется наибольшая.';
+  }
 
-  const tMode = document.getElementById('thicknessSelect').value;
+  const tMode = document.getElementById('thicknessSelect')?.value || 'base';
   let thickAdd = 0;
   if (tMode === '42' && col.default_thickness !== 42) {
     thickAdd = col.thick_surcharges?.['42'] ?? 3675;
@@ -439,14 +505,14 @@ function recalculate() {
   }
   leafExtra += thickAdd;
 
-  if (document.getElementById('kp58Chk').checked) {
+  if (document.getElementById('kp58Chk')?.checked) {
     const kp = col.thick_surcharges?.['kp_58'] ?? 1125;
     leafExtra += kp;
     leafSubLines.push({ name: 'Опция «КП» (кромка 4 стороны)', val: kp });
   }
 
   const hasEdge = !document.getElementById('edgeFieldWrap')?.classList.contains('hidden');
-  const eMode = document.getElementById('edgeSelect').value;
+  const eMode = document.getElementById('edgeSelect')?.value || 'base';
   if (hasEdge && eMode !== 'none' && eMode !== 'base') {
     const eMap = col.edge_surcharges || {};
     const eAdd = eMap[eMode] ?? (eMode === 'black' ? 285 : (eMode === 'ral' ? 1690 : 565));
@@ -454,7 +520,7 @@ function recalculate() {
     leafSubLines.push({ name: `Цвет кромки (${eMode})`, val: eAdd });
   }
 
-  if (document.getElementById('moldingChk').checked) {
+  if (document.getElementById('moldingChk')?.checked) {
     const mAdd = col.molding_surcharge ?? 285;
     leafExtra += mAdd;
     leafSubLines.push({ name: 'Молдинг спеццвет', val: mAdd });
@@ -465,9 +531,12 @@ function recalculate() {
   const multiplier = 1 + (pct / 100);
 
   const isSet = state.calcMode === 'set';
-  document.getElementById('btnModeLeaf').classList.toggle('active', !isSet);
-  document.getElementById('btnModeSet').classList.toggle('active', isSet);
-  document.getElementById('pogonazhPanel').classList.toggle('hidden', !isSet);
+  const btnLeaf = document.getElementById('btnModeLeaf');
+  const btnSet = document.getElementById('btnModeSet');
+  const pogPanel = document.getElementById('pogonazhPanel');
+  if (btnLeaf) btnLeaf.classList.toggle('active', !isSet);
+  if (btnSet) btnSet.classList.toggle('active', isSet);
+  if (pogPanel) pogPanel.classList.toggle('hidden', !isSet);
 
   let factoryBox = 0;
   let boxLabel = '';
@@ -477,19 +546,19 @@ function recalculate() {
   let extLabel = '';
 
   if (isSet) {
-    const boxItem = (DB.pogonazh || []).find(p => p.id === document.getElementById('boxSelect').value);
+    const boxItem = (DB.pogonazh || []).find(p => p.id === document.getElementById('boxSelect')?.value);
     const boxUnit = getPogonazhItemPrice(boxItem);
-    const boxMult = isBoxKit(boxItem) ? 1 : Math.max(0, Number(document.getElementById('boxQty').value) || 0);
+    const boxMult = isBoxKit(boxItem) ? 1 : Math.max(0, Number(document.getElementById('boxQty')?.value) || 0);
     factoryBox = boxUnit * boxMult;
     boxLabel = isBoxKit(boxItem) ? 'Коробка (комплект)' : `Коробка (${boxMult} шт.)`;
 
-    const casItem = (DB.pogonazh || []).find(p => p.id === document.getElementById('casingSelect').value);
-    const casQty = Math.max(0, Number(document.getElementById('casingQty').value) || 0);
+    const casItem = (DB.pogonazh || []).find(p => p.id === document.getElementById('casingSelect')?.value);
+    const casQty = Math.max(0, Number(document.getElementById('casingQty')?.value) || 0);
     factoryCasings = getPogonazhItemPrice(casItem) * casQty;
     casingsLabel = `Наличники (${casQty} шт.)`;
 
-    const extItem = (DB.pogonazh || []).find(p => p.id === document.getElementById('extSelect').value);
-    const extQty = Math.max(0, Number(document.getElementById('extQty').value) || 0);
+    const extItem = (DB.pogonazh || []).find(p => p.id === document.getElementById('extSelect')?.value);
+    const extQty = Math.max(0, Number(document.getElementById('extQty')?.value) || 0);
     factoryExt = getPogonazhItemPrice(extItem) * extQty;
     extLabel = `Доборы (${extQty} шт.)`;
   }
@@ -502,91 +571,101 @@ function recalculate() {
   const retailExt = factoryExt * multiplier;
   const retailUnit = factoryUnit * multiplier;
 
-  const setsQty = Math.max(1, Number(document.getElementById('setsQty').value) || 1);
+  const setsQty = Math.max(1, Number(document.getElementById('setsQty')?.value) || 1);
   const retailOrder = retailUnit * setsQty;
 
-  // 1. Factory breakdown (shown ONLY after PIN 2304 unlock)
+  // 1. Цены завода (показываются ТОЛЬКО после ввода ПИН-кода 2304)
   const factorySec = document.getElementById('factorySection');
   const showFactory = Boolean(state.unlocked && state.showFactoryPrice);
-  factorySec.classList.toggle('hidden', !showFactory);
+  if (factorySec) {
+    factorySec.classList.toggle('hidden', !showFactory);
+    if (showFactory) {
+      const fListEl = document.getElementById('factoryBreakdownList');
+      if (fListEl) {
+        fListEl.innerHTML = '';
+        leafSubLines.forEach(item => {
+          const r = document.createElement('div');
+          r.className = 'breakdown-row';
+          r.innerHTML = `<span>${item.name}</span><span>${fmtRub(item.val)}</span>`;
+          fListEl.appendChild(r);
+        });
 
-  if (showFactory) {
-    const fListEl = document.getElementById('factoryBreakdownList');
-    fListEl.innerHTML = '';
+        if (leafSubLines.length > 1) {
+          const rLeafSum = document.createElement('div');
+          rLeafSum.className = 'breakdown-row';
+          rLeafSum.style.fontWeight = '600';
+          rLeafSum.innerHTML = `<span>Полотно с опциями (завод):</span><span>${fmtRub(factoryLeaf)}</span>`;
+          fListEl.appendChild(rLeafSum);
+        }
 
-    leafSubLines.forEach(item => {
-      const r = document.createElement('div');
-      r.className = 'breakdown-row';
-      r.innerHTML = `<span>${item.name}</span><span>${fmtRub(item.val)}</span>`;
-      fListEl.appendChild(r);
-    });
-
-    if (leafSubLines.length > 1) {
-      const rLeafSum = document.createElement('div');
-      rLeafSum.className = 'breakdown-row';
-      rLeafSum.style.fontWeight = '600';
-      rLeafSum.innerHTML = `<span>Полотно с опциями (завод):</span><span>${fmtRub(factoryLeaf)}</span>`;
-      fListEl.appendChild(rLeafSum);
+        if (isSet) {
+          if (factoryBox > 0) {
+            const rb = document.createElement('div');
+            rb.className = 'breakdown-row';
+            rb.innerHTML = `<span>${boxLabel} (завод):</span><span>${fmtRub(factoryBox)}</span>`;
+            fListEl.appendChild(rb);
+          }
+          if (factoryCasings > 0) {
+            const rc = document.createElement('div');
+            rc.className = 'breakdown-row';
+            rc.innerHTML = `<span>${casingsLabel} (завод):</span><span>${fmtRub(factoryCasings)}</span>`;
+            fListEl.appendChild(rc);
+          }
+          if (factoryExt > 0) {
+            const re = document.createElement('div');
+            re.className = 'breakdown-row';
+            re.innerHTML = `<span>${extLabel} (завод):</span><span>${fmtRub(factoryExt)}</span>`;
+            fListEl.appendChild(re);
+          }
+        }
+      }
+      const fTotalEl = document.getElementById('factoryUnitTotal');
+      if (fTotalEl) fTotalEl.textContent = fmtRub(factoryUnit);
     }
+  }
+
+  // 2. Розничные цены с наценкой
+  const rListEl = document.getElementById('retailBreakdownList');
+  if (rListEl) {
+    rListEl.innerHTML = '';
+    const suffix = showFactory ? ` (+${pct}%)` : '';
+
+    const rowLeaf = document.createElement('div');
+    rowLeaf.className = 'breakdown-row';
+    rowLeaf.innerHTML = `<span>Полотно (${variant.full_name})${suffix}</span><span>${fmtRub(retailLeaf)}</span>`;
+    rListEl.appendChild(rowLeaf);
 
     if (isSet) {
       if (factoryBox > 0) {
         const rb = document.createElement('div');
         rb.className = 'breakdown-row';
-        rb.innerHTML = `<span>${boxLabel} (завод):</span><span>${fmtRub(factoryBox)}</span>`;
-        fListEl.appendChild(rb);
+        rb.innerHTML = `<span>${boxLabel}${suffix}</span><span>${fmtRub(retailBox)}</span>`;
+        rListEl.appendChild(rb);
       }
       if (factoryCasings > 0) {
         const rc = document.createElement('div');
         rc.className = 'breakdown-row';
-        rc.innerHTML = `<span>${casingsLabel} (завод):</span><span>${fmtRub(factoryCasings)}</span>`;
-        fListEl.appendChild(rc);
+        rc.innerHTML = `<span>${casingsLabel}${suffix}</span><span>${fmtRub(retailCasings)}</span>`;
+        rListEl.appendChild(rc);
       }
       if (factoryExt > 0) {
         const re = document.createElement('div');
         re.className = 'breakdown-row';
-        re.innerHTML = `<span>${extLabel} (завод):</span><span>${fmtRub(factoryExt)}</span>`;
-        fListEl.appendChild(re);
+        re.innerHTML = `<span>${extLabel}${suffix}</span><span>${fmtRub(retailExt)}</span>`;
+        rListEl.appendChild(re);
       }
     }
-
-    document.getElementById('factoryUnitTotal').textContent = fmtRub(factoryUnit);
   }
 
-  // 2. Retail breakdown (each selected item already with +markupPct%)
-  const rListEl = document.getElementById('retailBreakdownList');
-  rListEl.innerHTML = '';
-  const suffix = showFactory ? ` (+${pct}%)` : '';
+  const rLeafEl = document.getElementById('retailLeafPrice');
+  const rSetEl = document.getElementById('retailSetPrice');
+  const qtyLblEl = document.getElementById('orderQtyLabel');
+  const rOrderEl = document.getElementById('retailOrderPrice');
 
-  const rowLeaf = document.createElement('div');
-  rowLeaf.className = 'breakdown-row';
-  rowLeaf.innerHTML = `<span>Полотно (${variant.full_name})${suffix}</span><span>${fmtRub(retailLeaf)}</span>`;
-  rListEl.appendChild(rowLeaf);
-
-  if (isSet) {
-    if (factoryBox > 0) {
-      const rb = document.createElement('div');
-      rb.className = 'breakdown-row';
-      rb.innerHTML = `<span>${boxLabel}${suffix}</span><span>${fmtRub(retailBox)}</span>`;
-      rListEl.appendChild(rb);
-    }
-    if (factoryCasings > 0) {
-      const rc = document.createElement('div');
-      rc.className = 'breakdown-row';
-      rc.innerHTML = `<span>${casingsLabel}${suffix}</span><span>${fmtRub(retailCasings)}</span>`;
-      rListEl.appendChild(rc);
-    }
-    if (factoryExt > 0) {
-      const re = document.createElement('div');
-      re.className = 'breakdown-row';
-      re.innerHTML = `<span>${extLabel}${suffix}</span><span>${fmtRub(retailExt)}</span>`;
-      rListEl.appendChild(re);
-    }
-  }
-
-  document.getElementById('retailSetPrice').textContent = fmtRub(retailUnit);
-  document.getElementById('orderQtyLabel').textContent = setsQty;
-  document.getElementById('retailOrderPrice').textContent = fmtRub(retailOrder);
+  if (rLeafEl) rLeafEl.textContent = fmtRub(retailLeaf);
+  if (rSetEl) rSetEl.textContent = fmtRub(retailUnit);
+  if (qtyLblEl) qtyLblEl.textContent = setsQty;
+  if (rOrderEl) rOrderEl.textContent = fmtRub(retailOrder);
 
   const quoteLines = [
     `Модель: ${variant.full_name} (${col.name})`,
@@ -607,6 +686,7 @@ function recalculate() {
 
 function runSearch(q) {
   const box = document.getElementById('searchResults');
+  if (!box || !DB) return;
   const query = q.trim().toLowerCase();
   if (!query) {
     box.classList.add('hidden');
@@ -642,20 +722,44 @@ function runSearch(q) {
   box.classList.remove('hidden');
 }
 
+function openPinModal() {
+  const modal = document.getElementById('pinModal');
+  if (!modal) return;
+  modal.classList.remove('hidden');
+  document.getElementById('pinError')?.classList.add('hidden');
+  const pinInput = document.getElementById('pinInput');
+  if (pinInput) pinInput.value = '';
+  if (state.unlocked) {
+    document.getElementById('pinStep')?.classList.add('hidden');
+    document.getElementById('settingsStep')?.classList.remove('hidden');
+    const mInp = document.getElementById('markupInput');
+    const fChk = document.getElementById('showFactoryChk');
+    if (mInp) mInp.value = state.markupPct;
+    if (fChk) fChk.checked = state.showFactoryPrice;
+  } else {
+    document.getElementById('pinStep')?.classList.remove('hidden');
+    document.getElementById('settingsStep')?.classList.add('hidden');
+  }
+}
+
 function bindEvents() {
   const sInput = document.getElementById('searchInput');
-  sInput.addEventListener('input', e => runSearch(e.target.value));
-  document.getElementById('btnClearSearch').addEventListener('click', () => {
-    sInput.value = '';
-    runSearch('');
-  });
+  if (sInput) sInput.addEventListener('input', e => runSearch(e.target.value));
 
-  document.getElementById('variantSelect').addEventListener('change', e => {
+  const btnClear = document.getElementById('btnClearSearch');
+  if (btnClear) {
+    btnClear.addEventListener('click', () => {
+      if (sInput) sInput.value = '';
+      runSearch('');
+    });
+  }
+
+  document.getElementById('variantSelect')?.addEventListener('change', e => {
     state.variantIdx = Number(e.target.value) || 0;
     recalculate();
   });
 
-  document.getElementById('typeTabs').addEventListener('click', e => {
+  document.getElementById('typeTabs')?.addEventListener('click', e => {
     const btn = e.target.closest('.type-tab');
     if (!btn || !btn.dataset.type) return;
     document.querySelectorAll('#typeTabs .type-tab').forEach(b => b.classList.remove('active'));
@@ -665,39 +769,39 @@ function bindEvents() {
     recalculate();
   });
 
-  document.getElementById('colorSelect').addEventListener('change', e => {
+  document.getElementById('colorSelect')?.addEventListener('change', e => {
     state.coatingId = e.target.value;
     updateCoatingRestrictionMessage();
     recalculate();
   });
 
-  document.getElementById('ralModeSelect').addEventListener('change', e => {
+  document.getElementById('ralModeSelect')?.addEventListener('change', e => {
     state.ralMode = e.target.value;
     recalculate();
   });
 
-  document.getElementById('edgeSelect').addEventListener('change', e => {
+  document.getElementById('edgeSelect')?.addEventListener('change', e => {
     state.edgeMode = e.target.value;
     recalculate();
   });
 
-  document.getElementById('thicknessSelect').addEventListener('change', e => {
+  document.getElementById('thicknessSelect')?.addEventListener('change', e => {
     state.thicknessMode = e.target.value;
-    syncEdgeFieldVisibility(getCurrentCollection());
+    if (DB) syncEdgeFieldVisibility(getCurrentCollection());
     recalculate();
   });
 
-  document.getElementById('btnModeLeaf').addEventListener('click', () => {
+  document.getElementById('btnModeLeaf')?.addEventListener('click', () => {
     state.calcMode = 'leaf';
     recalculate();
   });
-  document.getElementById('btnModeSet').addEventListener('click', () => {
+  document.getElementById('btnModeSet')?.addEventListener('click', () => {
     state.calcMode = 'set';
     updateBoxQtyVisibility();
     recalculate();
   });
 
-  document.getElementById('boxSelect').addEventListener('change', () => {
+  document.getElementById('boxSelect')?.addEventListener('change', () => {
     updateBoxQtyVisibility();
     recalculate();
   });
@@ -711,58 +815,71 @@ function bindEvents() {
     el.addEventListener('change', recalculate);
   });
 
-  const modal = document.getElementById('pinModal');
-  document.getElementById('brandTitle').addEventListener('dblclick', () => {
-    modal.classList.remove('hidden');
-    document.getElementById('pinError').classList.add('hidden');
-    document.getElementById('pinInput').value = '';
-    if (state.unlocked) {
-      document.getElementById('pinStep').classList.add('hidden');
-      document.getElementById('settingsStep').classList.remove('hidden');
-      document.getElementById('markupInput').value = state.markupPct;
-      document.getElementById('showFactoryChk').checked = state.showFactoryPrice;
-    } else {
-      document.getElementById('pinStep').classList.remove('hidden');
-      document.getElementById('settingsStep').classList.add('hidden');
-    }
+  // Открытие настроек по двойному клику мышкой или 3 быстрым тапам на телефоне
+  const brandTitle = document.getElementById('brandTitle') || document.querySelector('.brand-title');
+  if (brandTitle) {
+    brandTitle.addEventListener('dblclick', openPinModal);
+    let tapCount = 0;
+    let tapTimer = null;
+    brandTitle.addEventListener('touchend', () => {
+      tapCount++;
+      clearTimeout(tapTimer);
+      if (tapCount >= 3) {
+        tapCount = 0;
+        openPinModal();
+      } else {
+        tapTimer = setTimeout(() => { tapCount = 0; }, 600);
+      }
+    });
+  }
+
+  document.getElementById('btnCloseModal')?.addEventListener('click', () => {
+    document.getElementById('pinModal')?.classList.add('hidden');
   });
 
-  document.getElementById('btnCloseModal').addEventListener('click', () => modal.classList.add('hidden'));
-
-  document.getElementById('btnUnlockPin').addEventListener('click', () => {
-    const val = document.getElementById('pinInput').value.trim();
-    if (val === String(DB.meta?.pin_code || '2304')) {
+  document.getElementById('btnUnlockPin')?.addEventListener('click', () => {
+    const val = document.getElementById('pinInput')?.value.trim();
+    const expected = String(DB?.meta?.pin_code || '2304');
+    if (val === expected) {
       state.unlocked = true;
       state.showFactoryPrice = true;
       recalculate();
-      document.getElementById('pinStep').classList.add('hidden');
-      document.getElementById('settingsStep').classList.remove('hidden');
-      document.getElementById('markupInput').value = state.markupPct;
-      document.getElementById('showFactoryChk').checked = state.showFactoryPrice;
+      document.getElementById('pinStep')?.classList.add('hidden');
+      document.getElementById('settingsStep')?.classList.remove('hidden');
+      const mInp = document.getElementById('markupInput');
+      const fChk = document.getElementById('showFactoryChk');
+      if (mInp) mInp.value = state.markupPct;
+      if (fChk) fChk.checked = state.showFactoryPrice;
     } else {
-      document.getElementById('pinError').classList.remove('hidden');
+      document.getElementById('pinError')?.classList.remove('hidden');
     }
   });
 
-  document.getElementById('btnSaveSettings').addEventListener('click', () => {
-    const newPct = Number(document.getElementById('markupInput').value);
+  document.getElementById('btnSaveSettings')?.addEventListener('click', () => {
+    const newPct = Number(document.getElementById('markupInput')?.value);
     if (!Number.isNaN(newPct) && newPct >= 0) {
       state.markupPct = newPct;
     }
-    state.showFactoryPrice = document.getElementById('showFactoryChk').checked;
+    state.showFactoryPrice = Boolean(document.getElementById('showFactoryChk')?.checked);
     recalculate();
-    modal.classList.add('hidden');
+    document.getElementById('pinModal')?.classList.add('hidden');
   });
 
-  document.getElementById('btnCopyQuote').addEventListener('click', async () => {
+  document.getElementById('btnCopyQuote')?.addEventListener('click', async () => {
     if (!window.__LAST_QUOTE_TEXT) return;
     try {
       await navigator.clipboard.writeText(window.__LAST_QUOTE_TEXT);
       const fb = document.getElementById('copyFeedback');
-      fb.classList.remove('hidden');
-      setTimeout(() => fb.classList.add('hidden'), 2500);
+      if (fb) {
+        fb.classList.remove('hidden');
+        setTimeout(() => fb.classList.add('hidden'), 2500);
+      }
     } catch (_) {}
   });
 }
 
-initApp();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
