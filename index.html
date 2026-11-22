@@ -1,1 +1,225 @@
-Test
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Калькулятор межкомнатных дверей WestStyle</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-title">WestStyle • Конфигуратор</div>
+        <div class="brand-sub" id="priceMeta">Загрузка прайса...</div>
+      </div>
+      <button type="button" class="btn-lock" id="btnPinModal" title="Настройки и ПИН">
+        <span id="lockIcon">🔒</span> <span id="markupBadge">+70%</span>
+      </button>
+    </header>
+
+    <div class="search-wrap">
+      <input type="search" id="searchInput" class="search-input" placeholder="Поиск: IN40, Инфинити 40, Брюгге, An 1..." autocomplete="off" />
+      <button type="button" class="btn-clear" id="btnClearSearch" title="Очистить">✕</button>
+    </div>
+
+    <div id="searchResults" class="search-results hidden"></div>
+
+    <nav class="collections-bar" id="collectionsBar"></nav>
+
+    <main id="mainContent">
+      <section class="card" id="modelSelectorCard">
+        <div class="section-label">Модель коллекции</div>
+        <div class="model-chips" id="modelChips"></div>
+      </section>
+
+      <section class="card model-hero" id="modelHeroCard">
+        <div class="hero-grid">
+          <div class="hero-img-box">
+            <img id="modelImg" src="" alt="Фото полотна" />
+          </div>
+          <div class="hero-info">
+            <div class="badge-col" id="modelCollection">Коллекция</div>
+            <h1 class="model-title" id="modelTitle">Выберите модель</h1>
+            <div class="model-notes" id="modelNotes"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="variantCard">
+        <div class="section-label">1. Исполнение / Остекление</div>
+        <select id="variantSelect" class="select-control"></select>
+      </section>
+
+      <section class="card" id="coatingCard">
+        <div class="section-label">2. Покрытие и цвет (с проверкой ограничений)</div>
+        <div class="type-tabs" id="typeTabs">
+          <button type="button" class="type-tab active" data-type="type1">Тип 1</button>
+          <button type="button" class="type-tab" data-type="type2">Тип 2</button>
+          <button type="button" class="type-tab" data-type="type3">Тип 3</button>
+          <button type="button" class="type-tab" data-type="enamel">Эмаль / RAL</button>
+        </div>
+        <div class="field-row">
+          <label class="field-label">Цвет покрытия</label>
+          <select id="colorSelect" class="select-control"></select>
+        </div>
+        <div id="coatingRestrictionBox" class="restriction-note"></div>
+
+        <div id="ralOptionsBox" class="sub-box hidden">
+          <div class="field-row">
+            <label class="field-label">Вариант эмали</label>
+            <select id="ralModeSelect" class="select-control">
+              <option value="standard">Базовая эмаль (RAL 9003 / 7038 / 9010)</option>
+              <option value="ral_single">Индивидуальный RAL/NCS (< 3 полотен: +70%)</option>
+              <option value="ral_bulk">Индивидуальный RAL/NCS (от 3 полотен: +30%)</option>
+            </select>
+          </div>
+          <label class="check-row">
+            <input type="checkbox" id="twoToneEnamelChk" />
+            <span>Двухцветная покраска эмалью (+20%)</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="card" id="sizeEdgeCard">
+        <div class="section-label">3. Размеры, толщина и кромка</div>
+        <div class="grid-2">
+          <div class="field-row">
+            <label class="field-label">Ширина полотна, мм</label>
+            <input type="number" id="widthInput" class="input-control" step="10" min="350" max="1200" value="800" />
+          </div>
+          <div class="field-row">
+            <label class="field-label">Высота полотна, мм</label>
+            <input type="number" id="heightInput" class="input-control" step="10" min="1500" max="3100" value="2000" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field-row">
+            <label class="field-label">Толщина полотна</label>
+            <select id="thicknessSelect" class="select-control">
+              <option value="base">По умолчанию (38/42 мм)</option>
+              <option value="42">42 мм (алюм. кромка)</option>
+              <option value="58">58 мм (алюм. кромка 3 ст.)</option>
+              <option value="58_nb">58 мм Noise Block</option>
+            </select>
+          </div>
+          <div class="field-row">
+            <label class="field-label">Цвет кромки / опции</label>
+            <select id="edgeSelect" class="select-control">
+              <option value="base">Базовая / Хром матовый (0 ₽)</option>
+              <option value="black">Чёрный (+285 ₽)</option>
+              <option value="champagne">Шампань (+565 ₽)</option>
+              <option value="gold">Матовое золото (+565 ₽)</option>
+              <option value="ral">Покраска RAL/NCS (+1 690 ₽)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <label class="check-row">
+            <input type="checkbox" id="kp58Chk" />
+            <span>Опция «КП» кромка 4 ст. для 58 мм (+1 125 ₽)</span>
+          </label>
+          <label class="check-row">
+            <input type="checkbox" id="moldingChk" />
+            <span>Молдинг спеццвет (золото/шампань, +285 ₽)</span>
+          </label>
+        </div>
+        <div id="sizeRuleHint" class="hint-line"></div>
+      </section>
+
+      <section class="card" id="pogonazhCard">
+        <div class="section-label">4. Комплект погонажа (опционально)</div>
+        <div class="field-row">
+          <label class="field-label">Коробка / комплект короба</label>
+          <select id="boxSelect" class="select-control"></select>
+        </div>
+        <div class="grid-2">
+          <div class="field-row">
+            <label class="field-label">Наличник (шт.)</label>
+            <select id="casingSelect" class="select-control"></select>
+          </div>
+          <div class="field-row">
+            <label class="field-label">Кол-во наличников</label>
+            <input type="number" id="casingQty" class="input-control" min="0" max="20" value="5" />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field-row">
+            <label class="field-label">Добор (шт.)</label>
+            <select id="extSelect" class="select-control"></select>
+          </div>
+          <div class="field-row">
+            <label class="field-label">Кол-во доборов</label>
+            <input type="number" id="extQty" class="input-control" min="0" max="20" value="0" />
+          </div>
+        </div>
+        <div class="field-row">
+          <label class="field-label">Количество дверных блоков в заказе</label>
+          <input type="number" id="setsQty" class="input-control" min="1" max="100" value="1" />
+        </div>
+      </section>
+
+      <section class="card summary-card" id="summaryCard">
+        <div class="section-label">Итоговый расчёт</div>
+        <div class="breakdown-list" id="breakdownList"></div>
+
+        <div class="totals-box">
+          <div class="total-line">
+            <span>Полотно (розница с наценкой):</span>
+            <strong id="retailLeafPrice">0 ₽</strong>
+          </div>
+          <div class="total-line main-total">
+            <span>Комплект за 1 блок (розница):</span>
+            <strong id="retailSetPrice">0 ₽</strong>
+          </div>
+          <div class="total-line sub-total" id="orderTotalRow">
+            <span>Итого за заказ (<span id="orderQtyLabel">1</span> шт.):</span>
+            <strong id="retailOrderPrice">0 ₽</strong>
+          </div>
+
+          <div id="factoryPriceBox" class="factory-box hidden">
+            <div class="factory-title">Закупочная / прайс завода (без наценки):</div>
+            <div>Полотно: <span id="factoryLeafPrice">0 ₽</span> • Комплект: <span id="factorySetPrice">0 ₽</span> • Заказ: <span id="factoryOrderPrice">0 ₽</span></div>
+          </div>
+        </div>
+
+        <button type="button" class="btn-primary" id="btnCopyQuote">Скопировать расчёт для клиента</button>
+        <div id="copyFeedback" class="copy-feedback hidden">Расчёт скопирован в буфер обмена</div>
+      </section>
+    </main>
+  </div>
+
+  <!-- PIN & Settings Modal -->
+  <div class="modal-backdrop hidden" id="pinModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Настройки наценки и цен</h3>
+        <button type="button" class="btn-close" id="btnCloseModal">✕</button>
+      </div>
+
+      <div id="pinStep">
+        <p class="modal-desc">Введите ПИН-код доступа для изменения процента наценки и просмотра цены прайса производителя.</p>
+        <input type="password" id="pinInput" class="input-control" placeholder="ПИН-код" maxlength="8" inputmode="numeric" />
+        <div id="pinError" class="error-text hidden">Неверный ПИН-код</div>
+        <button type="button" class="btn-primary" id="btnUnlockPin">Войти</button>
+      </div>
+
+      <div id="settingsStep" class="hidden">
+        <div class="field-row">
+          <label class="field-label">Наценка за логистику и розницу, %</label>
+          <input type="number" id="markupInput" class="input-control" step="1" min="0" max="500" value="70" />
+        </div>
+        <label class="check-row">
+          <input type="checkbox" id="showFactoryChk" />
+          <span>Показывать цену прайса производителя (закупка/база)</span>
+        </label>
+        <button type="button" class="btn-primary" id="btnSaveSettings">Сохранить настройки</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
