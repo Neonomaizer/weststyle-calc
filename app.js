@@ -13,12 +13,11 @@ let state = {
   edgeMode: 'base',
   kp58: false,
   moldingSpec: false,
-  enableBox: false,
+  calcMode: 'leaf', // 'leaf' | 'set'
   boxId: '',
-  enableCasings: false,
+  boxQty: 2.5,
   casingId: '',
   casingQty: 5,
-  enableExt: false,
   extId: '',
   extQty: 2,
   setsQty: 1,
@@ -30,23 +29,28 @@ let state = {
 const fmtRub = (n) => Math.round(Number(n) || 0).toLocaleString('ru-RU') + ' ₽';
 
 async function initApp() {
-  const res = await fetch('data.json');
-  DB = await res.json();
-  state.markupPct = DB.meta.default_markup_pct ?? 70;
-  document.getElementById('priceMeta').textContent = DB.meta.price_title;
+  try {
+    const res = await fetch('data.json');
+    DB = await res.json();
+    state.markupPct = Number(DB.meta?.default_markup_pct ?? 70);
+    document.getElementById('priceMeta').textContent = DB.meta?.price_title || 'Прайс WestStyle';
 
-  const indIdx = DB.collections.findIndex(c => c.name.toLowerCase() === 'industrial');
-  if (indIdx >= 0) {
-    state.collectionIdx = indIdx;
-    const in40 = DB.collections[indIdx].models.find(m => m.code.toUpperCase() === 'IN40');
-    if (in40) state.modelId = in40.id;
+    const indIdx = DB.collections.findIndex(c => c.name.toLowerCase() === 'industrial');
+    if (indIdx >= 0) {
+      state.collectionIdx = indIdx;
+      const in40 = DB.collections[indIdx].models.find(m => m.code.toUpperCase() === 'IN40');
+      if (in40) state.modelId = in40.id;
+    }
+
+    populatePogonazhSelects();
+    renderCollectionsBar();
+    selectCollection(state.collectionIdx, state.modelId);
+    bindEvents();
+    updateBoxQtyVisibility();
+    recalculate();
+  } catch (err) {
+    console.error('Ошибка инициализации:', err);
   }
-
-  populatePogonazhSelects();
-  renderCollectionsBar();
-  selectCollection(state.collectionIdx, state.modelId);
-  bindEvents();
-  updateMarkupBadge();
 }
 
 function populatePogonazhSelects() {
@@ -58,7 +62,7 @@ function populatePogonazhSelects() {
   casSel.innerHTML = '';
   extSel.innerHTML = '';
 
-  DB.pogonazh.forEach(item => {
+  (DB.pogonazh || []).forEach(item => {
     const opt = document.createElement('option');
     opt.value = item.id;
     opt.textContent = item.name;
@@ -70,6 +74,37 @@ function populatePogonazhSelects() {
   if (boxSel.options[0]) state.boxId = boxSel.options[0].value;
   if (casSel.options[0]) state.casingId = casSel.options[0].value;
   if (extSel.options[0]) state.extId = extSel.options[0].value;
+}
+
+function isBoxKit(item) {
+  if (!item || !item.name) return false;
+  return item.name.toLowerCase().includes('комплект');
+}
+
+function updateBoxQtyVisibility() {
+  const boxSel = document.getElementById('boxSelect');
+  const item = (DB.pogonazh || []).find(p => p.id === boxSel.value);
+  const qtyWrap = document.getElementById('boxQtyWrap');
+  const qtyInput = document.getElementById('boxQty');
+  if (isBoxKit(item)) {
+    qtyWrap.classList.add('hidden');
+    qtyInput.value = '1';
+  } else {
+    qtyWrap.classList.remove('hidden');
+    if (!qtyInput.value || Number(qtyInput.value) <= 0) qtyInput.value = '2.5';
+  }
+}
+
+function modelHasGlazing(model) {
+  if (!model || !Array.isArray(model.variants)) return false;
+  if (model.variants.length > 1) return true;
+  const txt = (model.variants[0]?.full_name || '').toLowerCase();
+  const glassKeywords = [
+    'ст.', 'ст ', 'ст№', 'стекл', 'сатинат', 'зеркал', 'lacobel',
+    'matelac', 'триплекс', 'фацет', 'сияние', 'кризет', 'витраж',
+    'прозрачн', 'бронз', 'графит', 'уф'
+  ];
+  return glassKeywords.some(k => txt.includes(k));
 }
 
 function renderCollectionsBar() {
@@ -105,7 +140,6 @@ function selectCollection(colIdx, preferredModelId = null) {
     btn.addEventListener('click', () => {
       state.modelId = m.id;
       state.variantIdx = 0;
-      renderCollectionsBar();
       selectCollection(colIdx, m.id);
     });
     chips.appendChild(btn);
@@ -120,18 +154,12 @@ function syncEdgeOptionsForCollection(col) {
   const hasDefaultEdge = col.has_default_edge !== false;
 
   Array.from(edgeSel.options).forEach(opt => {
-    if (opt.value === 'none') {
-      opt.hidden = hasDefaultEdge;
-    } else if (opt.value === 'base') {
-      opt.hidden = !hasDefaultEdge;
-    }
+    if (opt.value === 'none') opt.hidden = hasDefaultEdge;
+    else if (opt.value === 'base') opt.hidden = !hasDefaultEdge;
   });
 
-  if (!hasDefaultEdge) {
-    if (state.edgeMode === 'base') state.edgeMode = 'none';
-  } else {
-    if (state.edgeMode === 'none') state.edgeMode = 'base';
-  }
+  if (!hasDefaultEdge && state.edgeMode === 'base') state.edgeMode = 'none';
+  if (hasDefaultEdge && state.edgeMode === 'none') state.edgeMode = 'base';
   edgeSel.value = state.edgeMode;
 }
 
@@ -145,17 +173,11 @@ function getCurrentModel() {
 }
 
 function isCoatingAllowedForModel(coating, col, model) {
-  const rule = coating.rules[col.name];
-  if (!rule) {
-    return { allowed: true, reason: 'Доступно по прайсу' };
-  }
-  if (!rule.available) {
-    return { allowed: false, reason: 'Не изготавливается для ' + col.name };
-  }
+  const rule = coating.rules?.[col.name];
+  if (!rule) return { allowed: true, reason: 'Доступно по прайсу' };
+  if (!rule.available) return { allowed: false, reason: 'Не изготавливается для ' + col.name };
   const note = (rule.note || '').trim();
-  if (!note) {
-    return { allowed: true, reason: 'Доступно для ' + col.name };
-  }
+  if (!note) return { allowed: true, reason: 'Доступно для ' + col.name };
 
   const onlyMatch = note.match(/только\s+([^\)]+)/i);
   if (onlyMatch) {
@@ -203,6 +225,11 @@ function renderModelDetails() {
     notesBox.appendChild(div);
   });
 
+  // Hide glazing card if model has no glazing
+  const varCard = document.getElementById('variantCard');
+  const hasGlaz = modelHasGlazing(model);
+  varCard.classList.toggle('hidden', !hasGlaz);
+
   const varSel = document.getElementById('variantSelect');
   varSel.innerHTML = '';
   model.variants.forEach((v, idx) => {
@@ -242,12 +269,10 @@ function renderColorsForType() {
     opt.disabled = !check.allowed;
     opt.textContent = (c.series ? `[${c.series}] ` : '') + c.color + (check.allowed ? '' : ' (недоступно)');
     colorSel.appendChild(opt);
-    if (check.allowed && !firstAllowedId) {
-      firstAllowedId = c.id;
-    }
+    if (check.allowed && !firstAllowedId) firstAllowedId = c.id;
   });
 
-  if (state.coatingId && filtered.some(c => c.id === state.coatingId && !colorSel.querySelector(`option[value="${c.id}"]`).disabled)) {
+  if (state.coatingId && filtered.some(c => c.id === state.coatingId && !colorSel.querySelector(`option[value="${c.id}"]`)?.disabled)) {
     colorSel.value = state.coatingId;
   } else if (firstAllowedId) {
     colorSel.value = firstAllowedId;
@@ -327,9 +352,7 @@ function calcSizeSurcharge(col, baseLeaf, w, h) {
   return { amount: 0, label: `Размер ${w}×${h} мм (стандарт)` };
 }
 
-function getPogonazhPrice(itemId) {
-  if (!itemId) return 0;
-  const item = DB.pogonazh.find(p => p.id === itemId);
+function getPogonazhItemPrice(item) {
   if (!item) return 0;
   const pr = item.prices || {};
   if (state.coatingType === 'enamel') {
@@ -339,6 +362,7 @@ function getPogonazhPrice(itemId) {
 }
 
 function recalculate() {
+  if (!DB) return;
   const col = getCurrentCollection();
   const model = getCurrentModel();
   if (!model) return;
@@ -409,44 +433,43 @@ function recalculate() {
 
   const factoryLeaf = baseLeaf + leafExtra;
 
-  const enableBox = document.getElementById('enableBoxChk').checked;
-  const enableCas = document.getElementById('enableCasingsChk').checked;
-  const enableExt = document.getElementById('enableExtChk').checked;
-
-  document.getElementById('boxSubPanel').classList.toggle('hidden', !enableBox);
-  document.getElementById('casingsSubPanel').classList.toggle('hidden', !enableCas);
-  document.getElementById('extSubPanel').classList.toggle('hidden', !enableExt);
+  // Toggle between Leaf-only and Set
+  const isSet = state.calcMode === 'set';
+  document.getElementById('btnModeLeaf').classList.toggle('active', !isSet);
+  document.getElementById('btnModeSet').classList.toggle('active', isSet);
+  document.getElementById('pogonazhPanel').classList.toggle('hidden', !isSet);
 
   let pogonazhTotal = 0;
-  if (enableBox) {
-    const bPrice = getPogonazhPrice(document.getElementById('boxSelect').value);
-    pogonazhTotal += bPrice;
-    lines.push({ name: 'Коробка', val: bPrice });
-  }
-  if (enableCas) {
-    const cPrice = getPogonazhPrice(document.getElementById('casingSelect').value);
-    const cQty = Math.max(0, Number(document.getElementById('casingQty').value) || 0);
-    const cSum = cPrice * cQty;
-    pogonazhTotal += cSum;
-    lines.push({ name: `Наличники (${cQty} шт.)`, val: cSum });
-  }
-  if (enableExt) {
-    const ePrice = getPogonazhPrice(document.getElementById('extSelect').value);
-    const eQty = Math.max(0, Number(document.getElementById('extQty').value) || 0);
-    const eSum = ePrice * eQty;
-    pogonazhTotal += eSum;
-    lines.push({ name: `Доборы (${eQty} шт.)`, val: eSum });
+  if (isSet) {
+    const boxItem = (DB.pogonazh || []).find(p => p.id === document.getElementById('boxSelect').value);
+    const boxUnit = getPogonazhItemPrice(boxItem);
+    const boxMult = isBoxKit(boxItem) ? 1 : Math.max(0, Number(document.getElementById('boxQty').value) || 0);
+    const boxSum = boxUnit * boxMult;
+    pogonazhTotal += boxSum;
+    lines.push({ name: isBoxKit(boxItem) ? 'Коробка (комплект)' : `Коробка (${boxMult} шт.)`, val: boxSum });
+
+    const casItem = (DB.pogonazh || []).find(p => p.id === document.getElementById('casingSelect').value);
+    const casQty = Math.max(0, Number(document.getElementById('casingQty').value) || 0);
+    const casSum = getPogonazhItemPrice(casItem) * casQty;
+    pogonazhTotal += casSum;
+    lines.push({ name: `Наличники (${casQty} шт.)`, val: casSum });
+
+    const extItem = (DB.pogonazh || []).find(p => p.id === document.getElementById('extSelect').value);
+    const extQty = Math.max(0, Number(document.getElementById('extQty').value) || 0);
+    const extSum = getPogonazhItemPrice(extItem) * extQty;
+    pogonazhTotal += extSum;
+    lines.push({ name: `Доборы (${extQty} шт.)`, val: extSum });
   }
 
-  const factorySet = factoryLeaf + pogonazhTotal;
+  const factoryUnit = isSet ? (factoryLeaf + pogonazhTotal) : factoryLeaf;
   const multiplier = 1 + ((Number(state.markupPct) || 0) / 100);
 
   const retailLeaf = factoryLeaf * multiplier;
-  const retailSet = factorySet * multiplier;
+  const retailUnit = factoryUnit * multiplier;
 
   const setsQty = Math.max(1, Number(document.getElementById('setsQty').value) || 1);
-  const factoryOrder = factorySet * setsQty;
-  const retailOrder = retailSet * setsQty;
+  const factoryOrder = factoryUnit * setsQty;
+  const retailOrder = retailUnit * setsQty;
 
   const listEl = document.getElementById('breakdownList');
   listEl.innerHTML = '';
@@ -458,7 +481,7 @@ function recalculate() {
   });
 
   document.getElementById('retailLeafPrice').textContent = fmtRub(retailLeaf);
-  document.getElementById('retailSetPrice').textContent = fmtRub(retailSet);
+  document.getElementById('retailSetPrice').textContent = fmtRub(retailUnit);
   document.getElementById('orderQtyLabel').textContent = setsQty;
   document.getElementById('retailOrderPrice').textContent = fmtRub(retailOrder);
 
@@ -466,24 +489,20 @@ function recalculate() {
   fBox.classList.toggle('hidden', !state.showFactoryPrice);
   if (state.showFactoryPrice) {
     document.getElementById('factoryLeafPrice').textContent = fmtRub(factoryLeaf);
-    document.getElementById('factorySetPrice').textContent = fmtRub(factorySet);
+    document.getElementById('factorySetPrice').textContent = fmtRub(factoryUnit);
     document.getElementById('factoryOrderPrice').textContent = fmtRub(factoryOrder);
   }
 
   window.__LAST_QUOTE = {
     model: variant.full_name,
     collection: col.name,
+    mode: isSet ? 'Комплект' : 'Одно полотно',
     size: `${w}×${h} мм`,
     retailLeaf: fmtRub(retailLeaf),
-    retailSet: fmtRub(retailSet),
+    retailUnit: fmtRub(retailUnit),
     setsQty,
     retailOrder: fmtRub(retailOrder)
   };
-}
-
-function updateMarkupBadge() {
-  document.getElementById('markupBadge').textContent = `+${state.markupPct}%`;
-  document.getElementById('lockIcon').textContent = state.unlocked ? '🔓' : '🔒';
 }
 
 function runSearch(q) {
@@ -536,14 +555,15 @@ function bindEvents() {
     recalculate();
   });
 
-  document.querySelectorAll('.type-tab').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.type-tab').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      state.coatingType = btn.dataset.type;
-      renderColorsForType();
-      recalculate();
-    });
+  // Coating type tabs (event delegation + direct)
+  document.getElementById('typeTabs').addEventListener('click', e => {
+    const btn = e.target.closest('.type-tab');
+    if (!btn || !btn.dataset.type) return;
+    document.querySelectorAll('#typeTabs .type-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.coatingType = btn.dataset.type;
+    renderColorsForType();
+    recalculate();
   });
 
   document.getElementById('colorSelect').addEventListener('change', e => {
@@ -562,16 +582,34 @@ function bindEvents() {
     recalculate();
   });
 
-  ['twoToneEnamelChk', 'widthInput', 'heightInput', 'thicknessSelect',
-   'kp58Chk', 'moldingChk', 'enableBoxChk', 'boxSelect',
-   'enableCasingsChk', 'casingSelect', 'casingQty',
-   'enableExtChk', 'extSelect', 'extQty', 'setsQty'].forEach(id => {
-    document.getElementById(id).addEventListener('input', recalculate);
-    document.getElementById(id).addEventListener('change', recalculate);
+  // Leaf vs Set mode buttons
+  document.getElementById('btnModeLeaf').addEventListener('click', () => {
+    state.calcMode = 'leaf';
+    recalculate();
+  });
+  document.getElementById('btnModeSet').addEventListener('click', () => {
+    state.calcMode = 'set';
+    updateBoxQtyVisibility();
+    recalculate();
   });
 
+  document.getElementById('boxSelect').addEventListener('change', () => {
+    updateBoxQtyVisibility();
+    recalculate();
+  });
+
+  ['twoToneEnamelChk', 'widthInput', 'heightInput', 'thicknessSelect',
+   'kp58Chk', 'moldingChk', 'boxQty', 'casingSelect', 'casingQty',
+   'extSelect', 'extQty', 'setsQty'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', recalculate);
+    el.addEventListener('change', recalculate);
+  });
+
+  // Double click on brand title to open PIN & markup settings
   const modal = document.getElementById('pinModal');
-  document.getElementById('btnPinModal').addEventListener('click', () => {
+  document.getElementById('brandTitle').addEventListener('dblclick', () => {
     modal.classList.remove('hidden');
     document.getElementById('pinError').classList.add('hidden');
     document.getElementById('pinInput').value = '';
@@ -590,9 +628,8 @@ function bindEvents() {
 
   document.getElementById('btnUnlockPin').addEventListener('click', () => {
     const val = document.getElementById('pinInput').value.trim();
-    if (val === String(DB.meta.pin_code || '2304')) {
+    if (val === String(DB.meta?.pin_code || '2304')) {
       state.unlocked = true;
-      updateMarkupBadge();
       document.getElementById('pinStep').classList.add('hidden');
       document.getElementById('settingsStep').classList.remove('hidden');
       document.getElementById('markupInput').value = state.markupPct;
@@ -608,7 +645,6 @@ function bindEvents() {
       state.markupPct = newPct;
     }
     state.showFactoryPrice = document.getElementById('showFactoryChk').checked;
-    updateMarkupBadge();
     recalculate();
     modal.classList.add('hidden');
   });
@@ -618,9 +654,10 @@ function bindEvents() {
     if (!q) return;
     const text = [
       `Модель: ${q.model} (${q.collection})`,
+      `Режим: ${q.mode}`,
       `Размер: ${q.size}`,
       `Полотно: ${q.retailLeaf}`,
-      `Комплект (1 шт.): ${q.retailSet}`,
+      `Итого за 1 шт.: ${q.retailUnit}`,
       `Заказ (${q.setsQty} шт.): ${q.retailOrder}`
     ].join('\n');
     try {
