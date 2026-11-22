@@ -606,10 +606,14 @@
       }
     }
 
-    const notesBox = document.getElementById('modelNotes');
+const notesBox = document.getElementById('modelNotes');
     if (notesBox) {
       notesBox.innerHTML = '';
-      (model.notes || []).forEach(n => {
+      const compactNotes = (model.notes || []).slice(0, 2).map(n => {
+        const clean = String(n).replace(/^Внимание!\s*/i, '').trim();
+        return clean.length > 110 ? clean.slice(0, 107).trim() + '…' : clean;
+      });
+      compactNotes.forEach(n => {
         const div = document.createElement('div');
         div.textContent = '• ' + n;
         notesBox.appendChild(div);
