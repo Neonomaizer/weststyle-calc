@@ -396,22 +396,22 @@ function recalculate() {
 
   const baseLeaf = getBaseLeafPrice(variant);
   let leafExtra = 0;
-  const lines = [{ name: `Полотно (${variant.full_name})`, val: baseLeaf }];
+  const leafSubLines = [{ name: `База полотна (${variant.full_name})`, val: baseLeaf }];
 
   if (state.coatingType === 'enamel') {
     if (state.ralMode === 'ral_single') {
       const add = baseLeaf * ((col.ral_single_pct || 70) / 100);
       leafExtra += add;
-      lines.push({ name: `RAL/NCS < 3 шт. (+${col.ral_single_pct || 70}%)`, val: add });
+      leafSubLines.push({ name: `RAL/NCS < 3 шт. (+${col.ral_single_pct || 70}%)`, val: add });
     } else if (state.ralMode === 'ral_bulk') {
       const add = baseLeaf * ((col.ral_bulk_pct || 30) / 100);
       leafExtra += add;
-      lines.push({ name: `RAL/NCS от 3 шт. (+${col.ral_bulk_pct || 30}%)`, val: add });
+      leafSubLines.push({ name: `RAL/NCS от 3 шт. (+${col.ral_bulk_pct || 30}%)`, val: add });
     }
     if (state.twoToneEnamel) {
       const add = baseLeaf * ((col.two_tone_enamel_pct || 20) / 100);
       leafExtra += add;
-      lines.push({ name: 'Двухцветная покраска эмалью (+20%)', val: add });
+      leafSubLines.push({ name: 'Двухцветная покраска эмалью (+20%)', val: add });
     }
   }
 
@@ -419,7 +419,9 @@ function recalculate() {
   const h = Number(document.getElementById('heightInput').value) || 2000;
   const sizeRes = calcSizeSurcharge(col, baseLeaf, w, h);
   leafExtra += sizeRes.amount;
-  lines.push({ name: sizeRes.label, val: sizeRes.amount });
+  if (sizeRes.amount > 0) {
+    leafSubLines.push({ name: sizeRes.label, val: sizeRes.amount });
+  }
   document.getElementById('sizeRuleHint').textContent =
     'Наценки за нестандартную ширину и высоту не суммируются — применяется наибольшая.';
 
@@ -427,20 +429,20 @@ function recalculate() {
   let thickAdd = 0;
   if (tMode === '42' && col.default_thickness !== 42) {
     thickAdd = col.thick_surcharges?.['42'] ?? 3675;
-    lines.push({ name: 'Толщина полотна 42 мм', val: thickAdd });
+    leafSubLines.push({ name: 'Толщина полотна 42 мм', val: thickAdd });
   } else if (tMode === '58') {
     thickAdd = col.thick_surcharges?.['58'] ?? 6750;
-    lines.push({ name: 'Толщина полотна 58 мм', val: thickAdd });
+    leafSubLines.push({ name: 'Толщина полотна 58 мм', val: thickAdd });
   } else if (tMode === '58_nb') {
     thickAdd = col.thick_surcharges?.['58_nb'] ?? 7875;
-    lines.push({ name: 'Толщина 58 мм + Noise Block', val: thickAdd });
+    leafSubLines.push({ name: 'Толщина 58 мм + Noise Block', val: thickAdd });
   }
   leafExtra += thickAdd;
 
   if (document.getElementById('kp58Chk').checked) {
     const kp = col.thick_surcharges?.['kp_58'] ?? 1125;
     leafExtra += kp;
-    lines.push({ name: 'Опция «КП» (кромка 4 стороны)', val: kp });
+    leafSubLines.push({ name: 'Опция «КП» (кромка 4 стороны)', val: kp });
   }
 
   const hasEdge = !document.getElementById('edgeFieldWrap')?.classList.contains('hidden');
@@ -449,86 +451,158 @@ function recalculate() {
     const eMap = col.edge_surcharges || {};
     const eAdd = eMap[eMode] ?? (eMode === 'black' ? 285 : (eMode === 'ral' ? 1690 : 565));
     leafExtra += eAdd;
-    lines.push({ name: `Цвет кромки (${eMode})`, val: eAdd });
+    leafSubLines.push({ name: `Цвет кромки (${eMode})`, val: eAdd });
   }
 
   if (document.getElementById('moldingChk').checked) {
     const mAdd = col.molding_surcharge ?? 285;
     leafExtra += mAdd;
-    lines.push({ name: 'Молдинг спеццвет', val: mAdd });
+    leafSubLines.push({ name: 'Молдинг спеццвет', val: mAdd });
   }
 
   const factoryLeaf = baseLeaf + leafExtra;
+  const pct = Number(state.markupPct) || 0;
+  const multiplier = 1 + (pct / 100);
 
   const isSet = state.calcMode === 'set';
   document.getElementById('btnModeLeaf').classList.toggle('active', !isSet);
   document.getElementById('btnModeSet').classList.toggle('active', isSet);
   document.getElementById('pogonazhPanel').classList.toggle('hidden', !isSet);
 
-  let pogonazhTotal = 0;
+  let factoryBox = 0;
+  let boxLabel = '';
+  let factoryCasings = 0;
+  let casingsLabel = '';
+  let factoryExt = 0;
+  let extLabel = '';
+
   if (isSet) {
     const boxItem = (DB.pogonazh || []).find(p => p.id === document.getElementById('boxSelect').value);
     const boxUnit = getPogonazhItemPrice(boxItem);
     const boxMult = isBoxKit(boxItem) ? 1 : Math.max(0, Number(document.getElementById('boxQty').value) || 0);
-    const boxSum = boxUnit * boxMult;
-    pogonazhTotal += boxSum;
-    lines.push({ name: isBoxKit(boxItem) ? 'Коробка (комплект)' : `Коробка (${boxMult} шт.)`, val: boxSum });
+    factoryBox = boxUnit * boxMult;
+    boxLabel = isBoxKit(boxItem) ? 'Коробка (комплект)' : `Коробка (${boxMult} шт.)`;
 
     const casItem = (DB.pogonazh || []).find(p => p.id === document.getElementById('casingSelect').value);
     const casQty = Math.max(0, Number(document.getElementById('casingQty').value) || 0);
-    const casSum = getPogonazhItemPrice(casItem) * casQty;
-    pogonazhTotal += casSum;
-    lines.push({ name: `Наличники (${casQty} шт.)`, val: casSum });
+    factoryCasings = getPogonazhItemPrice(casItem) * casQty;
+    casingsLabel = `Наличники (${casQty} шт.)`;
 
     const extItem = (DB.pogonazh || []).find(p => p.id === document.getElementById('extSelect').value);
     const extQty = Math.max(0, Number(document.getElementById('extQty').value) || 0);
-    const extSum = getPogonazhItemPrice(extItem) * extQty;
-    pogonazhTotal += extSum;
-    lines.push({ name: `Доборы (${extQty} шт.)`, val: extSum });
+    factoryExt = getPogonazhItemPrice(extItem) * extQty;
+    extLabel = `Доборы (${extQty} шт.)`;
   }
 
-  const factoryUnit = isSet ? (factoryLeaf + pogonazhTotal) : factoryLeaf;
-  const multiplier = 1 + ((Number(state.markupPct) || 0) / 100);
+  const factoryUnit = factoryLeaf + factoryBox + factoryCasings + factoryExt;
 
   const retailLeaf = factoryLeaf * multiplier;
+  const retailBox = factoryBox * multiplier;
+  const retailCasings = factoryCasings * multiplier;
+  const retailExt = factoryExt * multiplier;
   const retailUnit = factoryUnit * multiplier;
 
   const setsQty = Math.max(1, Number(document.getElementById('setsQty').value) || 1);
-  const factoryOrder = factoryUnit * setsQty;
   const retailOrder = retailUnit * setsQty;
 
-  const listEl = document.getElementById('breakdownList');
-  listEl.innerHTML = '';
-  lines.forEach(l => {
-    const row = document.createElement('div');
-    row.className = 'breakdown-row';
-    row.innerHTML = `<span>${l.name}</span><span>${fmtRub(l.val)}</span>`;
-    listEl.appendChild(row);
-  });
+  // 1. Factory breakdown (shown ONLY after PIN 2304 unlock)
+  const factorySec = document.getElementById('factorySection');
+  const showFactory = Boolean(state.unlocked && state.showFactoryPrice);
+  factorySec.classList.toggle('hidden', !showFactory);
 
-  document.getElementById('retailLeafPrice').textContent = fmtRub(retailLeaf);
+  if (showFactory) {
+    const fListEl = document.getElementById('factoryBreakdownList');
+    fListEl.innerHTML = '';
+
+    leafSubLines.forEach(item => {
+      const r = document.createElement('div');
+      r.className = 'breakdown-row';
+      r.innerHTML = `<span>${item.name}</span><span>${fmtRub(item.val)}</span>`;
+      fListEl.appendChild(r);
+    });
+
+    if (leafSubLines.length > 1) {
+      const rLeafSum = document.createElement('div');
+      rLeafSum.className = 'breakdown-row';
+      rLeafSum.style.fontWeight = '600';
+      rLeafSum.innerHTML = `<span>Полотно с опциями (завод):</span><span>${fmtRub(factoryLeaf)}</span>`;
+      fListEl.appendChild(rLeafSum);
+    }
+
+    if (isSet) {
+      if (factoryBox > 0) {
+        const rb = document.createElement('div');
+        rb.className = 'breakdown-row';
+        rb.innerHTML = `<span>${boxLabel} (завод):</span><span>${fmtRub(factoryBox)}</span>`;
+        fListEl.appendChild(rb);
+      }
+      if (factoryCasings > 0) {
+        const rc = document.createElement('div');
+        rc.className = 'breakdown-row';
+        rc.innerHTML = `<span>${casingsLabel} (завод):</span><span>${fmtRub(factoryCasings)}</span>`;
+        fListEl.appendChild(rc);
+      }
+      if (factoryExt > 0) {
+        const re = document.createElement('div');
+        re.className = 'breakdown-row';
+        re.innerHTML = `<span>${extLabel} (завод):</span><span>${fmtRub(factoryExt)}</span>`;
+        fListEl.appendChild(re);
+      }
+    }
+
+    document.getElementById('factoryUnitTotal').textContent = fmtRub(factoryUnit);
+  }
+
+  // 2. Retail breakdown (each selected item already with +markupPct%)
+  const rListEl = document.getElementById('retailBreakdownList');
+  rListEl.innerHTML = '';
+  const suffix = showFactory ? ` (+${pct}%)` : '';
+
+  const rowLeaf = document.createElement('div');
+  rowLeaf.className = 'breakdown-row';
+  rowLeaf.innerHTML = `<span>Полотно (${variant.full_name})${suffix}</span><span>${fmtRub(retailLeaf)}</span>`;
+  rListEl.appendChild(rowLeaf);
+
+  if (isSet) {
+    if (factoryBox > 0) {
+      const rb = document.createElement('div');
+      rb.className = 'breakdown-row';
+      rb.innerHTML = `<span>${boxLabel}${suffix}</span><span>${fmtRub(retailBox)}</span>`;
+      rListEl.appendChild(rb);
+    }
+    if (factoryCasings > 0) {
+      const rc = document.createElement('div');
+      rc.className = 'breakdown-row';
+      rc.innerHTML = `<span>${casingsLabel}${suffix}</span><span>${fmtRub(retailCasings)}</span>`;
+      rListEl.appendChild(rc);
+    }
+    if (factoryExt > 0) {
+      const re = document.createElement('div');
+      re.className = 'breakdown-row';
+      re.innerHTML = `<span>${extLabel}${suffix}</span><span>${fmtRub(retailExt)}</span>`;
+      rListEl.appendChild(re);
+    }
+  }
+
   document.getElementById('retailSetPrice').textContent = fmtRub(retailUnit);
   document.getElementById('orderQtyLabel').textContent = setsQty;
   document.getElementById('retailOrderPrice').textContent = fmtRub(retailOrder);
 
-  const fBox = document.getElementById('factoryPriceBox');
-  fBox.classList.toggle('hidden', !state.showFactoryPrice);
-  if (state.showFactoryPrice) {
-    document.getElementById('factoryLeafPrice').textContent = fmtRub(factoryLeaf);
-    document.getElementById('factorySetPrice').textContent = fmtRub(factoryUnit);
-    document.getElementById('factoryOrderPrice').textContent = fmtRub(factoryOrder);
+  const quoteLines = [
+    `Модель: ${variant.full_name} (${col.name})`,
+    `Размер: ${w}×${h} мм`,
+    `Полотно: ${fmtRub(retailLeaf)}`
+  ];
+  if (isSet) {
+    if (factoryBox > 0) quoteLines.push(`${boxLabel}: ${fmtRub(retailBox)}`);
+    if (factoryCasings > 0) quoteLines.push(`${casingsLabel}: ${fmtRub(retailCasings)}`);
+    if (factoryExt > 0) quoteLines.push(`${extLabel}: ${fmtRub(retailExt)}`);
   }
-
-  window.__LAST_QUOTE = {
-    model: variant.full_name,
-    collection: col.name,
-    mode: isSet ? 'Комплект' : 'Одно полотно',
-    size: `${w}×${h} мм`,
-    retailLeaf: fmtRub(retailLeaf),
-    retailUnit: fmtRub(retailUnit),
-    setsQty,
-    retailOrder: fmtRub(retailOrder)
-  };
+  quoteLines.push(`Итого за 1 шт.: ${fmtRub(retailUnit)}`);
+  if (setsQty > 1) {
+    quoteLines.push(`Итого за заказ (${setsQty} шт.): ${fmtRub(retailOrder)}`);
+  }
+  window.__LAST_QUOTE_TEXT = quoteLines.join('\n');
 }
 
 function runSearch(q) {
@@ -659,6 +733,8 @@ function bindEvents() {
     const val = document.getElementById('pinInput').value.trim();
     if (val === String(DB.meta?.pin_code || '2304')) {
       state.unlocked = true;
+      state.showFactoryPrice = true;
+      recalculate();
       document.getElementById('pinStep').classList.add('hidden');
       document.getElementById('settingsStep').classList.remove('hidden');
       document.getElementById('markupInput').value = state.markupPct;
@@ -679,18 +755,9 @@ function bindEvents() {
   });
 
   document.getElementById('btnCopyQuote').addEventListener('click', async () => {
-    const q = window.__LAST_QUOTE;
-    if (!q) return;
-    const text = [
-      `Модель: ${q.model} (${q.collection})`,
-      `Режим: ${q.mode}`,
-      `Размер: ${q.size}`,
-      `Полотно: ${q.retailLeaf}`,
-      `Итого за 1 шт.: ${q.retailUnit}`,
-      `Заказ (${q.setsQty} шт.): ${q.retailOrder}`
-    ].join('\n');
+    if (!window.__LAST_QUOTE_TEXT) return;
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(window.__LAST_QUOTE_TEXT);
       const fb = document.getElementById('copyFeedback');
       fb.classList.remove('hidden');
       setTimeout(() => fb.classList.add('hidden'), 2500);
