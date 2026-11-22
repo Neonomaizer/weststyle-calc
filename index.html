@@ -179,25 +179,28 @@
 
       <section class="card summary-card" id="summaryCard">
         <div class="section-label">Итоговый расчёт</div>
-        <div class="breakdown-list" id="breakdownList"></div>
+
+        <!-- Скрытый блок цен завода (показывается только после ввода ПИН-кода) -->
+        <div id="factorySection" class="factory-box hidden" style="margin-bottom: 12px;">
+          <div class="factory-title">Цены завода (без наценки)</div>
+          <div class="breakdown-list" id="factoryBreakdownList" style="margin-top: 6px; margin-bottom: 6px;"></div>
+          <div class="breakdown-row" style="font-weight: 700;">
+            <span>Итого с завода (за 1 позицию):</span>
+            <span id="factoryUnitTotal">0 ₽</span>
+          </div>
+        </div>
+
+        <!-- Блок розничных цен с наценкой -->
+        <div class="breakdown-list" id="retailBreakdownList"></div>
 
         <div class="totals-box">
-          <div class="total-line">
-            <span>Полотно (розница):</span>
-            <strong id="retailLeafPrice">0 ₽</strong>
-          </div>
-          <div class="total-line main-total" id="setPriceRow">
+          <div class="total-line main-total">
             <span>Итого за 1 позицию (розница):</span>
             <strong id="retailSetPrice">0 ₽</strong>
           </div>
           <div class="total-line sub-total" id="orderTotalRow">
             <span>Итого за заказ (<span id="orderQtyLabel">1</span> шт.):</span>
             <strong id="retailOrderPrice">0 ₽</strong>
-          </div>
-
-          <div id="factoryPriceBox" class="factory-box hidden">
-            <div class="factory-title">Закупочная / прайс завода (без наценки):</div>
-            <div>Полотно: <span id="factoryLeafPrice">0 ₽</span> • Единица: <span id="factorySetPrice">0 ₽</span> • Заказ: <span id="factoryOrderPrice">0 ₽</span></div>
           </div>
         </div>
 
@@ -216,7 +219,7 @@
       </div>
 
       <div id="pinStep">
-        <p class="modal-desc">Введите ПИН-код для изменения процента наценки и показа цены прайса производителя.</p>
+        <p class="modal-desc">Введите ПИН-код для изменения процента наценки и просмотра цен завода.</p>
         <input type="password" id="pinInput" class="input-control" placeholder="ПИН-код" maxlength="8" inputmode="numeric" />
         <div id="pinError" class="error-text hidden">Неверный ПИН-код</div>
         <button type="button" class="btn-primary" id="btnUnlockPin">Войти</button>
@@ -228,8 +231,8 @@
           <input type="number" id="markupInput" class="input-control" step="1" min="0" max="500" value="70" />
         </div>
         <label class="check-row">
-          <input type="checkbox" id="showFactoryChk" />
-          <span>Показывать цену прайса производителя</span>
+          <input type="checkbox" id="showFactoryChk" checked />
+          <span>Показывать цены завода в расчёте</span>
         </label>
         <button type="button" class="btn-primary" id="btnSaveSettings">Сохранить</button>
       </div>
