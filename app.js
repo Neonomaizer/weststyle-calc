@@ -176,6 +176,54 @@
       .trim();
   }
 
+  function ensureLightboxModal() {
+    if (document.getElementById('lightboxModal')) return;
+    const modal = document.createElement('div');
+    modal.id = 'lightboxModal';
+    modal.className = 'lightbox-backdrop hidden';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;z-index:999;';
+    modal.innerHTML = `
+      <button type="button" id="btnCloseLightbox" aria-label="Закрыть" style="position:fixed;top:14px;right:14px;width:40px;height:40px;border-radius:999px;border:1px solid rgba(255,255,255,0.25);background:rgba(22,27,34,0.9);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+      <img id="lightboxImg" src="" alt="Предпросмотр двери" style="max-width:95vw;max-height:84vh;object-fit:contain;border-radius:10px;background:#ffffff;padding:8px;box-shadow:0 12px 40px rgba(0,0,0,0.65);" />
+      <div id="lightboxCaption" style="margin-top:10px;color:#e6edf3;font-size:14px;font-weight:600;text-align:center;"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const closeFn = () => {
+      modal.classList.add('hidden');
+      modal.style.display = 'none';
+    };
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal || e.target.id === 'btnCloseLightbox') {
+        closeFn();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+        closeFn();
+      }
+    });
+  }
+
+  function openLightbox() {
+    const imgEl = document.getElementById('modelImg');
+    if (!imgEl || !imgEl.getAttribute('src') || imgEl.style.display === 'none') return;
+    ensureLightboxModal();
+    const modal = document.getElementById('lightboxModal');
+    const lbImg = document.getElementById('lightboxImg');
+    const lbCap = document.getElementById('lightboxCaption');
+    const titleText = document.getElementById('modelTitle')?.textContent || '';
+
+    if (lbImg) lbImg.src = imgEl.getAttribute('src');
+    if (lbCap) lbCap.textContent = titleText;
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.style.display = 'flex';
+    }
+  }
+
   function ensureGruntCatalogEntries() {
     if (!DB) return;
     DB.coatings = DB.coatings || [];
@@ -212,7 +260,8 @@
   }
 
   function ensureControlsAndContainers() {
-    // Кнопка «Грунт» в панели типов покрытия
+    ensureLightboxModal();
+
     const typeTabs = document.getElementById('typeTabs');
     if (typeTabs && !typeTabs.querySelector('[data-type="grunt"]')) {
       const btnGrunt = document.createElement('button');
@@ -598,6 +647,7 @@
 
     const imgEl = document.getElementById('modelImg');
     if (imgEl) {
+      imgEl.style.cursor = 'zoom-in';
       if (model.image) {
         imgEl.src = model.image;
         imgEl.style.display = 'block';
@@ -606,7 +656,7 @@
       }
     }
 
-const notesBox = document.getElementById('modelNotes');
+    const notesBox = document.getElementById('modelNotes');
     if (notesBox) {
       notesBox.innerHTML = '';
       const compactNotes = (model.notes || []).slice(0, 2).map(n => {
@@ -947,7 +997,9 @@ const notesBox = document.getElementById('modelNotes');
           bNote = ', двухцветная +20%';
         }
         factoryBox = bSum;
-        boxLabel = isBoxKit(boxItem) ? `Коробка (комплект${bNote})` : `Коробка (${boxMult} шт.${bNote})`;
+        boxLabel = isBoxKit(boxItem)
+          ? `Коробка (комплект${bNote})`
+          : `Коробка (${boxMult} шт.${bNote})`;
       }
 
       const casItem = (DB.pogonazh || []).find(p => p.id === document.getElementById('casingSelect')?.value);
@@ -1181,6 +1233,11 @@ const notesBox = document.getElementById('modelNotes');
     });
 
     document.addEventListener('click', (e) => {
+      if (e.target.closest('#modelImg') || e.target.closest('.hero-img-box')) {
+        openLightbox();
+        return;
+      }
+
       const searchBox = document.getElementById('searchResults');
       if (searchBox && !searchBox.classList.contains('hidden') && !e.target.closest('.search-wrap') && !e.target.closest('#searchResults')) {
         searchBox.classList.add('hidden');
