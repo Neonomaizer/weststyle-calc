@@ -145,22 +145,27 @@ function selectCollection(colIdx, preferredModelId = null) {
     chips.appendChild(btn);
   });
 
-  syncEdgeOptionsForCollection(col);
+  syncEdgeFieldVisibility(col);
   renderModelDetails();
 }
 
-function syncEdgeOptionsForCollection(col) {
+function syncEdgeFieldVisibility(col) {
+  const edgeWrap = document.getElementById('edgeFieldWrap');
   const edgeSel = document.getElementById('edgeSelect');
-  const hasDefaultEdge = col.has_default_edge !== false;
+  const tMode = document.getElementById('thicknessSelect')?.value || state.thicknessMode;
 
-  Array.from(edgeSel.options).forEach(opt => {
-    if (opt.value === 'none') opt.hidden = hasDefaultEdge;
-    else if (opt.value === 'base') opt.hidden = !hasDefaultEdge;
-  });
+  const hasEdge = (col.has_default_edge !== false) || (tMode !== 'base');
 
-  if (!hasDefaultEdge && state.edgeMode === 'base') state.edgeMode = 'none';
-  if (hasDefaultEdge && state.edgeMode === 'none') state.edgeMode = 'base';
-  edgeSel.value = state.edgeMode;
+  if (!edgeWrap) return;
+  edgeWrap.classList.toggle('hidden', !hasEdge);
+
+  if (!hasEdge) {
+    state.edgeMode = 'none';
+    edgeSel.value = 'none';
+  } else if (state.edgeMode === 'none') {
+    state.edgeMode = 'base';
+    edgeSel.value = 'base';
+  }
 }
 
 function getCurrentCollection() {
@@ -225,7 +230,6 @@ function renderModelDetails() {
     notesBox.appendChild(div);
   });
 
-  // Hide glazing card if model has no glazing
   const varCard = document.getElementById('variantCard');
   const hasGlaz = modelHasGlazing(model);
   varCard.classList.toggle('hidden', !hasGlaz);
@@ -368,6 +372,8 @@ function recalculate() {
   if (!model) return;
   const variant = model.variants[state.variantIdx] || model.variants[0];
 
+  syncEdgeFieldVisibility(col);
+
   const baseLeaf = getBaseLeafPrice(variant);
   let leafExtra = 0;
   const lines = [{ name: `Полотно (${variant.full_name})`, val: baseLeaf }];
@@ -417,8 +423,9 @@ function recalculate() {
     lines.push({ name: 'Опция «КП» (кромка 4 стороны)', val: kp });
   }
 
+  const hasEdge = !document.getElementById('edgeFieldWrap')?.classList.contains('hidden');
   const eMode = document.getElementById('edgeSelect').value;
-  if (eMode !== 'none' && eMode !== 'base') {
+  if (hasEdge && eMode !== 'none' && eMode !== 'base') {
     const eMap = col.edge_surcharges || {};
     const eAdd = eMap[eMode] ?? (eMode === 'black' ? 285 : (eMode === 'ral' ? 1690 : 565));
     leafExtra += eAdd;
@@ -433,7 +440,6 @@ function recalculate() {
 
   const factoryLeaf = baseLeaf + leafExtra;
 
-  // Toggle between Leaf-only and Set
   const isSet = state.calcMode === 'set';
   document.getElementById('btnModeLeaf').classList.toggle('active', !isSet);
   document.getElementById('btnModeSet').classList.toggle('active', isSet);
@@ -555,7 +561,6 @@ function bindEvents() {
     recalculate();
   });
 
-  // Coating type tabs (event delegation + direct)
   document.getElementById('typeTabs').addEventListener('click', e => {
     const btn = e.target.closest('.type-tab');
     if (!btn || !btn.dataset.type) return;
@@ -582,7 +587,12 @@ function bindEvents() {
     recalculate();
   });
 
-  // Leaf vs Set mode buttons
+  document.getElementById('thicknessSelect').addEventListener('change', e => {
+    state.thicknessMode = e.target.value;
+    syncEdgeFieldVisibility(getCurrentCollection());
+    recalculate();
+  });
+
   document.getElementById('btnModeLeaf').addEventListener('click', () => {
     state.calcMode = 'leaf';
     recalculate();
@@ -598,7 +608,7 @@ function bindEvents() {
     recalculate();
   });
 
-  ['twoToneEnamelChk', 'widthInput', 'heightInput', 'thicknessSelect',
+  ['twoToneEnamelChk', 'widthInput', 'heightInput',
    'kp58Chk', 'moldingChk', 'boxQty', 'casingSelect', 'casingQty',
    'extSelect', 'extQty', 'setsQty'].forEach(id => {
     const el = document.getElementById(id);
@@ -607,7 +617,6 @@ function bindEvents() {
     el.addEventListener('change', recalculate);
   });
 
-  // Double click on brand title to open PIN & markup settings
   const modal = document.getElementById('pinModal');
   document.getElementById('brandTitle').addEventListener('dblclick', () => {
     modal.classList.remove('hidden');
