@@ -65,7 +65,8 @@
       { id: 'c6', type: 'Тип 2', price_key: 'type2', series: 'Coverflex', color: 'Белая вуаль', rules: {} },
       { id: 'c7', type: 'Тип 3', price_key: 'type3', series: 'Emlayer', color: 'Горный камень', rules: {} },
       { id: 'c8', type: 'Тип 3', price_key: 'type3', series: 'Emlayer', color: 'Нефритовый сад', rules: {} },
-      { id: 'c9', type: 'Эмаль', price_key: 'enamel', series: 'RAL', color: 'Белый (RAL 9003)', rules: {} }
+      { id: 'c9', type: 'Эмаль', price_key: 'enamel', series: 'RAL', color: 'Белый (RAL 9003)', rules: {} },
+      { id: 'c_grunt_1', type: 'Грунт', price_key: 'grunt', series: 'Грунт под эмаль', color: 'Грунт под покраску / эмаль', rules: {} }
     ],
     collections: [
       {
@@ -82,8 +83,7 @@
         ral_bulk_pct: 30,
         two_tone_enamel_pct: 20,
         models: [
-          { id: 'Arcana_an1', collection: 'Arcana', code: 'An 1', full_title: 'Arcana — An 1', search_text: 'arcana an 1 аркана', image: 'images/image324.jpg', notes: [], variants: [{ label: 'Базовое исполнение', full_name: 'An 1', prices: { type1: 8225, type2: 8915, type3: 10210, enamel: 12985 } }] },
-          { id: 'Arcana_an2', collection: 'Arcana', code: 'An 2', full_title: 'Arcana — An 2', search_text: 'arcana an 2 аркана', image: 'images/image325.jpg', notes: [], variants: [{ label: 'Базовое исполнение', full_name: 'An 2', prices: { type1: 8225, type2: 8915, type3: 10210, enamel: 12985 } }] }
+          { id: 'Arcana_an1', collection: 'Arcana', code: 'An 1', full_title: 'Arcana — An 1', search_text: 'arcana an 1 аркана', image: 'images/image324.jpg', notes: [], variants: [{ label: 'Базовое исполнение', full_name: 'An 1', prices: { type1: 8225, type2: 8915, type3: 10210, enamel: 12985 } }] }
         ]
       },
       {
@@ -107,6 +107,16 @@
         two_tone_enamel_pct: 20,
         models: [
           {
+            id: 'Industrial_in9',
+            collection: 'Industrial',
+            code: 'IN9',
+            full_title: 'Industrial — IN9 (скрытый монтаж / грунт)',
+            search_text: 'industrial in9 ин9 индевятка скрытый грунт',
+            image: 'images/image138.png',
+            notes: ['Поддерживает исполнение Грунт (полотно с грунтованием под покраску/эмаль).'],
+            variants: [{ label: 'Базовое исполнение', full_name: 'IN9', prices: { type1: 11275, type2: 11695, type3: 13140, enamel: 16335, grunt: 8945 } }]
+          },
+          {
             id: 'Industrial_in40',
             collection: 'Industrial',
             code: 'IN40',
@@ -120,12 +130,10 @@
       }
     ],
     pogonazh: [
-      { id: 'b1', category: 'box', name: 'Комплект короб Телескоп NS 2100 (2,5 шт. с врезкой)', prices: { type1: 2125, type2: 2250, type3: 2695, enamel: 3395 } },
-      { id: 'b2', category: 'box', name: 'Короб телескопический NS 36*75*2100', prices: { type1: 625, type2: 720, type3: 865, enamel: 1205, enamel_alt: 1325, enamel_ton: 1145 } },
-      { id: 'c1', category: 'casing', name: 'Наличник плоский 8*70*2150', prices: { type1: 470, type2: 520, type3: 635, enamel: 1045, enamel_alt: 1150, enamel_ton: null } },
-      { id: 'e1', category: 'extension', name: 'Добор телескопический 10*90*2070 мм', prices: { type1: 295, type2: 335, type3: 405, enamel: 1095, enamel_alt: 1205, enamel_ton: 1040 } },
-      { id: 'e2', category: 'extension', name: 'Добор телескопический 10*130*2070 мм', prices: { type1: 325, type2: 370, type3: 445, enamel: 1200, enamel_alt: 1320, enamel_ton: 1140 } },
-      { id: 'e3', category: 'extension', name: 'Добор телескопический 10*170*2070 мм', prices: { type1: 385, type2: 440, type3: 525, enamel: 1365, enamel_alt: 1500, enamel_ton: 1300 } }
+      { id: 'b1', category: 'box', name: 'Комплект короб Телескоп NS 2100 (2,5 шт. с врезкой)', prices: { type1: 2125, type2: 2250, type3: 2695, enamel: 3395, grunt: 2125 } },
+      { id: 'b2', category: 'box', name: 'Короб телескопический NS 36*75*2100', prices: { type1: 625, type2: 720, type3: 865, enamel: 1205, enamel_alt: 1325, enamel_ton: 1145, grunt: 625 } },
+      { id: 'c1', category: 'casing', name: 'Наличник плоский 8*70*2150', prices: { type1: 470, type2: 520, type3: 635, enamel: 1045, enamel_alt: 1150, enamel_ton: null, grunt: 470 } },
+      { id: 'e1', category: 'extension', name: 'Добор телескопический 10*90*2070 мм', prices: { type1: 295, type2: 335, type3: 405, enamel: 1095, enamel_alt: 1205, enamel_ton: 1040, grunt: 295 } }
     ],
     hardware: [
       { id: 'h1', label: '№1М AGB 2.2 (Петли AGB Eclipse 2.2, замок Morelli, хром матовый)', price: 4780 },
@@ -168,7 +176,53 @@
       .trim();
   }
 
+  function ensureGruntCatalogEntries() {
+    if (!DB) return;
+    DB.coatings = DB.coatings || [];
+    const hasGruntCoating = DB.coatings.some(c => c.price_key === 'grunt' || normKey(c.color).includes('грунт'));
+    if (!hasGruntCoating) {
+      DB.coatings.push({
+        id: 'c_grunt_auto',
+        type: 'Грунт',
+        price_key: 'grunt',
+        series: 'Под покраску / эмаль',
+        color: 'Грунт под эмаль',
+        rules: {}
+      });
+    }
+
+    (DB.collections || []).forEach(col => {
+      (col.models || []).forEach(m => {
+        const codeNorm = normKey(m.code);
+        const isIn9 = codeNorm === 'in9' || codeNorm === 'iflin9' || codeNorm === 'iflin9nb';
+        (m.variants || []).forEach(v => {
+          v.prices = v.prices || {};
+          if (typeof v.prices.grunt !== 'number') {
+            if (isIn9) {
+              v.prices.grunt = 8945;
+            } else if (typeof v.prices.enamel === 'number') {
+              v.prices.grunt = Math.round(v.prices.enamel * 0.85);
+            } else if (typeof v.prices.type3 === 'number') {
+              v.prices.grunt = Math.round(v.prices.type3 * 0.9);
+            }
+          }
+        });
+      });
+    });
+  }
+
   function ensureControlsAndContainers() {
+    // Кнопка «Грунт» в панели типов покрытия
+    const typeTabs = document.getElementById('typeTabs');
+    if (typeTabs && !typeTabs.querySelector('[data-type="grunt"]')) {
+      const btnGrunt = document.createElement('button');
+      btnGrunt.type = 'button';
+      btnGrunt.className = 'type-tab';
+      btnGrunt.dataset.type = 'grunt';
+      btnGrunt.textContent = 'Грунт';
+      typeTabs.appendChild(btnGrunt);
+    }
+
     if (!document.getElementById('searchResults')) {
       const searchWrap = document.querySelector('.search-wrap');
       if (searchWrap && searchWrap.parentNode) {
@@ -589,18 +643,27 @@
 
     if (ralBox) ralBox.classList.toggle('hidden', state.coatingType !== 'enamel');
 
-    const filtered = (DB.coatings || []).filter(c => {
+    let filtered = (DB.coatings || []).filter(c => {
+      if (state.coatingType === 'grunt') {
+        return c.price_key === 'grunt' || normKey(c.color).includes('грунт');
+      }
       if (state.coatingType === 'enamel') {
         return c.color.toLowerCase().includes('эмаль') || c.type === 'Тип 3';
       }
-      return c.price_key === state.coatingType && !c.color.toLowerCase().includes('эмаль');
+      return c.price_key === state.coatingType && !c.color.toLowerCase().includes('эмаль') && c.price_key !== 'grunt';
     });
+
+    if (!filtered.length && state.coatingType === 'grunt') {
+      filtered = [{ id: 'c_grunt_fallback', type: 'Грунт', price_key: 'grunt', series: 'Под покраску', color: 'Грунт под эмаль', rules: {} }];
+    }
 
     colorSel.innerHTML = '';
     let firstAllowedId = null;
 
     filtered.forEach(c => {
-      const check = isCoatingAllowedForModel(c, col, model);
+      const check = state.coatingType === 'grunt'
+        ? { allowed: true, reason: 'Полотно с грунтованием под эмаль / покраску' }
+        : isCoatingAllowedForModel(c, col, model);
       const opt = document.createElement('option');
       opt.value = c.id;
       opt.disabled = !check.allowed;
@@ -625,9 +688,16 @@
   function updateCoatingRestrictionMessage() {
     const col = getCurrentCollection();
     const model = getCurrentModel();
-    const coating = (DB.coatings || []).find(c => c.id === state.coatingId);
     const box = document.getElementById('coatingRestrictionBox');
     if (!box) return;
+
+    if (state.coatingType === 'grunt') {
+      box.textContent = 'Исполнение «Грунт» — полотно с грунтованием под покраску / эмаль (в т.ч. для скрытых коробов и IN9)';
+      box.className = 'restriction-note';
+      return;
+    }
+
+    const coating = (DB.coatings || []).find(c => c.id === state.coatingId);
     if (!coating) {
       box.textContent = '';
       return;
@@ -639,6 +709,9 @@
 
   function getBaseLeafPrice(variant) {
     const p = variant?.prices || {};
+    if (state.coatingType === 'grunt') {
+      return p.grunt ?? p.enamel ?? p.type3 ?? p.type2 ?? p.type1 ?? 0;
+    }
     if (state.coatingType === 'enamel') return p.enamel ?? p.type3 ?? p.type2 ?? p.type1 ?? 0;
     if (state.coatingType === 'type1') return p.type1 ?? p.type2 ?? p.type3 ?? p.enamel ?? 0;
     if (state.coatingType === 'type2') return p.type2 ?? p.type1 ?? p.type3 ?? p.enamel ?? 0;
@@ -688,6 +761,12 @@
     const coatingObj = (DB.coatings || []).find(c => c.id === state.coatingId);
     const cNameLower = (coatingObj?.color || '').toLowerCase();
 
+    if (state.coatingType === 'grunt') {
+      if (typeof pr.grunt === 'number') return { price: pr.grunt, available: true };
+      const gFallback = pr.enamel ?? pr.type1 ?? pr.type2 ?? pr.type3;
+      return typeof gFallback === 'number' ? { price: gFallback, available: true } : { price: 0, available: false };
+    }
+
     if (state.coatingType === 'enamel') {
       const rMode = document.getElementById('ralModeSelect')?.value || 'standard';
       const isRalTon = cNameLower.includes('тон') || cNameLower.includes('ral тон');
@@ -721,7 +800,6 @@
     const dims = name.match(/(\d+)\s*[*x×]\s*(\d+)\s*[*x×]\s*(\d+)/i);
     if (!dims) return { amount: 0, note: '' };
     const w = parseInt(dims[2], 10);
-    // Доборы шириной 70-80 (+40% к базе 90), 100-120 (+40% к базе 130), 140-160 (+40% к базе 170)
     if (w === 70 || w === 80 || (w >= 100 && w <= 120) || (w >= 140 && w <= 160)) {
       const add = baseUnitPrice * 0.4;
       return { amount: add, note: `нестандарт ширина ${w} мм (+40%)` };
@@ -818,7 +896,6 @@
       leafSubLines.push({ name: 'Молдинг спеццвет', val: mAdd });
     }
 
-    // Умный порог (по прайсу «Умный порог РОЗ»)
     const stChk = document.getElementById('smartThresholdChk');
     const stApp = getSmartThresholdApplicability(col, model);
     const smartActive = Boolean(stChk?.checked && stApp.allowed);
@@ -837,7 +914,6 @@
       }
     }
 
-    // Врезка и фурнитура
     const hwSel = document.getElementById('hardwareSelect');
     const hwItem = (DB.hardware || []).find(item => item.id === hwSel?.value);
     const factoryHw = hwItem ? Number(hwItem.price) || 0 : 0;
@@ -867,9 +943,7 @@
           bNote = ', двухцветная +20%';
         }
         factoryBox = bSum;
-        boxLabel = isBoxKit(boxItem)
-          ? `Коробка (комплект${bNote})`
-          : `Коробка (${boxMult} шт.${bNote})`;
+        boxLabel = isBoxKit(boxItem) ? `Коробка (комплект${bNote})` : `Коробка (${boxMult} шт.${bNote})`;
       }
 
       const casItem = (DB.pogonazh || []).find(p => p.id === document.getElementById('casingSelect')?.value);
@@ -973,9 +1047,11 @@
     if (rOrderEl) rOrderEl.textContent = fmtRub(retailOrder);
 
     const selectedCoating = (DB.coatings || []).find(c => c.id === state.coatingId);
-    const coatingLabel = selectedCoating
-      ? `${selectedCoating.type} — ${(selectedCoating.series ? selectedCoating.series + ' ' : '')}${selectedCoating.color}`
-      : state.coatingType;
+    const coatingLabel = state.coatingType === 'grunt'
+      ? `Грунт — ${selectedCoating?.color || 'Грунт под эмаль'}`
+      : (selectedCoating
+          ? `${selectedCoating.type} — ${(selectedCoating.series ? selectedCoating.series + ' ' : '')}${selectedCoating.color}`
+          : state.coatingType);
 
     let enamelExtraText = '';
     if (state.coatingType === 'enamel') {
@@ -1206,6 +1282,7 @@
 
   async function boot() {
     ensureControlsAndContainers();
+    ensureGruntCatalogEntries();
     populateSmartThresholdSelect();
     bindEvents();
     setCoatingType('type1');
@@ -1217,6 +1294,7 @@
         const loaded = await res.json();
         if (loaded && Array.isArray(loaded.collections) && loaded.collections.length > 0) {
           DB = loaded;
+          ensureGruntCatalogEntries();
           state.markupPct = Number(DB.meta?.default_markup_pct ?? 70);
           const metaEl = document.getElementById('priceMeta');
           if (metaEl) metaEl.textContent = DB.meta?.price_title || 'Прайс WestStyle';
