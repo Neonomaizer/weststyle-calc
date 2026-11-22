@@ -13,11 +13,14 @@ let state = {
   edgeMode: 'base',
   kp58: false,
   moldingSpec: false,
+  enableBox: false,
   boxId: '',
+  enableCasings: false,
   casingId: '',
   casingQty: 5,
+  enableExt: false,
   extId: '',
-  extQty: 0,
+  extQty: 2,
   setsQty: 1,
   markupPct: 70,
   showFactoryPrice: false,
@@ -32,7 +35,6 @@ async function initApp() {
   state.markupPct = DB.meta.default_markup_pct ?? 70;
   document.getElementById('priceMeta').textContent = DB.meta.price_title;
 
-  // Default to Industrial / IN40 if present
   const indIdx = DB.collections.findIndex(c => c.name.toLowerCase() === 'industrial');
   if (indIdx >= 0) {
     state.collectionIdx = indIdx;
@@ -52,9 +54,9 @@ function populatePogonazhSelects() {
   const casSel = document.getElementById('casingSelect');
   const extSel = document.getElementById('extSelect');
 
-  boxSel.innerHTML = '<option value="">— Без коробки —</option>';
-  casSel.innerHTML = '<option value="">— Без наличников —</option>';
-  extSel.innerHTML = '<option value="">— Без доборов —</option>';
+  boxSel.innerHTML = '';
+  casSel.innerHTML = '';
+  extSel.innerHTML = '';
 
   DB.pogonazh.forEach(item => {
     const opt = document.createElement('option');
@@ -65,12 +67,9 @@ function populatePogonazhSelects() {
     else if (item.category === 'extension') extSel.appendChild(opt.cloneNode(true));
   });
 
-  // Set sensible default casing if available
-  const firstCas = Array.from(casSel.options).find(o => o.value);
-  if (firstCas) {
-    casSel.value = firstCas.value;
-    state.casingId = firstCas.value;
-  }
+  if (boxSel.options[0]) state.boxId = boxSel.options[0].value;
+  if (casSel.options[0]) state.casingId = casSel.options[0].value;
+  if (extSel.options[0]) state.extId = extSel.options[0].value;
 }
 
 function renderCollectionsBar() {
@@ -112,7 +111,28 @@ function selectCollection(colIdx, preferredModelId = null) {
     chips.appendChild(btn);
   });
 
+  syncEdgeOptionsForCollection(col);
   renderModelDetails();
+}
+
+function syncEdgeOptionsForCollection(col) {
+  const edgeSel = document.getElementById('edgeSelect');
+  const hasDefaultEdge = col.has_default_edge !== false;
+
+  Array.from(edgeSel.options).forEach(opt => {
+    if (opt.value === 'none') {
+      opt.hidden = hasDefaultEdge;
+    } else if (opt.value === 'base') {
+      opt.hidden = !hasDefaultEdge;
+    }
+  });
+
+  if (!hasDefaultEdge) {
+    if (state.edgeMode === 'base') state.edgeMode = 'none';
+  } else {
+    if (state.edgeMode === 'none') state.edgeMode = 'base';
+  }
+  edgeSel.value = state.edgeMode;
 }
 
 function getCurrentCollection() {
@@ -126,34 +146,37 @@ function getCurrentModel() {
 
 function isCoatingAllowedForModel(coating, col, model) {
   const rule = coating.rules[col.name];
-  if (!rule || !rule.available) {
-    return { allowed: false, reason: 'Не изготавливается для коллекции ' + col.name };
+  if (!rule) {
+    return { allowed: true, reason: 'Доступно по прайсу' };
+  }
+  if (!rule.available) {
+    return { allowed: false, reason: 'Не изготавливается для ' + col.name };
   }
   const note = (rule.note || '').trim();
   if (!note) {
-    return { allowed: true, reason: 'Доступно для коллекции ' + col.name };
+    return { allowed: true, reason: 'Доступно для ' + col.name };
   }
-  // Check "Только ..."
+
   const onlyMatch = note.match(/только\s+([^\)]+)/i);
   if (onlyMatch) {
     const allowedList = onlyMatch[1].toLowerCase();
     const codeNorm = model.code.toLowerCase().replace(/\s+/g, '');
     const codeSpace = model.code.toLowerCase();
-    const match = allowedList.includes(codeNorm) || allowedList.includes(codeSpace);
-    if (!match) {
-      return { allowed: false, reason: 'Доступно только для: ' + onlyMatch[1] };
+    if (!allowedList.includes(codeNorm) && !allowedList.includes(codeSpace)) {
+      return { allowed: false, reason: 'Только для: ' + onlyMatch[1] };
     }
   }
-  // Check "Кроме ..."
+
   const exceptMatch = note.match(/кроме\s+([^\)]+)/i);
   if (exceptMatch) {
     const excList = exceptMatch[1].toLowerCase();
     const codeNorm = model.code.toLowerCase().replace(/\s+/g, '');
     const codeSpace = model.code.toLowerCase();
     if (excList.includes(codeNorm) || (codeSpace.length > 2 && excList.includes(codeSpace))) {
-      return { allowed: false, reason: 'Ограничение по прайсу: ' + note };
+      return { allowed: false, reason: 'Ограничение: ' + note };
     }
   }
+
   return { allowed: true, reason: 'Доступно (' + note + ')' };
 }
 
@@ -180,7 +203,6 @@ function renderModelDetails() {
     notesBox.appendChild(div);
   });
 
-  // Variants
   const varSel = document.getElementById('variantSelect');
   varSel.innerHTML = '';
   model.variants.forEach((v, idx) => {
@@ -218,7 +240,7 @@ function renderColorsForType() {
     const opt = document.createElement('option');
     opt.value = c.id;
     opt.disabled = !check.allowed;
-    opt.textContent = (c.series ? `[${c.series}] ` : '') + c.color + (check.allowed ? '' : ' — недоступно');
+    opt.textContent = (c.series ? `[${c.series}] ` : '') + c.color + (check.allowed ? '' : ' (недоступно)');
     colorSel.appendChild(opt);
     if (check.allowed && !firstAllowedId) {
       firstAllowedId = c.id;
@@ -254,18 +276,10 @@ function updateCoatingRestrictionMessage() {
 
 function getBaseLeafPrice(variant) {
   const p = variant.prices || {};
-  if (state.coatingType === 'enamel') {
-    return p.enamel ?? p.type3 ?? p.type2 ?? p.type1 ?? 0;
-  }
-  if (state.coatingType === 'type1') {
-    return p.type1 ?? p.type2 ?? p.type3 ?? p.enamel ?? 0;
-  }
-  if (state.coatingType === 'type2') {
-    return p.type2 ?? p.type1 ?? p.type3 ?? p.enamel ?? 0;
-  }
-  if (state.coatingType === 'type3') {
-    return p.type3 ?? p.type2 ?? p.type1 ?? p.enamel ?? 0;
-  }
+  if (state.coatingType === 'enamel') return p.enamel ?? p.type3 ?? p.type2 ?? p.type1 ?? 0;
+  if (state.coatingType === 'type1') return p.type1 ?? p.type2 ?? p.type3 ?? p.enamel ?? 0;
+  if (state.coatingType === 'type2') return p.type2 ?? p.type1 ?? p.type3 ?? p.enamel ?? 0;
+  if (state.coatingType === 'type3') return p.type3 ?? p.type2 ?? p.type1 ?? p.enamel ?? 0;
   return p.type1 ?? 0;
 }
 
@@ -304,7 +318,6 @@ function calcSizeSurcharge(col, baseLeaf, w, h) {
   }
 
   const hSurcharge = baseLeaf * (hPct / 100);
-  // Rule from price list: width & height non-standard surcharges do NOT sum; only the single largest applies
   if (wSurcharge >= hSurcharge && wSurcharge > 0) {
     return { amount: wSurcharge, label: `Размер (${wDesc}, макс. из Ш/В)` };
   }
@@ -335,16 +348,15 @@ function recalculate() {
   let leafExtra = 0;
   const lines = [{ name: `Полотно (${variant.full_name})`, val: baseLeaf }];
 
-  // RAL & two-tone options
   if (state.coatingType === 'enamel') {
     if (state.ralMode === 'ral_single') {
       const add = baseLeaf * ((col.ral_single_pct || 70) / 100);
       leafExtra += add;
-      lines.push({ name: `Индивидуальный RAL/NCS (+${col.ral_single_pct || 70}%)`, val: add });
+      lines.push({ name: `RAL/NCS < 3 шт. (+${col.ral_single_pct || 70}%)`, val: add });
     } else if (state.ralMode === 'ral_bulk') {
       const add = baseLeaf * ((col.ral_bulk_pct || 30) / 100);
       leafExtra += add;
-      lines.push({ name: `Индивидуальный RAL/NCS от 3 шт. (+${col.ral_bulk_pct || 30}%)`, val: add });
+      lines.push({ name: `RAL/NCS от 3 шт. (+${col.ral_bulk_pct || 30}%)`, val: add });
     }
     if (state.twoToneEnamel) {
       const add = baseLeaf * ((col.two_tone_enamel_pct || 20) / 100);
@@ -353,7 +365,6 @@ function recalculate() {
     }
   }
 
-  // Size surcharge (max of width & height)
   const w = Number(document.getElementById('widthInput').value) || 800;
   const h = Number(document.getElementById('heightInput').value) || 2000;
   const sizeRes = calcSizeSurcharge(col, baseLeaf, w, h);
@@ -362,7 +373,6 @@ function recalculate() {
   document.getElementById('sizeRuleHint').textContent =
     'Наценки за нестандартную ширину и высоту не суммируются — применяется наибольшая.';
 
-  // Thickness surcharge
   const tMode = document.getElementById('thicknessSelect').value;
   let thickAdd = 0;
   if (tMode === '42' && col.default_thickness !== 42) {
@@ -383,9 +393,8 @@ function recalculate() {
     lines.push({ name: 'Опция «КП» (кромка 4 стороны)', val: kp });
   }
 
-  // Edge color surcharge
   const eMode = document.getElementById('edgeSelect').value;
-  if (eMode !== 'base') {
+  if (eMode !== 'none' && eMode !== 'base') {
     const eMap = col.edge_surcharges || {};
     const eAdd = eMap[eMode] ?? (eMode === 'black' ? 285 : (eMode === 'ral' ? 1690 : 565));
     leafExtra += eAdd;
@@ -400,16 +409,33 @@ function recalculate() {
 
   const factoryLeaf = baseLeaf + leafExtra;
 
-  // Pogonazh
-  const boxPrice = getPogonazhPrice(document.getElementById('boxSelect').value);
-  const casPrice = getPogonazhPrice(document.getElementById('casingSelect').value);
-  const casQty = Math.max(0, Number(document.getElementById('casingQty').value) || 0);
-  const extPrice = getPogonazhPrice(document.getElementById('extSelect').value);
-  const extQty = Math.max(0, Number(document.getElementById('extQty').value) || 0);
+  const enableBox = document.getElementById('enableBoxChk').checked;
+  const enableCas = document.getElementById('enableCasingsChk').checked;
+  const enableExt = document.getElementById('enableExtChk').checked;
 
-  const pogonazhTotal = boxPrice + (casPrice * casQty) + (extPrice * extQty);
-  if (pogonazhTotal > 0) {
-    lines.push({ name: 'Погонаж (короб / наличники / доборы)', val: pogonazhTotal });
+  document.getElementById('boxSubPanel').classList.toggle('hidden', !enableBox);
+  document.getElementById('casingsSubPanel').classList.toggle('hidden', !enableCas);
+  document.getElementById('extSubPanel').classList.toggle('hidden', !enableExt);
+
+  let pogonazhTotal = 0;
+  if (enableBox) {
+    const bPrice = getPogonazhPrice(document.getElementById('boxSelect').value);
+    pogonazhTotal += bPrice;
+    lines.push({ name: 'Коробка', val: bPrice });
+  }
+  if (enableCas) {
+    const cPrice = getPogonazhPrice(document.getElementById('casingSelect').value);
+    const cQty = Math.max(0, Number(document.getElementById('casingQty').value) || 0);
+    const cSum = cPrice * cQty;
+    pogonazhTotal += cSum;
+    lines.push({ name: `Наличники (${cQty} шт.)`, val: cSum });
+  }
+  if (enableExt) {
+    const ePrice = getPogonazhPrice(document.getElementById('extSelect').value);
+    const eQty = Math.max(0, Number(document.getElementById('extQty').value) || 0);
+    const eSum = ePrice * eQty;
+    pogonazhTotal += eSum;
+    lines.push({ name: `Доборы (${eQty} шт.)`, val: eSum });
   }
 
   const factorySet = factoryLeaf + pogonazhTotal;
@@ -422,7 +448,6 @@ function recalculate() {
   const factoryOrder = factorySet * setsQty;
   const retailOrder = retailSet * setsQty;
 
-  // Render breakdown
   const listEl = document.getElementById('breakdownList');
   listEl.innerHTML = '';
   lines.forEach(l => {
@@ -448,7 +473,6 @@ function recalculate() {
   window.__LAST_QUOTE = {
     model: variant.full_name,
     collection: col.name,
-    coatingType: state.coatingType,
     size: `${w}×${h} мм`,
     retailLeaf: fmtRub(retailLeaf),
     retailSet: fmtRub(retailSet),
@@ -533,14 +557,19 @@ function bindEvents() {
     recalculate();
   });
 
-  ['twoToneEnamelChk', 'widthInput', 'heightInput', 'thicknessSelect', 'edgeSelect',
-   'kp58Chk', 'moldingChk', 'boxSelect', 'casingSelect', 'casingQty',
-   'extSelect', 'extQty', 'setsQty'].forEach(id => {
+  document.getElementById('edgeSelect').addEventListener('change', e => {
+    state.edgeMode = e.target.value;
+    recalculate();
+  });
+
+  ['twoToneEnamelChk', 'widthInput', 'heightInput', 'thicknessSelect',
+   'kp58Chk', 'moldingChk', 'enableBoxChk', 'boxSelect',
+   'enableCasingsChk', 'casingSelect', 'casingQty',
+   'enableExtChk', 'extSelect', 'extQty', 'setsQty'].forEach(id => {
     document.getElementById(id).addEventListener('input', recalculate);
     document.getElementById(id).addEventListener('change', recalculate);
   });
 
-  // PIN modal
   const modal = document.getElementById('pinModal');
   document.getElementById('btnPinModal').addEventListener('click', () => {
     modal.classList.remove('hidden');
@@ -591,7 +620,7 @@ function bindEvents() {
       `Модель: ${q.model} (${q.collection})`,
       `Размер: ${q.size}`,
       `Полотно: ${q.retailLeaf}`,
-      `Комплект (1 блок): ${q.retailSet}`,
+      `Комплект (1 шт.): ${q.retailSet}`,
       `Заказ (${q.setsQty} шт.): ${q.retailOrder}`
     ].join('\n');
     try {

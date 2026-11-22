@@ -1,6 +1,6 @@
 {
   "meta": {
-    "price_title": "Прайс WestStyle (действует с 01.10.2026, ред. 24.09.2026)",
+    "price_title": "Прайс WestStyle (с 01.10.2026)",
     "default_markup_pct": 70.0,
     "pin_code": "2304"
   },
@@ -14072,6 +14072,7 @@
     {
       "name": "Arcana",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -14169,62 +14170,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Покраска по индивидуальному RAL и каталогу NCS, при заказе менее 3-х штук (к цене Белый)",
-          "value": 0.7
-        },
-        {
-          "title": "Двухцветная покраска Эмалью",
-          "value": 0.2
-        },
-        {
-          "title": "Толщина полотна 42 мм (алюмин. кромка в цвете Хром матовый с 4-х сторон)",
-          "value": 3675.0
-        },
-        {
-          "title": "Все модели 42 толщины по умолчанию изготавливаются с алюминиевой кромкой по периметру.",
-          "value": null
-        },
-        {
-          "title": "Толщина полотна 58 мм (алюмин. кромка в цвете Хром матовый с 3-х сторон)",
-          "value": 6750.0
-        },
-        {
-          "title": "Толщина полотна 58 мм с опцией \"Noise Block\"",
-          "value": 7875.0
-        },
-        {
-          "title": "«Открывание от себя Reverse» для полотен толщиной 58 мм",
-          "value": null
-        },
-        {
-          "title": "Двухцветная дверь - разные покрытия с двух сторон на полотне",
-          "value": 225.0
-        },
-        {
-          "title": "Алюминиевая кромка по периметру (с 4х сторон) - Опция \"КП\". К стоимости дверного полотна + (Только для полотна толщиной 58 мм)",
-          "value": 1125.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Черный\"",
-          "value": 285.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Шампань\"",
-          "value": 565.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Покраска по RAL и NCS\"",
-          "value": 1690.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Матовое золото\"",
-          "value": 565.0
-        }
-      ],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Arcana_an1",
@@ -14392,6 +14337,7 @@
     {
       "name": "Outline",
       "default_thickness": 38,
+      "has_default_edge": false,
       "std_sizes": {
         "widths": [
           400,
@@ -14489,62 +14435,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Покраска по индивидуальному RAL и каталогу NCS, при заказе менее 3-х штук (к цене Белый)",
-          "value": 0.7
-        },
-        {
-          "title": "Двухцветная покраска Эмалью",
-          "value": 0.2
-        },
-        {
-          "title": "Толщина полотна 42 мм (алюмин. кромка в цвете Хром матовый с 4-х сторон)",
-          "value": 3675.0
-        },
-        {
-          "title": "Все модели 42 толщины по умолчанию изготавливаются с алюминиевой кромкой по периметру.",
-          "value": null
-        },
-        {
-          "title": "Толщина полотна 58 мм (алюмин. кромка в цвете Хром матовый с 3-х сторон)",
-          "value": 6750.0
-        },
-        {
-          "title": "Толщина полотна 58 мм с опцией \"Noise Block\"",
-          "value": 7875.0
-        },
-        {
-          "title": "«Открывание от себя Reverse» для полотен толщиной 58 мм",
-          "value": null
-        },
-        {
-          "title": "Двухцветная дверь - разные покрытия с двух сторон на полотне",
-          "value": 225.0
-        },
-        {
-          "title": "Алюминиевая кромка по периметру (с 4х сторон) - Опция \"КП\". К стоимости дверного полотна + (Только для полотна толщиной 58 мм)",
-          "value": 1125.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Черный\"",
-          "value": 285.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Шампань\"",
-          "value": 565.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Покраска по RAL и NCS\"",
-          "value": 1690.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Матовое золото\"",
-          "value": 565.0
-        }
-      ],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Outline_outline1",
@@ -14554,7 +14444,8 @@
           "search_text": "outline outline 1  ",
           "image": "images/image335.jpg",
           "notes": [
-            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм."
+            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм.",
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -14574,7 +14465,8 @@
           "search_text": "outline outline 2  ",
           "image": "images/image336.jpg",
           "notes": [
-            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм."
+            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм.",
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -14594,7 +14486,8 @@
           "search_text": "outline outline 3  ",
           "image": "images/image337.jpg",
           "notes": [
-            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм."
+            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм.",
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -14614,7 +14507,8 @@
           "search_text": "outline outline 4  ",
           "image": "images/image338.jpg",
           "notes": [
-            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм."
+            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм.",
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -14634,7 +14528,8 @@
           "search_text": "outline outline 5  ",
           "image": "images/image339.jpg",
           "notes": [
-            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм."
+            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм.",
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -14654,7 +14549,8 @@
           "search_text": "outline outline 6  ",
           "image": "images/image340.jpg",
           "notes": [
-            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм."
+            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм.",
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -14674,7 +14570,8 @@
           "search_text": "outline outline 7  ",
           "image": "images/image341.jpg",
           "notes": [
-            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм."
+            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм.",
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -14694,7 +14591,8 @@
           "search_text": "outline outline 8  ",
           "image": "images/image342.jpg",
           "notes": [
-            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм."
+            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм.",
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -14714,7 +14612,8 @@
           "search_text": "outline outline 9  ",
           "image": "images/image343.jpg",
           "notes": [
-            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм."
+            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм.",
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -14734,7 +14633,8 @@
           "search_text": "outline outline 10  ",
           "image": "images/image344.jpg",
           "notes": [
-            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм."
+            "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм.",
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -14751,6 +14651,7 @@
     {
       "name": "Amare",
       "default_thickness": 38,
+      "has_default_edge": false,
       "std_sizes": {
         "widths": [
           400,
@@ -14834,18 +14735,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Покраска по индивидуальному RAL и каталогу NCS, при заказе менее 3-х штук (к цене Белый)",
-          "value": 0.7
-        },
-        {
-          "title": "Двухцветная покраска Эмалью",
-          "value": 0.2
-        }
-      ],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Amare_amare1",
@@ -14854,7 +14743,9 @@
           "full_title": "Amare — Amare 1",
           "search_text": "amare amare 1  ",
           "image": "images/image299.png",
-          "notes": [],
+          "notes": [
+            "Базовой алюминиевой кромки у коллекции нет."
+          ],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -14875,7 +14766,9 @@
           "full_title": "Amare — Amare 2",
           "search_text": "amare amare 2  ",
           "image": "images/image300.png",
-          "notes": [],
+          "notes": [
+            "Базовой алюминиевой кромки у коллекции нет."
+          ],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -14894,6 +14787,7 @@
     {
       "name": "Venezia",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -14977,81 +14871,13 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Покраска по индивидуальному RAL и каталогу NCS, при заказе менее 3-х штук (к цене Белый)",
-          "value": 0.7
-        },
-        {
-          "title": "Двухцветная покраска Эмалью",
-          "value": 0.2
-        },
-        {
-          "title": "Толщина полотна 42 мм (алюмин. кромка в цвете Хром матовый с 4-х сторон): Venezia 3, Venezia 3FL",
-          "value": 3675.0
-        },
-        {
-          "title": "Все модели 42 толщины по умолчанию изготавливаются с алюминиевой кромкой по периметру.",
-          "value": null
-        },
-        {
-          "title": "Толщина полотна 58 мм (алюмин. кромка в цвете Хром матовый с 3-х сторон): Venezia 3, Venezia 3FL",
-          "value": 6750.0
-        },
-        {
-          "title": "Толщина полотна 58 мм с опцией \"Noise Block\": Venezia 3, Venezia 3FL",
-          "value": 7875.0
-        },
-        {
-          "title": "«Открывание от себя Reverse» для полотен толщиной 58 мм",
-          "value": null
-        },
-        {
-          "title": "Разные модели на одном полотне: Venezia 3, Venezia 3FL",
-          "value": 1690.0
-        },
-        {
-          "title": "Комбинирование покрытий (филенка в одном покрытии, щит в другом): Venezia 4, Venezia 4FL",
-          "value": 565.0
-        },
-        {
-          "title": "Алюминиевая кромка по периметру (с 4х сторон) - Опция \"КП\", к стоимости дверного полотна (только в толщине 58 мм)",
-          "value": 1125.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Черный\"",
-          "value": 285.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Шампань\"",
-          "value": 565.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Покраска по RAL и NCS\"",
-          "value": 1690.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Матовое золото\"",
-          "value": 565.0
-        },
-        {
-          "title": "Двухцветная дверь - разные покрытия с двух сторон на полотне",
-          "value": 225.0
-        },
-        {
-          "title": "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм.",
-          "value": null
-        }
-      ],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Venezia_venezia1",
           "collection": "Venezia",
           "code": "Venezia 1",
           "full_title": "Venezia — Venezia 1",
-          "search_text": "venezia venezia 1  венеция",
+          "search_text": "venezia venezia 1  ",
           "image": "images/image301.png",
           "notes": [],
           "variants": [
@@ -15072,7 +14898,7 @@
           "collection": "Venezia",
           "code": "Venezia 2",
           "full_title": "Venezia — Venezia 2",
-          "search_text": "venezia venezia 2  венеция",
+          "search_text": "venezia venezia 2  ",
           "image": "images/image302.png",
           "notes": [],
           "variants": [
@@ -15093,7 +14919,7 @@
           "collection": "Venezia",
           "code": "Venezia 3",
           "full_title": "Venezia — Venezia 3",
-          "search_text": "venezia venezia 3  венеция",
+          "search_text": "venezia venezia 3  ",
           "image": "images/image320.png",
           "notes": [],
           "variants": [
@@ -15114,7 +14940,7 @@
           "collection": "Venezia",
           "code": "Venezia 3FL",
           "full_title": "Venezia — Venezia 3FL",
-          "search_text": "venezia venezia 3fl  венеция",
+          "search_text": "venezia venezia 3fl  ",
           "image": "images/image321.png",
           "notes": [],
           "variants": [
@@ -15133,7 +14959,7 @@
           "collection": "Venezia",
           "code": "Venezia 4",
           "full_title": "Venezia — Venezia 4",
-          "search_text": "venezia venezia 4  венеция",
+          "search_text": "venezia venezia 4  ",
           "image": "images/image322.png",
           "notes": [],
           "variants": [
@@ -15194,7 +15020,7 @@
           "collection": "Venezia",
           "code": "Venezia 4FL",
           "full_title": "Venezia — Venezia 4FL",
-          "search_text": "venezia venezia 4fl  венеция",
+          "search_text": "venezia venezia 4fl  ",
           "image": "images/image323.png",
           "notes": [],
           "variants": [
@@ -15245,6 +15071,7 @@
     {
       "name": "Molis",
       "default_thickness": 38,
+      "has_default_edge": false,
       "std_sizes": {
         "widths": [
           500,
@@ -15327,14 +15154,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Покраска по индивидуальному RAL и каталогу NCS, при заказе менее 3-х штук (к цене Белый)",
-          "value": 0.7
-        }
-      ],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Molis_molis1",
@@ -15343,7 +15162,9 @@
           "full_title": "Molis — Molis 1",
           "search_text": "molis molis 1  ",
           "image": "images/image348.png",
-          "notes": [],
+          "notes": [
+            "Базовой алюминиевой кромки у коллекции нет."
+          ],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -15359,6 +15180,7 @@
     {
       "name": "Enigma",
       "default_thickness": 38,
+      "has_default_edge": false,
       "std_sizes": {
         "widths": [
           400,
@@ -15442,18 +15264,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Покраска по индивидуальному RAL и каталогу NCS, при заказе менее 3-х штук (к цене Белый)",
-          "value": 0.7
-        },
-        {
-          "title": "Двухцветная покраска Эмалью",
-          "value": 0.2
-        }
-      ],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Enigma_enigma1",
@@ -15462,7 +15272,9 @@
           "full_title": "Enigma — Enigma 1",
           "search_text": "enigma enigma 1  ",
           "image": "images/image239.png",
-          "notes": [],
+          "notes": [
+            "Базовой алюминиевой кромки у коллекции нет."
+          ],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -15480,7 +15292,9 @@
           "full_title": "Enigma — Enigma 2",
           "search_text": "enigma enigma 2  ",
           "image": "images/image240.png",
-          "notes": [],
+          "notes": [
+            "Базовой алюминиевой кромки у коллекции нет."
+          ],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -15498,7 +15312,9 @@
           "full_title": "Enigma — Enigma 3",
           "search_text": "enigma enigma 3  ",
           "image": "images/image241.png",
-          "notes": [],
+          "notes": [
+            "Базовой алюминиевой кромки у коллекции нет."
+          ],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -15516,7 +15332,9 @@
           "full_title": "Enigma — Enigma 4",
           "search_text": "enigma enigma 4  ",
           "image": "images/image242.png",
-          "notes": [],
+          "notes": [
+            "Базовой алюминиевой кромки у коллекции нет."
+          ],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -15534,7 +15352,9 @@
           "full_title": "Enigma — Enigma 5",
           "search_text": "enigma enigma 5  ",
           "image": "images/image243.png",
-          "notes": [],
+          "notes": [
+            "Базовой алюминиевой кромки у коллекции нет."
+          ],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -15552,7 +15372,9 @@
           "full_title": "Enigma — Enigma 6",
           "search_text": "enigma enigma 6  ",
           "image": "images/image244.png",
-          "notes": [],
+          "notes": [
+            "Базовой алюминиевой кромки у коллекции нет."
+          ],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -15568,6 +15390,7 @@
     {
       "name": "Novva",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -15652,18 +15475,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Покраска по индивидуальному RAL и каталогу NCS, при заказе менее 3-х штук (к цене Белый)",
-          "value": 0.7
-        },
-        {
-          "title": "Двухцветная покраска Эмалью",
-          "value": 0.2
-        }
-      ],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Novva_novva1",
@@ -15775,6 +15586,7 @@
     {
       "name": "Levitate",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           500,
@@ -15849,9 +15661,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Levitate_lvt1",
@@ -16022,6 +15831,7 @@
     {
       "name": "Demiss",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -16095,14 +15905,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Покраска по индивидуальному RAL и каталогу NCS, при заказе менее 3-х штук (к цене Белый)",
-          "value": 0.7
-        }
-      ],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Demiss_demiss1",
@@ -16111,9 +15913,7 @@
           "full_title": "Demiss — Demiss 1",
           "search_text": "demiss demiss 1  ",
           "image": "images/image223.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -16133,9 +15933,7 @@
           "full_title": "Demiss — Demiss 2",
           "search_text": "demiss demiss 2  ",
           "image": "images/image224.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "ст.0 Белый (Сатинат)",
@@ -16227,9 +16025,7 @@
           "full_title": "Demiss — Demiss 3",
           "search_text": "demiss demiss 3  ",
           "image": "images/image226.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -16249,9 +16045,7 @@
           "full_title": "Demiss — Demiss 4",
           "search_text": "demiss demiss 4  ",
           "image": "images/image227.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "ст.0 Белый (Сатинат)",
@@ -16341,6 +16135,7 @@
     {
       "name": "Monserrat",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           600,
@@ -16408,67 +16203,13 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [
-        {
-          "title": "Сатинат 4 мм",
-          "detail": "Белый, Бронза, Графит (Для модели MNS4)",
-          "prices": [
-            {
-              "col": 3,
-              "surcharge": 4.0
-            }
-          ]
-        },
-        {
-          "title": "Триплекс",
-          "detail": "Черный, Графитовый, Белоснежный, Etereo Glass, Dragon Glass (для модели MNS2)",
-          "prices": [
-            {
-              "col": 3,
-              "surcharge": 2.0
-            }
-          ]
-        },
-        {
-          "title": "Триплекс сатинат 8 мм",
-          "detail": "Белый, Бронзовый (для модели MNS2)",
-          "prices": [
-            {
-              "col": 3,
-              "surcharge": 2.0
-            }
-          ]
-        },
-        {
-          "title": "Наценка - прибавляется к стоимости Белый (Сатинат, 4 мм)",
-          "detail": "",
-          "prices": [
-            {
-              "col": 12,
-              "surcharge": 4.0
-            }
-          ]
-        },
-        {
-          "title": "Кризет, 4 мм",
-          "detail": "Прозрачное",
-          "prices": [
-            {
-              "col": 12,
-              "surcharge": 960.0
-            }
-          ]
-        }
-      ],
       "models": [
         {
           "id": "Monserrat_mns1",
           "collection": "Monserrat",
           "code": "MNS1",
           "full_title": "Monserrat — MNS1",
-          "search_text": "monserrat mns1  монсеррат",
+          "search_text": "monserrat mns1  ",
           "image": "images/image180.png",
           "notes": [],
           "variants": [
@@ -16487,7 +16228,7 @@
           "collection": "Monserrat",
           "code": "MNS2",
           "full_title": "Monserrat — MNS2",
-          "search_text": "monserrat mns2  монсеррат",
+          "search_text": "monserrat mns2  ",
           "image": "images/image181.png",
           "notes": [],
           "variants": [
@@ -16610,7 +16351,7 @@
           "collection": "Monserrat",
           "code": "MNS3",
           "full_title": "Monserrat — MNS3",
-          "search_text": "monserrat mns3  монсеррат",
+          "search_text": "monserrat mns3  ",
           "image": "images/image182.png",
           "notes": [],
           "variants": [
@@ -16629,7 +16370,7 @@
           "collection": "Monserrat",
           "code": "MNS4",
           "full_title": "Monserrat — MNS4",
-          "search_text": "monserrat mns4  монсеррат",
+          "search_text": "monserrat mns4  ",
           "image": "images/image183.png",
           "notes": [],
           "variants": [
@@ -16704,6 +16445,7 @@
     {
       "name": "Enika",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           500,
@@ -16771,9 +16513,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Enika_enika1",
@@ -16782,9 +16521,7 @@
           "full_title": "Enika — Enika 1",
           "search_text": "enika enika 1  ",
           "image": "images/image166.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -16803,9 +16540,7 @@
           "full_title": "Enika — Enika 2",
           "search_text": "enika enika 2  ",
           "image": "images/image167.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "ст. 0 Белый (Сатинат)",
@@ -16912,9 +16647,7 @@
           "full_title": "Enika — Enika 3",
           "search_text": "enika enika 3  ",
           "image": "images/image168.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -16933,9 +16666,7 @@
           "full_title": "Enika — Enika 4",
           "search_text": "enika enika 4  ",
           "image": "images/image169.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "ст. 0 Белый (Сатинат)",
@@ -17042,9 +16773,7 @@
           "full_title": "Enika — Enika 5",
           "search_text": "enika enika 5  ",
           "image": "images/image170.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -17063,9 +16792,7 @@
           "full_title": "Enika — Enika 6",
           "search_text": "enika enika 6  ",
           "image": "images/image171.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "ст. 0 Белый (Сатинат)",
@@ -17170,6 +16897,7 @@
     {
       "name": "Raimond",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           500,
@@ -17237,9 +16965,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Raimond_raimond1",
@@ -17248,9 +16973,7 @@
           "full_title": "Raimond — Raimond 1",
           "search_text": "raimond raimond 1  ",
           "image": "images/image190.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -17269,9 +16992,7 @@
           "full_title": "Raimond — Raimond 2",
           "search_text": "raimond raimond 2  ",
           "image": "images/image191.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "ст. 0 Белый (Сатинат)",
@@ -17378,9 +17099,7 @@
           "full_title": "Raimond — Raimond 3.1",
           "search_text": "raimond raimond 3.1  ",
           "image": "images/image194.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -17399,9 +17118,7 @@
           "full_title": "Raimond — Raimond 4.1",
           "search_text": "raimond raimond 4.1  ",
           "image": "images/image195.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "ст. 0 Белый (Сатинат)",
@@ -17506,6 +17223,7 @@
     {
       "name": "Bruges",
       "default_thickness": 38,
+      "has_default_edge": false,
       "std_sizes": {
         "widths": [
           500,
@@ -17572,42 +17290,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Покраска по индивидуальному RAL и каталогу NCS, при заказе менее 3-х штук (к цене Белый)",
-          "value": 0.7
-        },
-        {
-          "title": "Выбор цвета молдинга",
-          "value": null
-        },
-        {
-          "title": "Хром матовый",
-          "value": null
-        },
-        {
-          "title": "Матовое золото",
-          "value": 285.0
-        },
-        {
-          "title": "Черный",
-          "value": 285.0
-        },
-        {
-          "title": "Шампань",
-          "value": 285.0
-        },
-        {
-          "title": "Патина тип ЭМК Золото (стоимость за 1 сторону)",
-          "value": 1160.0
-        },
-        {
-          "title": "Патина тип ЭМК Серебро (стоимость за 1 сторону)",
-          "value": 1160.0
-        }
-      ],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Bruges_брюгге1",
@@ -17617,7 +17299,7 @@
           "search_text": "bruges брюгге 1  брюгге",
           "image": "images/image198.png",
           "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -17638,7 +17320,7 @@
           "search_text": "bruges брюгге 1м  брюгге",
           "image": "images/image206.png",
           "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -17659,7 +17341,7 @@
           "search_text": "bruges брюгге 2  брюгге",
           "image": "images/image198.png",
           "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -17768,7 +17450,7 @@
           "search_text": "bruges брюгге 3  брюгге",
           "image": "images/image198.png",
           "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -17789,7 +17471,7 @@
           "search_text": "bruges брюгге 3м  брюгге",
           "image": "images/image206.png",
           "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -17810,7 +17492,7 @@
           "search_text": "bruges брюгге 4  брюгге",
           "image": "images/image198.png",
           "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -17919,7 +17601,7 @@
           "search_text": "bruges брюгге 4м  брюгге",
           "image": "images/image206.png",
           "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -18025,6 +17707,7 @@
     {
       "name": "Oberon",
       "default_thickness": 38,
+      "has_default_edge": false,
       "std_sizes": {
         "widths": [
           600,
@@ -18090,18 +17773,17 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Oberon_ob1",
           "collection": "Oberon",
           "code": "OB1",
           "full_title": "Oberon — OB1",
-          "search_text": "oberon ob1  оберон",
+          "search_text": "oberon ob1  ",
           "image": "images/image112.png",
-          "notes": [],
+          "notes": [
+            "Базовой алюминиевой кромки у коллекции нет."
+          ],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -18117,9 +17799,11 @@
           "collection": "Oberon",
           "code": "OB3",
           "full_title": "Oberon — OB3",
-          "search_text": "oberon ob3  оберон",
+          "search_text": "oberon ob3  ",
           "image": "images/image113.png",
-          "notes": [],
+          "notes": [
+            "Базовой алюминиевой кромки у коллекции нет."
+          ],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -18135,9 +17819,11 @@
           "collection": "Oberon",
           "code": "OB5",
           "full_title": "Oberon — OB5",
-          "search_text": "oberon ob5  оберон",
+          "search_text": "oberon ob5  ",
           "image": "images/image114.png",
-          "notes": [],
+          "notes": [
+            "Базовой алюминиевой кромки у коллекции нет."
+          ],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -18153,9 +17839,11 @@
           "collection": "Oberon",
           "code": "OB9",
           "full_title": "Oberon — OB9",
-          "search_text": "oberon ob9  оберон",
+          "search_text": "oberon ob9  ",
           "image": "images/image115.png",
-          "notes": [],
+          "notes": [
+            "Базовой алюминиевой кромки у коллекции нет."
+          ],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -18171,6 +17859,7 @@
     {
       "name": "Palladium",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           600,
@@ -18236,37 +17925,13 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Выбор цвета молдинга",
-          "value": null
-        },
-        {
-          "title": "Цвет молдинга в покрытиях - Emlayer Белый, Emlayer Бежевый, Emlayer Серый",
-          "value": 305.0
-        },
-        {
-          "title": "Серебро",
-          "value": 510.0
-        },
-        {
-          "title": "Золото",
-          "value": 510.0
-        },
-        {
-          "title": "Черный (Изготавливается в покрытии Черный кварц)",
-          "value": 305.0
-        }
-      ],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Palladium_pl3f",
           "collection": "Palladium",
           "code": "PL3F",
           "full_title": "Palladium — PL3F",
-          "search_text": "palladium pl3f  палладиум",
+          "search_text": "palladium pl3f  ",
           "image": "images/image147.png",
           "notes": [],
           "variants": [
@@ -18286,7 +17951,7 @@
           "collection": "Palladium",
           "code": "PL4F",
           "full_title": "Palladium — PL4F",
-          "search_text": "palladium pl4f  палладиум",
+          "search_text": "palladium pl4f  ",
           "image": "images/image147.png",
           "notes": [],
           "variants": [
@@ -18315,7 +17980,7 @@
           "collection": "Palladium",
           "code": "PL10F",
           "full_title": "Palladium — PL10F",
-          "search_text": "palladium pl10f  палладиум",
+          "search_text": "palladium pl10f  ",
           "image": "images/image147.png",
           "notes": [],
           "variants": [
@@ -18335,7 +18000,7 @@
           "collection": "Palladium",
           "code": "PL11F",
           "full_title": "Palladium — PL11F",
-          "search_text": "palladium pl11f  палладиум",
+          "search_text": "palladium pl11f  ",
           "image": "images/image147.png",
           "notes": [],
           "variants": [
@@ -18364,6 +18029,7 @@
     {
       "name": "K'Belvedere",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           500,
@@ -18430,38 +18096,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [
-        {
-          "title": "Наценка - прибавляется к стоимости стекло 1, Белый (Сатинат, 4 мм)",
-          "detail": "",
-          "prices": [
-            {
-              "col": 11,
-              "surcharge": 2.0
-            },
-            {
-              "col": 12,
-              "surcharge": 4.0
-            }
-          ]
-        },
-        {
-          "title": "Кризет, 4 мм",
-          "detail": "Прозрачное",
-          "prices": [
-            {
-              "col": 11,
-              "surcharge": 1520.0
-            },
-            {
-              "col": 12,
-              "surcharge": 1070.0
-            }
-          ]
-        }
-      ],
       "models": [
         {
           "id": "K'Belvedere_kb1",
@@ -18471,8 +18105,7 @@
           "search_text": "k'belvedere kb1  ",
           "image": "images/image172.png",
           "notes": [
-            "Важно: Максимальная высота модели KB2 с остеклением Кризет 4 мм – составляет 2200 мм, для KB4 – 2350 мм",
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
+            "Важно: Максимальная высота модели KB2 с остеклением Кризет 4 мм – составляет 2200 мм, для KB4 – 2350 мм"
           ],
           "variants": [
             {
@@ -18493,8 +18126,7 @@
           "search_text": "k'belvedere kb2  ",
           "image": "images/image172.png",
           "notes": [
-            "Важно: Максимальная высота модели KB2 с остеклением Кризет 4 мм – составляет 2200 мм, для KB4 – 2350 мм",
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
+            "Важно: Максимальная высота модели KB2 с остеклением Кризет 4 мм – составляет 2200 мм, для KB4 – 2350 мм"
           ],
           "variants": [
             {
@@ -18595,8 +18227,7 @@
           "search_text": "k'belvedere kb3  ",
           "image": "images/image176.png",
           "notes": [
-            "Важно: Максимальная высота модели KB2 с остеклением Кризет 4 мм – составляет 2200 мм, для KB4 – 2350 мм",
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
+            "Важно: Максимальная высота модели KB2 с остеклением Кризет 4 мм – составляет 2200 мм, для KB4 – 2350 мм"
           ],
           "variants": [
             {
@@ -18617,8 +18248,7 @@
           "search_text": "k'belvedere kb4  ",
           "image": "images/image172.png",
           "notes": [
-            "Важно: Максимальная высота модели KB2 с остеклением Кризет 4 мм – составляет 2200 мм, для KB4 – 2350 мм",
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
+            "Важно: Максимальная высота модели KB2 с остеклением Кризет 4 мм – составляет 2200 мм, для KB4 – 2350 мм"
           ],
           "variants": [
             {
@@ -18716,6 +18346,7 @@
     {
       "name": "Chicago",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -18783,9 +18414,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Chicago_ch5",
@@ -18794,9 +18422,7 @@
           "full_title": "Chicago — Ch5",
           "search_text": "chicago ch5  ",
           "image": "images/image30.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -18816,9 +18442,7 @@
           "full_title": "Chicago — Ch6",
           "search_text": "chicago ch6  ",
           "image": "images/image30.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "(ст. 0) Белое (Сатинат 4 мм)",
@@ -18937,9 +18561,7 @@
           "full_title": "Chicago — Ch7",
           "search_text": "chicago ch7  ",
           "image": "images/image30.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -18959,9 +18581,7 @@
           "full_title": "Chicago — Ch8",
           "search_text": "chicago ch8  ",
           "image": "images/image30.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "(ст.0 ) Белое (Сатинат 4 мм)",
@@ -19024,6 +18644,7 @@
     {
       "name": "Sensation",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -19097,106 +18718,15 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Выбор цвета наливного витража",
-          "value": null
-        },
-        {
-          "title": "Прозрачный",
-          "value": null
-        },
-        {
-          "title": "Серебряный",
-          "value": null
-        },
-        {
-          "title": "Золотой",
-          "value": null
-        },
-        {
-          "title": "Черный",
-          "value": null
-        },
-        {
-          "title": "Модели в покрытиях Emlayer (кроме Белый, Серый, Бежевый) не изготавливаются на системах. При заказе модели на систему открывания в покрытиях Emlayer Белый, Серый, Бежевый оформление системы заказывается в покрытиях Emlayer CV Белый,  CV Серый, CV Бежевый по умолчанию.",
-          "value": null
-        },
-        {
-          "title": "Важно: на моделях SE14 и SE16 при применении фацета шаг по высоте составляет 50 мм",
-          "value": null
-        },
-        {
-          "title": "*Примечание: Выбор цвета наливного витража модели SE8 ст. 1, возможно при ширине от 600 мм",
-          "value": null
-        },
-        {
-          "title": "**Примечание: Полотна SE14, SE15, SE16, SE17 менее 600 мм в ширину будут выглядеть как половина полотна (как с опциями, так и без)",
-          "value": null
-        }
-      ],
-      "glazing_surcharges": [
-        {
-          "title": "Наценка - прибавляется к стоимости Белый (Сатинат, 4 мм)",
-          "detail": "",
-          "prices": [
-            {
-              "col": 11,
-              "surcharge": 4.0
-            },
-            {
-              "col": 12,
-              "surcharge": 16.0
-            }
-          ]
-        },
-        {
-          "title": "Кризет, 4 мм",
-          "detail": "Прозрачное",
-          "prices": [
-            {
-              "col": 11,
-              "surcharge": 960.0
-            },
-            {
-              "col": 12,
-              "surcharge": 1240.0
-            }
-          ]
-        },
-        {
-          "title": "Рифленое (Прозрачное, Триплекс 8 мм)\nSE2",
-          "detail": "Прозрачное",
-          "prices": [
-            {
-              "col": 12,
-              "surcharge": 5175.0
-            }
-          ]
-        },
-        {
-          "title": "Рифленое Декоративное, 4 мм\n SE 4, SE 8",
-          "detail": "Прозрачное",
-          "prices": [
-            {
-              "col": 12,
-              "surcharge": 3880.0
-            }
-          ]
-        }
-      ],
       "models": [
         {
           "id": "Sensation_se1",
           "collection": "Sensation",
           "code": "SE 1",
           "full_title": "Sensation — SE 1",
-          "search_text": "sensation se 1  сенсейшн",
+          "search_text": "sensation se 1  ",
           "image": "images/image38.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -19214,11 +18744,9 @@
           "collection": "Sensation",
           "code": "SE 1FL",
           "full_title": "Sensation — SE 1FL",
-          "search_text": "sensation se 1fl  сенсейшн",
+          "search_text": "sensation se 1fl  ",
           "image": "images/image38.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -19235,11 +18763,9 @@
           "collection": "Sensation",
           "code": "SE 2",
           "full_title": "Sensation — SE 2",
-          "search_text": "sensation se 2  сенсейшн",
+          "search_text": "sensation se 2  ",
           "image": "images/image39.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "ст.0 Белое (Триплекс сатинат 8 мм)",
@@ -19302,11 +18828,9 @@
           "collection": "Sensation",
           "code": "SE 2 Etereo Glass",
           "full_title": "Sensation — SE 2 Etereo Glass",
-          "search_text": "sensation se 2 etereo glass  сенсейшн",
+          "search_text": "sensation se 2 etereo glass  ",
           "image": "images/image38.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "(Осветленное, Триплекс 8 мм)",
@@ -19324,11 +18848,9 @@
           "collection": "Sensation",
           "code": "SE 2 Dragon Glass",
           "full_title": "Sensation — SE 2 Dragon Glass",
-          "search_text": "sensation se 2 dragon glass  сенсейшн",
+          "search_text": "sensation se 2 dragon glass  ",
           "image": "images/image38.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "(Осветленное, Триплекс 8 мм)",
@@ -19346,11 +18868,9 @@
           "collection": "Sensation",
           "code": "SE 3",
           "full_title": "Sensation — SE 3",
-          "search_text": "sensation se 3  сенсейшн",
+          "search_text": "sensation se 3  ",
           "image": "images/image40.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -19368,11 +18888,9 @@
           "collection": "Sensation",
           "code": "SE 3FL",
           "full_title": "Sensation — SE 3FL",
-          "search_text": "sensation se 3fl  сенсейшн",
+          "search_text": "sensation se 3fl  ",
           "image": "images/image38.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -19389,11 +18907,9 @@
           "collection": "Sensation",
           "code": "SE 4",
           "full_title": "Sensation — SE 4",
-          "search_text": "sensation se 4  сенсейшн",
+          "search_text": "sensation se 4  ",
           "image": "images/image41.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "ст.0 Белое (Сатинат 4 мм)",
@@ -19483,11 +18999,9 @@
           "collection": "Sensation",
           "code": "SE 4FL",
           "full_title": "Sensation — SE 4FL",
-          "search_text": "sensation se 4fl  сенсейшн",
+          "search_text": "sensation se 4fl  ",
           "image": "images/image38.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "ст.0 Белое (Сатинат 4 мм)",
@@ -19568,11 +19082,9 @@
           "collection": "Sensation",
           "code": "SE 5",
           "full_title": "Sensation — SE 5",
-          "search_text": "sensation se 5  сенсейшн",
+          "search_text": "sensation se 5  ",
           "image": "images/image43.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -19590,11 +19102,9 @@
           "collection": "Sensation",
           "code": "SE 8",
           "full_title": "Sensation — SE 8",
-          "search_text": "sensation se 8  сенсейшн",
+          "search_text": "sensation se 8  ",
           "image": "images/image44.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "ст.0 Белое (Сатинат 4 мм)",
@@ -19711,11 +19221,9 @@
           "collection": "Sensation",
           "code": "SE 14",
           "full_title": "Sensation — SE 14",
-          "search_text": "sensation se 14  сенсейшн",
+          "search_text": "sensation se 14  ",
           "image": "images/image294.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Белое (Сатинат 4 мм)",
@@ -19760,11 +19268,9 @@
           "collection": "Sensation",
           "code": "SE 14 Фацет",
           "full_title": "Sensation — SE 14 Фацет",
-          "search_text": "sensation se 14 фацет  сенсейшн",
+          "search_text": "sensation se 14 фацет  ",
           "image": "images/image295.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "прозрачный",
@@ -19782,11 +19288,9 @@
           "collection": "Sensation",
           "code": "SE 14 Фацет сатинат",
           "full_title": "Sensation — SE 14 Фацет сатинат",
-          "search_text": "sensation se 14 фацет сатинат  сенсейшн",
+          "search_text": "sensation se 14 фацет сатинат  ",
           "image": "images/image297.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "белый",
@@ -19804,11 +19308,9 @@
           "collection": "Sensation",
           "code": "SE 14 Фацет зеркальный",
           "full_title": "Sensation — SE 14 Фацет зеркальный",
-          "search_text": "sensation se 14 фацет зеркальный  сенсейшн",
+          "search_text": "sensation se 14 фацет зеркальный  ",
           "image": "images/image296.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -19826,11 +19328,9 @@
           "collection": "Sensation",
           "code": "SE 15",
           "full_title": "Sensation — SE 15",
-          "search_text": "sensation se 15  сенсейшн",
+          "search_text": "sensation se 15  ",
           "image": "images/image47.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -19848,11 +19348,9 @@
           "collection": "Sensation",
           "code": "SE 16",
           "full_title": "Sensation — SE 16",
-          "search_text": "sensation se 16  сенсейшн",
+          "search_text": "sensation se 16  ",
           "image": "images/image289.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Белое (Сатинат 4 мм)",
@@ -19897,11 +19395,9 @@
           "collection": "Sensation",
           "code": "SE 16 Фацет",
           "full_title": "Sensation — SE 16 Фацет",
-          "search_text": "sensation se 16 фацет  сенсейшн",
+          "search_text": "sensation se 16 фацет  ",
           "image": "images/image290.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "прозрачный",
@@ -19919,11 +19415,9 @@
           "collection": "Sensation",
           "code": "SE 16 Фацет сатинат",
           "full_title": "Sensation — SE 16 Фацет сатинат",
-          "search_text": "sensation se 16 фацет сатинат  сенсейшн",
+          "search_text": "sensation se 16 фацет сатинат  ",
           "image": "images/image292.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "белый",
@@ -19941,11 +19435,9 @@
           "collection": "Sensation",
           "code": "SE 16 Фацет зеркальный",
           "full_title": "Sensation — SE 16 Фацет зеркальный",
-          "search_text": "sensation se 16 фацет зеркальный  сенсейшн",
+          "search_text": "sensation se 16 фацет зеркальный  ",
           "image": "images/image290.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -19963,11 +19455,9 @@
           "collection": "Sensation",
           "code": "SE 17",
           "full_title": "Sensation — SE 17",
-          "search_text": "sensation se 17  сенсейшн",
+          "search_text": "sensation se 17  ",
           "image": "images/image48.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -19985,6 +19475,7 @@
     {
       "name": "Neo Relish",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -20052,9 +19543,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Neo Relish_nr1",
@@ -20063,9 +19551,7 @@
           "full_title": "Neo Relish — NR1",
           "search_text": "neo relish nr1  ",
           "image": "images/image49.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Глухая",
@@ -20103,9 +19589,7 @@
           "full_title": "Neo Relish — NR2",
           "search_text": "neo relish nr2  ",
           "image": "images/image53.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Белое (Сатинат 4 мм)",
@@ -20152,9 +19636,7 @@
           "full_title": "Neo Relish — NR3",
           "search_text": "neo relish nr3  ",
           "image": "images/image58.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -20174,9 +19656,7 @@
           "full_title": "Neo Relish — NR4",
           "search_text": "neo relish nr4  ",
           "image": "images/image59.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Белое (Сатинат 4 мм)",
@@ -20212,6 +19692,7 @@
     {
       "name": "ChicagoE",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -20279,9 +19760,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "ChicagoE_che5",
@@ -20427,6 +19905,7 @@
     {
       "name": "Zest",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -20494,9 +19973,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Zest_z1",
@@ -20627,6 +20103,7 @@
     {
       "name": "Zest Emlayer",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -20701,9 +20178,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Zest Emlayer_ze13",
@@ -20834,6 +20308,7 @@
     {
       "name": "English Style",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -20920,49 +20395,16 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [
-        {
-          "title": "Наценка - прибавляется к стоимости Белый (Сатинат, 4 мм)",
-          "detail": "",
-          "prices": [
-            {
-              "col": 11,
-              "surcharge": 2.0
-            },
-            {
-              "col": 12,
-              "surcharge": 6.0
-            }
-          ]
-        },
-        {
-          "title": "Кризет, 4 мм",
-          "detail": "Прозрачное",
-          "prices": [
-            {
-              "col": 11,
-              "surcharge": 845.0
-            },
-            {
-              "col": 12,
-              "surcharge": 675.0
-            }
-          ]
-        }
-      ],
       "models": [
         {
           "id": "English Style_en1",
           "collection": "English Style",
           "code": "En 1",
           "full_title": "English Style — En 1",
-          "search_text": "english style en 1  инглиш стайл английский стиль",
+          "search_text": "english style en 1  ",
           "image": "images/image116.png",
           "notes": [
-            "Важно: Максимальная высота модели En2 с остеклением Кризет 4 мм – составляет 2200 мм, для En6 – 2300 мм",
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
+            "Важно: Максимальная высота модели En2 с остеклением Кризет 4 мм – составляет 2200 мм, для En6 – 2300 мм"
           ],
           "variants": [
             {
@@ -20980,11 +20422,10 @@
           "collection": "English Style",
           "code": "En 2",
           "full_title": "English Style — En 2",
-          "search_text": "english style en 2  инглиш стайл английский стиль",
+          "search_text": "english style en 2  ",
           "image": "images/image116.png",
           "notes": [
-            "Важно: Максимальная высота модели En2 с остеклением Кризет 4 мм – составляет 2200 мм, для En6 – 2300 мм",
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
+            "Важно: Максимальная высота модели En2 с остеклением Кризет 4 мм – составляет 2200 мм, для En6 – 2300 мм"
           ],
           "variants": [
             {
@@ -21034,11 +20475,10 @@
           "collection": "English Style",
           "code": "En 5",
           "full_title": "English Style — En 5",
-          "search_text": "english style en 5  инглиш стайл английский стиль",
+          "search_text": "english style en 5  ",
           "image": "images/image116.png",
           "notes": [
-            "Важно: Максимальная высота модели En2 с остеклением Кризет 4 мм – составляет 2200 мм, для En6 – 2300 мм",
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
+            "Важно: Максимальная высота модели En2 с остеклением Кризет 4 мм – составляет 2200 мм, для En6 – 2300 мм"
           ],
           "variants": [
             {
@@ -21056,11 +20496,10 @@
           "collection": "English Style",
           "code": "En 6",
           "full_title": "English Style — En 6",
-          "search_text": "english style en 6  инглиш стайл английский стиль",
+          "search_text": "english style en 6  ",
           "image": "images/image116.png",
           "notes": [
-            "Важно: Максимальная высота модели En2 с остеклением Кризет 4 мм – составляет 2200 мм, для En6 – 2300 мм",
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
+            "Важно: Максимальная высота модели En2 с остеклением Кризет 4 мм – составляет 2200 мм, для En6 – 2300 мм"
           ],
           "variants": [
             {
@@ -21110,6 +20549,7 @@
     {
       "name": "Monte",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -21189,74 +20629,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Покраска по индивидуальному RAL и каталогу NCS, при заказе менее 3-х штук (к цене Белый)",
-          "value": 0.7
-        },
-        {
-          "title": "Двухцветная покраска Эмалью",
-          "value": 0.2
-        },
-        {
-          "title": "Толщина полотна 42 мм (алюмин. кромка в цвете Хром матовый с 4-х сторон): Monte 9, Monte 9 FL",
-          "value": 3675.0
-        },
-        {
-          "title": "Все модели 42 толщины по умолчанию изготавливаются с алюминиевой кромкой по периметру.",
-          "value": null
-        },
-        {
-          "title": "Толщина полотна 58 мм (алюмин. кромка в цвете Хром матовый с 3-х сторон): Monte 9, Monte 9 FL",
-          "value": 6750.0
-        },
-        {
-          "title": "Толщина полотна 58 мм с опцией \"Noise Block\": Monte 9, Monte 9 FL",
-          "value": 7875.0
-        },
-        {
-          "title": "«Открывание от себя Reverse» для полотен толщиной 58 мм",
-          "value": null
-        },
-        {
-          "title": "Разные модели на одном полотне: Monte 9, Monte 9 FL",
-          "value": 1690.0
-        },
-        {
-          "title": "Комбинирование покрытий (филенка в одном покрытии, щит в другом): Monte 11, Monte 11 FL",
-          "value": 565.0
-        },
-        {
-          "title": "Алюминиевая кромка по периметру (с 4х сторон) - Опция \"КП\", к стоимости дверного полотна (только в толщине 58 мм)",
-          "value": 1125.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Черный\"",
-          "value": 285.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Шампань\"",
-          "value": 565.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Покраска по RAL и NCS\"",
-          "value": 1690.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Матовое золото\"",
-          "value": 565.0
-        },
-        {
-          "title": "Двухцветная дверь - разные покрытия с двух сторон на полотне",
-          "value": 225.0
-        },
-        {
-          "title": "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм.",
-          "value": null
-        }
-      ],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Monte_monte1",
@@ -21265,9 +20637,7 @@
           "full_title": "Monte — Monte 1",
           "search_text": "monte monte 1  ",
           "image": "images/image72.png",
-          "notes": [
-            "Полотна шириной менее 550 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -21288,9 +20658,7 @@
           "full_title": "Monte — Monte 2",
           "search_text": "monte monte 2  ",
           "image": "images/image73.png",
-          "notes": [
-            "Полотна шириной менее 550 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "(ст.0) Белое (Сатинат 4 мм)",
@@ -21361,9 +20729,7 @@
           "full_title": "Monte — Monte 3",
           "search_text": "monte monte 3  ",
           "image": "images/image74.png",
-          "notes": [
-            "Полотна шириной менее 550 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -21384,9 +20750,7 @@
           "full_title": "Monte — Monte 4",
           "search_text": "monte monte 4  ",
           "image": "images/image75.png",
-          "notes": [
-            "Полотна шириной менее 550 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "(ст.0) Белое (Сатинат 4 мм)",
@@ -21457,9 +20821,7 @@
           "full_title": "Monte — Monte 7",
           "search_text": "monte monte 7  ",
           "image": "images/image76.png",
-          "notes": [
-            "Полотна шириной менее 550 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -21480,9 +20842,7 @@
           "full_title": "Monte — Monte 8",
           "search_text": "monte monte 8  ",
           "image": "images/image77.png",
-          "notes": [
-            "Полотна шириной менее 550 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "(ст.0) Белое (Сатинат 4 мм)",
@@ -21553,9 +20913,7 @@
           "full_title": "Monte — Monte 9",
           "search_text": "monte monte 9  ",
           "image": "images/image315.png",
-          "notes": [
-            "Полотна шириной менее 550 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -21576,9 +20934,7 @@
           "full_title": "Monte — Monte 9 FL",
           "search_text": "monte monte 9 fl  ",
           "image": "images/image316.png",
-          "notes": [
-            "Полотна шириной менее 550 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -21597,9 +20953,7 @@
           "full_title": "Monte — Monte 10 Рифленое",
           "search_text": "monte monte 10 рифленое  ",
           "image": "images/image72.png",
-          "notes": [
-            "Полотна шириной менее 550 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "(Графитовое, Декоративное, 4 мм)",
@@ -21630,9 +20984,7 @@
           "full_title": "Monte — Monte 10",
           "search_text": "monte monte 10  ",
           "image": "images/image317.png",
-          "notes": [
-            "Полотна шириной менее 550 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "(Прозрачное 4 мм)",
@@ -21683,9 +21035,7 @@
           "full_title": "Monte — Monte 11",
           "search_text": "monte monte 11  ",
           "image": "images/image318.png",
-          "notes": [
-            "Полотна шириной менее 550 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -21736,9 +21086,7 @@
           "full_title": "Monte — Monte 11 FL",
           "search_text": "monte monte 11 fl  ",
           "image": "images/image319.png",
-          "notes": [
-            "Полотна шириной менее 550 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "Базовое исполнение (без стекла)",
@@ -21787,6 +21135,7 @@
     {
       "name": "Eliss",
       "default_thickness": 38,
+      "has_default_edge": false,
       "std_sizes": {
         "widths": [
           400,
@@ -21854,28 +21203,16 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Покраска по индивидуальному RAL и каталогу NCS, при заказе менее 3-х штук (к цене Белый)",
-          "value": 0.7
-        },
-        {
-          "title": "Двухцветная покраска Эмалью",
-          "value": 0.2
-        }
-      ],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Eliss_eliss1",
           "collection": "Eliss",
           "code": "Eliss 1",
           "full_title": "Eliss — Eliss 1",
-          "search_text": "eliss eliss 1  ",
+          "search_text": "eliss eliss 1  элис eliss",
           "image": "images/image78.png",
           "notes": [
-            "Полотна шириной менее 500 мм идут в исполнении без рисунка на стекле"
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -21895,10 +21232,10 @@
           "collection": "Eliss",
           "code": "Eliss 2",
           "full_title": "Eliss — Eliss 2",
-          "search_text": "eliss eliss 2  ",
+          "search_text": "eliss eliss 2  элис eliss",
           "image": "images/image78.png",
           "notes": [
-            "Полотна шириной менее 500 мм идут в исполнении без рисунка на стекле"
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -21948,10 +21285,10 @@
           "collection": "Eliss",
           "code": "Eliss 3",
           "full_title": "Eliss — Eliss 3",
-          "search_text": "eliss eliss 3  ",
+          "search_text": "eliss eliss 3  элис eliss",
           "image": "images/image78.png",
           "notes": [
-            "Полотна шириной менее 500 мм идут в исполнении без рисунка на стекле"
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -21971,10 +21308,10 @@
           "collection": "Eliss",
           "code": "Eliss 4",
           "full_title": "Eliss — Eliss 4",
-          "search_text": "eliss eliss 4  ",
+          "search_text": "eliss eliss 4  элис eliss",
           "image": "images/image78.png",
           "notes": [
-            "Полотна шириной менее 500 мм идут в исполнении без рисунка на стекле"
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -22024,10 +21361,10 @@
           "collection": "Eliss",
           "code": "Eliss 5",
           "full_title": "Eliss — Eliss 5",
-          "search_text": "eliss eliss 5  ",
+          "search_text": "eliss eliss 5  элис eliss",
           "image": "images/image78.png",
           "notes": [
-            "Полотна шириной менее 500 мм идут в исполнении без рисунка на стекле"
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -22047,10 +21384,10 @@
           "collection": "Eliss",
           "code": "Eliss 6",
           "full_title": "Eliss — Eliss 6",
-          "search_text": "eliss eliss 6  ",
+          "search_text": "eliss eliss 6  элис eliss",
           "image": "images/image78.png",
           "notes": [
-            "Полотна шириной менее 500 мм идут в исполнении без рисунка на стекле"
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -22100,10 +21437,10 @@
           "collection": "Eliss",
           "code": "Eliss 7",
           "full_title": "Eliss — Eliss 7",
-          "search_text": "eliss eliss 7  ",
+          "search_text": "eliss eliss 7  элис eliss",
           "image": "images/image78.png",
           "notes": [
-            "Полотна шириной менее 500 мм идут в исполнении без рисунка на стекле"
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -22123,10 +21460,10 @@
           "collection": "Eliss",
           "code": "Eliss 8",
           "full_title": "Eliss — Eliss 8",
-          "search_text": "eliss eliss 8  ",
+          "search_text": "eliss eliss 8  элис eliss",
           "image": "images/image78.png",
           "notes": [
-            "Полотна шириной менее 500 мм идут в исполнении без рисунка на стекле"
+            "Базовой алюминиевой кромки у коллекции нет."
           ],
           "variants": [
             {
@@ -22176,6 +21513,7 @@
     {
       "name": "Harmony",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           600,
@@ -22242,30 +21580,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Выбор цвета молдинга доступен для всех моделей",
-          "value": null
-        },
-        {
-          "title": "Серебро",
-          "value": 510.0
-        },
-        {
-          "title": "Золото",
-          "value": 510.0
-        },
-        {
-          "title": "Черный (Изготавливается в покрытии Черный кварц)",
-          "value": 305.0
-        },
-        {
-          "title": "Цвет молдинга в цвет полотна Emlayer (Белый, Серый, Бежевый)",
-          "value": null
-        }
-      ],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Harmony_hr1",
@@ -22561,6 +21875,7 @@
     {
       "name": "Prime",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -22628,18 +21943,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Покраска по индивидуальному RAL и каталогу NCS, при заказе менее 3-х штук (к цене Белый)",
-          "value": 0.7
-        },
-        {
-          "title": "Двухцветная покраска Эмалью",
-          "value": 0.2
-        }
-      ],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Prime_prime1",
@@ -22709,6 +22012,7 @@
     {
       "name": "Industrial",
       "default_thickness": 42,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -22792,159 +22096,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Покраска по индивидуальному RAL и каталогу NCS, при заказе менее 3-х штук (к цене Белый)",
-          "value": 0.7
-        },
-        {
-          "title": "Выбор цвета кромки \"Черный\"",
-          "value": 285.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Шампань\"",
-          "value": 565.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Покраска по RAL и NCS\"",
-          "value": 1690.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Матовое золото\"",
-          "value": 565.0
-        },
-        {
-          "title": "Двухцветное остекление (одна сторона двери один цвет стекла, другая сторона другой цвет стекла)",
-          "value": 20.0
-        },
-        {
-          "title": "Двухцветная покраска Эмалью",
-          "value": 20.0
-        },
-        {
-          "title": "Разные модели на одном полотне: IN44",
-          "value": 50.0
-        },
-        {
-          "title": "Двухцветная дверь - разные покрытия с двух сторон на полотне: IN44",
-          "value": 225.0
-        },
-        {
-          "title": "Выбор цвета молдинга 42 мм \"Черный\" для моделей: In Flain 1, In Flain 2, In Flain 5, In Flain 6",
-          "value": 205.0
-        },
-        {
-          "title": "Выбор цвета молдинга 42 мм \"Черный\" для моделей: InM 1 - InM 3, In Miavi M",
-          "value": 285.0
-        },
-        {
-          "title": "Выбор цвета молдинга 42 мм \"Шампань/Матовое золото\" для моделей: InM 1 - InM 3, In Miavi M, In Flain 1, In Flain 2, In Flain 5, In Flain 6",
-          "value": 285.0
-        },
-        {
-          "title": "Выбор цвета молдинга 42 мм \"Матовый хром\" для моделей: InM 1 - InM 3, In Miavi M, In Flain 1, In Flain 2, In Flain 5, In Flain 6",
-          "value": null
-        },
-        {
-          "title": "Выбор цвета молдинга 10 мм \"Матовый хром\" для моделей: In39, In41, In42, In46, InFlain7",
-          "value": null
-        },
-        {
-          "title": "Выбор цвета молдинга 10 мм \"Черный\" для модели: In39",
-          "value": null
-        },
-        {
-          "title": "Выбор цвета молдинга 10 мм \"Черный\" для моделей: In41, In42, In46, InFlain7",
-          "value": 205.0
-        },
-        {
-          "title": "Выбор цвета молдинга 10 мм \"Матовое золото/Шампань\" для моделей: In39, In41, In42, In46, InFlain7",
-          "value": 285.0
-        },
-        {
-          "title": "Выбор цвета молдинга 6 мм \"Матовый хром/Черный\" для моделей: In20, In26, In27, In40, In45",
-          "value": null
-        },
-        {
-          "title": "Выбор цвета молдинга 6 мм \"Матовое золото/шампань\" для моделей: In20, In26, In27, In40, In45",
-          "value": 285.0
-        },
-        {
-          "title": "Примечание 1",
-          "value": 2150.0
-        },
-        {
-          "title": "Примечание 2",
-          "value": 11.0
-        },
-        {
-          "title": "Модели в покрытии Emlayer (кроме Белый) не изготавливаются на системах.",
-          "value": null
-        },
-        {
-          "title": "При заказе модели на систему открывания в покрытии Emlayer Белый, оформление системы заказывается в покрытии Emlayer CV Белый по умолчанию.",
-          "value": null
-        },
-        {
-          "title": "Важно! Все модели по умолчанию изготавливаются с алюминиевой кромкой по периметру в цвете Хром матовый. Стоимость кромки уже включена в стоимость.",
-          "value": null
-        },
-        {
-          "title": "Важно! В связи с высоким весом полотна, модель INS4 всегда заказывается с исполнениями с 3 петлями",
-          "value": null
-        },
-        {
-          "title": "Модели, применяемые с системой Compack, не изготавливаются с опцией \"КП\".",
-          "value": null
-        },
-        {
-          "title": "Примечание: модели In20, In26, In27, In40 изготавливаются с молдингом шириной 6 мм (Т - образный). Расстояние между молдингами для модели In40 составляет - 60 мм",
-          "value": null
-        },
-        {
-          "title": "Примечание: модели InM 1 - InM 3, In Miavi M, In Flain 1, In Flain 2, In Flain 5, In Flain 6 изготавливаются с молдингом шириной 42 мм.",
-          "value": null
-        },
-        {
-          "title": "Внимание! Для выравнивания по верхней линии при совместной установке дверей прямого и реверсивного открывания реверсивное полотно заказывается на 10 мм выше прямого. Пороги наценки за высоту для реверсивных дверей также сдвигаются на +10 мм.",
-          "value": null
-        }
-      ],
-      "glazing_surcharges": [
-        {
-          "title": "Наценка - прибавляется к стоимости Lacobel Белое",
-          "detail": "",
-          "prices": [
-            {
-              "col": 10,
-              "surcharge": 1.0
-            },
-            {
-              "col": 12,
-              "surcharge": 4.0
-            }
-          ]
-        },
-        {
-          "title": "Кризет, 4 мм",
-          "detail": "Под покраску - NCS S 8010-R90B, NCS S 7010-B50G, NCS S 6020-Y60R, NCS S 7020-Y70R, RAL 7012, RAL 9004, RAL 7043",
-          "prices": [
-            {
-              "col": 3,
-              "surcharge": 8010.0
-            },
-            {
-              "col": 10,
-              "surcharge": 2925.0
-            },
-            {
-              "col": 12,
-              "surcharge": 3940.0
-            }
-          ]
-        }
-      ],
       "models": [
         {
           "id": "Industrial_in1",
@@ -23006,7 +22157,7 @@
           "collection": "Industrial",
           "code": "IN2",
           "full_title": "Industrial — IN2",
-          "search_text": "industrial in2 инфинити 2 infinity 2 индастриал инфинити",
+          "search_text": "industrial in2  индастриал инфинити",
           "image": "images/image132.png",
           "notes": [
             "Важно! Все модели по умолчанию изготавливаются с алюминиевой кромкой по периметру в цвете Хром матовый. Стоимость кромки уже включена в стоимость.",
@@ -23463,7 +22614,7 @@
           "search_text": "industrial in40 инфинити 40 infinity 40 индастриал инфинити",
           "image": "images/image138.png",
           "notes": [
-            "Модель IN40 (Инфинити 40): молдинг шириной 6 мм (Т-образный), расстояние между молдингами 60 мм. Базовая толщина 42 мм (кромка Хром матовый в базе).",
+            "Модель IN40: молдинг шириной 6 мм (Т-образный), расстояние между молдингами 60 мм. Базовая толщина 42 мм.",
             "Важно! Все модели по умолчанию изготавливаются с алюминиевой кромкой по периметру в цвете Хром матовый. Стоимость кромки уже включена в стоимость.",
             "Важно: Максимальная высота моделей: In2, In36, In37, In38, InS4 с остеклением Кризет 4 мм – составляет 2000 мм",
             "Важно! Остекление Рифленое \"Lacobel под покраску\" имеет зеленый оттенок, в связи с этим окрашенное стекло будет отличаться по тональности от цвета вееров RAL и NCS. Отличие оттенка является особенностью тональности стекла, и не является производственным дефектом."
@@ -24036,6 +23187,7 @@
     {
       "name": "Fenton",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -24110,34 +23262,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [
-        {
-          "title": "Наценка - прибавляется к базовой стоимости",
-          "detail": "",
-          "prices": [
-            {
-              "col": 12,
-              "surcharge": 28.0
-            }
-          ]
-        },
-        {
-          "title": "Кризет, 4 мм",
-          "detail": "Под покраску - NCS S 8010-R90B, NCS S 7010-B50G, NCS S 6020-Y60R, NCS S 7020-Y70R, RAL 7012, RAL 9004, RAL 7043",
-          "prices": [
-            {
-              "col": 3,
-              "surcharge": 8010.0
-            },
-            {
-              "col": 12,
-              "surcharge": 2925.0
-            }
-          ]
-        }
-      ],
       "models": [
         {
           "id": "Fenton_f0",
@@ -24337,6 +23461,7 @@
     {
       "name": "Cezanne",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -24410,9 +23535,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Cezanne_cz2",
@@ -24489,6 +23611,7 @@
     {
       "name": "Vanguard",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -24562,9 +23685,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Vanguard_v23",
@@ -24759,6 +23879,7 @@
     {
       "name": "Rolf",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -24832,9 +23953,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Rolf_rl1",
@@ -24901,6 +24019,7 @@
     {
       "name": "Element",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -24974,9 +24093,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Element_е7",
@@ -24985,9 +24101,7 @@
           "full_title": "Element — Е7",
           "search_text": "element е7  ",
           "image": "images/image282.png",
-          "notes": [
-            "Полотна шириной менее 600 мм идут в исполнении без рисунка на стекле"
-          ],
+          "notes": [],
           "variants": [
             {
               "label": "ст.1 Белое (Триплекс 8 мм)",
@@ -25401,6 +24515,7 @@
     {
       "name": "Moderno",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -25480,101 +24595,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [
-        {
-          "title": "Двухцветное остекление (одна сторона двери один цвет стекла, другая сторона двери другой цвет стекла)",
-          "value": 20.0
-        },
-        {
-          "title": "Двухцветная покраска Эмалью",
-          "value": 20.0
-        },
-        {
-          "title": "Двухцветная дверь - разные покрытия с двух сторон на полотне: Линиум 8, Линиум 9",
-          "value": 225.0
-        },
-        {
-          "title": "Толщина полотна 42 мм (алюмин. кромка в цвете Хром матовый с 2-х сторон): Линиум 8, Линиум 9",
-          "value": 3675.0
-        },
-        {
-          "title": "Алюминиевая кромка по периметру (с 4х сторон) - Опция \"КП\", к стоимости дверного полотна (только Линиум 8, 9 в толщине 42 мм)",
-          "value": 1125.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Черный\"",
-          "value": 8.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Шампань\"",
-          "value": 565.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Покраска по RAL и NCS\"",
-          "value": 1690.0
-        },
-        {
-          "title": "Выбор цвета кромки \"Матовое золото\"",
-          "value": 565.0
-        },
-        {
-          "title": "Выбор цвета молдинга (Матовый хром) для модели Стелла 3ML, М41, М46",
-          "value": null
-        },
-        {
-          "title": "Выбор цвета молдинга (Черный) для модели Стелла 3ML, М41, М46",
-          "value": 205.0
-        },
-        {
-          "title": "Выбор цвета молдинга (Матовое золото) для модели M39, М40, М41, Стелла 3ML, М46",
-          "value": 285.0
-        },
-        {
-          "title": "Выбор цвета молдинга (Матовый хром/Черный) для моделей: M39; М40",
-          "value": null
-        },
-        {
-          "title": "Выбор цвета молдинга (Шампань) для моделей: M40, М41, Стелла 3ML, М46",
-          "value": 285.0
-        },
-        {
-          "title": "Выбор цвета молдинга (Черный, Матовый хром) для моделей Лайнинг 1, Лайнинг 2",
-          "value": null
-        },
-        {
-          "title": "Выбор цвета молдинга (Матовое золото/Шампань) для моделей Лайнинг 1, Лайнинг 2",
-          "value": 285.0
-        },
-        {
-          "title": "Выбор ABS кромки для моделей Экзотика 6Е, Альфа, Стелла 2, Стелла 3, Стелла 3ML, Гладкое, Экзотика 10Е (Белая, Серая, Черная)",
-          "value": 1125.0
-        },
-        {
-          "title": "Покраска по индивидуальному RAL и каталогу NCS, при заказе менее 3-х штук (к цене Белый)",
-          "value": 0.7
-        },
-        {
-          "title": "* Модели М39, М40, М41 и Стелла 3ML изготавливаются с молдингом шириной 10 мм",
-          "value": null
-        }
-      ],
-      "glazing_surcharges": [
-        {
-          "title": "Кризет, 4 мм",
-          "detail": "Под покраску - NCS S 8010-R90B, NCS S 7010-B50G, NCS S 6020-Y60R, NCS S 7020-Y70R, RAL 7012, RAL 9004, RAL 7043",
-          "prices": [
-            {
-              "col": 3,
-              "surcharge": 8010.0
-            },
-            {
-              "col": 12,
-              "surcharge": 2925.0
-            }
-          ]
-        }
-      ],
       "models": [
         {
           "id": "Moderno_м39",
@@ -26595,6 +25615,7 @@
     {
       "name": "Relish",
       "default_thickness": 38,
+      "has_default_edge": true,
       "std_sizes": {
         "widths": [
           400,
@@ -26662,9 +25683,6 @@
       "ral_single_pct": 70.0,
       "ral_bulk_pct": 30.0,
       "two_tone_enamel_pct": 20.0,
-      "two_sided_coat_rub": 225.0,
-      "options": [],
-      "glazing_surcharges": [],
       "models": [
         {
           "id": "Relish_re1",
@@ -27042,7 +26060,7 @@
   "pogonazh": [
     {
       "id": "pog_46",
-      "category": "plinth",
+      "category": "other",
       "name": "Плинтус",
       "prices": {
         "type1": 1.4,
@@ -27055,7 +26073,7 @@
     },
     {
       "id": "pog_50",
-      "category": "plinth",
+      "category": "other",
       "name": "Алюминиевый плинтус AL FIT 40 Матовый хром",
       "prices": {
         "type1": 735.0,
@@ -27068,7 +26086,7 @@
     },
     {
       "id": "pog_51",
-      "category": "plinth",
+      "category": "other",
       "name": "Алюминиевый плинтус AL FIT 40 Черный",
       "prices": {
         "type1": 905.0,
@@ -27081,7 +26099,7 @@
     },
     {
       "id": "pog_52",
-      "category": "plinth",
+      "category": "other",
       "name": "Алюминиевый плинтус AL FIT 40 RAL&NCS",
       "prices": {
         "type1": 1640.0,
@@ -27354,7 +26372,7 @@
     },
     {
       "id": "pog_93",
-      "category": "threshold",
+      "category": "other",
       "name": "Порог NS 31*75*1050",
       "prices": {
         "type1": 315.0,
@@ -27731,7 +26749,7 @@
     },
     {
       "id": "pog_122",
-      "category": "coupe",
+      "category": "other",
       "name": "Купейная планка (120*16*2070 мм)",
       "prices": {
         "type1": 565.0,
@@ -27744,7 +26762,7 @@
     },
     {
       "id": "pog_123",
-      "category": "coupe",
+      "category": "other",
       "name": "Купейная планка (120*16*2400 мм)",
       "prices": {
         "type1": 675.0,
@@ -27757,7 +26775,7 @@
     },
     {
       "id": "pog_124",
-      "category": "coupe",
+      "category": "other",
       "name": "Купейная планка нестандартная (за кв.м.)",
       "prices": {
         "type1": 4910.0,
@@ -28160,7 +27178,7 @@
     },
     {
       "id": "pog_199",
-      "category": "plinth",
+      "category": "other",
       "name": "Плинтус (16*70*2070 мм)",
       "prices": {
         "type1": 735.0,
@@ -28173,7 +27191,7 @@
     },
     {
       "id": "pog_200",
-      "category": "plinth",
+      "category": "other",
       "name": "Плинтус 10 (10*80*2070 мм)",
       "prices": {
         "type1": 435.0,
@@ -28186,7 +27204,7 @@
     },
     {
       "id": "pog_201",
-      "category": "plinth",
+      "category": "other",
       "name": "Плинтус 100 (16*100*2070 мм)",
       "prices": {
         "type1": 830.0,
@@ -28199,7 +27217,7 @@
     },
     {
       "id": "pog_202",
-      "category": "plinth",
+      "category": "other",
       "name": "Плинтус фигурный (100*16*2070 мм)",
       "prices": {
         "type1": 920.0,
@@ -28212,7 +27230,7 @@
     },
     {
       "id": "pog_203",
-      "category": "plinth",
+      "category": "other",
       "name": "Крепление к плинтусу (1шт., рекомендуется 7 креплений на 1 плинтус)",
       "prices": {
         "type1": 40.0,
@@ -28472,7 +27490,7 @@
     },
     {
       "id": "pog_229",
-      "category": "threshold",
+      "category": "other",
       "name": "Порог In (36*85*1050)",
       "prices": {
         "type1": 320.0,
@@ -28992,7 +28010,7 @@
     },
     {
       "id": "pog_330",
-      "category": "plinth",
+      "category": "other",
       "name": "Плинтусный блок Колонны №10",
       "prices": {
         "type1": null,
@@ -29005,7 +28023,7 @@
     },
     {
       "id": "pog_341",
-      "category": "plinth",
+      "category": "other",
       "name": "Плинтусный блок 22*70*205 мм",
       "prices": {
         "type1": null,
@@ -29018,7 +28036,7 @@
     },
     {
       "id": "pog_342",
-      "category": "plinth",
+      "category": "other",
       "name": "Плинтусный блок 22*80*205 мм",
       "prices": {
         "type1": null,
@@ -29031,7 +28049,7 @@
     },
     {
       "id": "pog_343",
-      "category": "plinth",
+      "category": "other",
       "name": "Плинтусный блок 22*90*205 мм",
       "prices": {
         "type1": null,
@@ -29044,7 +28062,7 @@
     },
     {
       "id": "pog_344",
-      "category": "plinth",
+      "category": "other",
       "name": "Плинтусный блок 22*100*205 мм",
       "prices": {
         "type1": null,
