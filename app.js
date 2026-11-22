@@ -86,6 +86,7 @@ function updateBoxQtyVisibility() {
   const item = (DB.pogonazh || []).find(p => p.id === boxSel.value);
   const qtyWrap = document.getElementById('boxQtyWrap');
   const qtyInput = document.getElementById('boxQty');
+  if (!qtyWrap || !qtyInput) return;
   if (isBoxKit(item)) {
     qtyWrap.classList.add('hidden');
     qtyInput.value = '1';
@@ -156,7 +157,7 @@ function syncEdgeFieldVisibility(col) {
 
   const hasEdge = (col.has_default_edge !== false) || (tMode !== 'base');
 
-  if (!edgeWrap) return;
+  if (!edgeWrap || !edgeSel) return;
   edgeWrap.classList.toggle('hidden', !hasEdge);
 
   if (!hasEdge) {
@@ -177,6 +178,22 @@ function getCurrentModel() {
   return col.models.find(m => m.id === state.modelId) || col.models[0];
 }
 
+function expandModelRanges(text) {
+  let s = text.toLowerCase().replace(/ё/g, 'е');
+  s = s.replace(/([a-zа-я]+\s*)(\d+)\s*[-–]\s*(\d+)/gi, (full, prefix, startStr, endStr) => {
+    const p = prefix.replace(/\s+/g, '');
+    const start = parseInt(startStr, 10);
+    const end = parseInt(endStr, 10);
+    if (isNaN(start) || isNaN(end) || end < start || end - start > 100) return full;
+    const list = [];
+    for (let i = start; i <= end; i++) {
+      list.push(p + i);
+    }
+    return list.join(', ');
+  });
+  return s;
+}
+
 function isCoatingAllowedForModel(coating, col, model) {
   const rule = coating.rules?.[col.name];
   if (!rule) return { allowed: true, reason: 'Доступно по прайсу' };
@@ -184,22 +201,25 @@ function isCoatingAllowedForModel(coating, col, model) {
   const note = (rule.note || '').trim();
   if (!note) return { allowed: true, reason: 'Доступно для ' + col.name };
 
+  const codeNorm = model.code.toLowerCase().replace(/\s+/g, '');
+  const codeSpace = model.code.toLowerCase();
+
   const onlyMatch = note.match(/только\s+([^\)]+)/i);
   if (onlyMatch) {
-    const allowedList = onlyMatch[1].toLowerCase();
-    const codeNorm = model.code.toLowerCase().replace(/\s+/g, '');
-    const codeSpace = model.code.toLowerCase();
-    if (!allowedList.includes(codeNorm) && !allowedList.includes(codeSpace)) {
+    const expanded = expandModelRanges(onlyMatch[1]);
+    const tokens = expanded.split(/[,;\/]+/).map(t => t.replace(/\s+/g, '').trim()).filter(Boolean);
+    const matched = tokens.includes(codeNorm) || expanded.includes(codeSpace);
+    if (!matched) {
       return { allowed: false, reason: 'Только для: ' + onlyMatch[1] };
     }
   }
 
   const exceptMatch = note.match(/кроме\s+([^\)]+)/i);
   if (exceptMatch) {
-    const excList = exceptMatch[1].toLowerCase();
-    const codeNorm = model.code.toLowerCase().replace(/\s+/g, '');
-    const codeSpace = model.code.toLowerCase();
-    if (excList.includes(codeNorm) || (codeSpace.length > 2 && excList.includes(codeSpace))) {
+    const expanded = expandModelRanges(exceptMatch[1]);
+    const tokens = expanded.split(/[,;\/]+/).map(t => t.replace(/\s+/g, '').trim()).filter(Boolean);
+    const excluded = tokens.includes(codeNorm) || (codeSpace.length > 2 && expanded.includes(codeSpace));
+    if (excluded) {
       return { allowed: false, reason: 'Ограничение: ' + note };
     }
   }
