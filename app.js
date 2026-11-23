@@ -53,7 +53,7 @@
   const FALLBACK_DB = {
     meta: {
       price_title: 'Прайс WestStyle (с 01.10.2026)',
-      default_markup_pct: 70,
+      default_markup_pct: 60,
       pin_code: '2304'
     },
     coatings: [
@@ -75,7 +75,7 @@
         has_default_edge: true,
         std_sizes: { widths: [400, 500, 600, 700, 800, 900], heights: [1800, 1850, 1900, 1950, 2000], thicknesses: [38, 42, 58] },
         width_rules: [{ kind: 'exact_900', fixed_rub: 285 }, { kind: 'range', min: 410, max: 950, pct: 10 }],
-        height_rules: [{ min: 2010, max: 2100, pct: 10 }, { min: 2110, max: 2200, pct: 20 }, { min: 2210, max: 2300, pct: 25 }],
+        height_rules: [{ min: 2010, max: 2100, pct: 10 }, { min: 2110, max: 2200, pct: 20 }, { min: 2210, max: 2300, pct: 25 }, { min: 2310, max: 2400, pct: 30 }, { min: 2410, max: 2500, pct: 40 }, { min: 2510, max: 2750, pct: 50 }, { min: 2760, max: 3000, pct: 60 }],
         edge_surcharges: { black: 285, champagne: 565, gold: 565, ral: 1690 },
         thick_surcharges: { '42': 3675, '58': 6750, '58_nb': 7875, kp_58: 1125 },
         molding_surcharge: 285,
@@ -157,7 +157,7 @@
     smartThreshold: false,
     smartModelId: 'seal_800',
     smartCutOnly: false,
-    markupPct: 70,
+    markupPct: 60,
     showFactoryPrice: false,
     unlocked: false
   };
@@ -176,23 +176,246 @@
       .trim();
   }
 
-  function cleanupBetaOverlays() {
-    ['colorTintLayer', 'glassOverlayLayer', 'previewSwatchBar', 'lightboxTint', 'lightboxGlass'].forEach(id => {
-      document.getElementById(id)?.remove();
-    });
-    const imgEl = document.getElementById('modelImg');
-    if (imgEl) {
-      imgEl.style.filter = 'none';
-      imgEl.style.cursor = 'zoom-in';
+  function resolveModelImage(col, model) {
+    if (model && model.image) return model.image;
+    const allColImgs = (col?.models || []).map(m => m.image).filter(Boolean);
+    if (allColImgs.length > 0) return allColImgs[0];
+    return 'images/image120.png';
+  }
+
+  function ensurePrintTagModalAndStyles() {
+    if (!document.getElementById('printTagStyle')) {
+      const st = document.createElement('style');
+      st.id = 'printTagStyle';
+      st.textContent = `
+        .price-tag-modal {
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.85);
+          display: none;
+          align-items: center;
+          justify-content: center;
+          padding: 16px;
+          z-index: 1200;
+          overflow-y: auto;
+        }
+        .price-tag-modal.open { display: flex; }
+        .price-tag-sheet-wrap {
+          background: #161b22;
+          border: 1px solid #30363d;
+          border-radius: 14px;
+          padding: 16px;
+          max-width: 520px;
+          width: 100%;
+          max-height: 92vh;
+          overflow-y: auto;
+        }
+        .price-tag-toolbar {
+          display: flex;
+          gap: 8px;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 12px;
+        }
+        .price-tag-cards {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+        .price-tag-card {
+          background: #ffffff;
+          color: #111827;
+          border: 2px solid #374151;
+          border-radius: 6px;
+          padding: 18px 20px;
+          font-family: Arial, Helvetica, sans-serif;
+        }
+        .pt-logo-slot {
+          min-height: 54px;
+          margin-bottom: 12px;
+        }
+        .pt-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+          gap: 12px;
+          margin-bottom: 8px;
+          font-size: 14px;
+        }
+        .pt-lbl { color: #374151; flex: 0 0 135px; }
+        .pt-val { font-weight: 700; color: #111827; text-align: left; flex: 1; }
+        .pt-model-val { font-size: 20px; font-weight: 800; text-decoration: underline; }
+        .pt-sub-val { font-size: 15px; font-weight: 700; text-decoration: underline; }
+        .pt-leaf-price {
+          font-size: 28px;
+          font-weight: 800;
+          color: #dc2626;
+          border-bottom: 3px solid #dc2626;
+          padding-bottom: 2px;
+          display: inline-block;
+        }
+        .pt-total-price {
+          font-size: 28px;
+          font-weight: 800;
+          color: #111827;
+          border-bottom: 3px solid #111827;
+          padding-bottom: 2px;
+          display: inline-block;
+        }
+        .pt-country {
+          margin-top: 14px;
+          text-align: center;
+          font-size: 12px;
+          color: #374151;
+        }
+        @media print {
+          body > *:not(#printTagModal) { display: none !important; }
+          #printTagModal {
+            position: static !important;
+            display: block !important;
+            background: #ffffff !important;
+            padding: 0 !important;
+            overflow: visible !important;
+          }
+          .price-tag-sheet-wrap {
+            background: #ffffff !important;
+            border: none !important;
+            padding: 0 !important;
+            max-width: none !important;
+            max-height: none !important;
+            overflow: visible !important;
+          }
+          .price-tag-toolbar { display: none !important; }
+          .price-tag-cards { gap: 0 !important; }
+          .price-tag-card {
+            border: 1px solid #111827 !important;
+            border-radius: 0 !important;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            margin-bottom: 12mm;
+          }
+        }
+      `;
+      document.head.appendChild(st);
     }
-    const lbImg = document.getElementById('lightboxImg');
-    if (lbImg) {
-      lbImg.style.filter = 'none';
+
+    if (!document.getElementById('printTagModal')) {
+      const modal = document.createElement('div');
+      modal.id = 'printTagModal';
+      modal.className = 'price-tag-modal';
+      modal.innerHTML = `
+        <div class="price-tag-sheet-wrap">
+          <div class="price-tag-toolbar">
+            <strong style="color:#e6edf3;font-size:15px;">Макет ценника</strong>
+            <div style="display:flex;gap:8px;">
+              <button type="button" id="btnDoPrintTag" class="btn-primary" style="width:auto;padding:8px 14px;font-size:13px;">Печать</button>
+              <button type="button" id="btnClosePrintTag" class="btn-close" style="background:#1f2630;border:1px solid #30363d;border-radius:8px;padding:6px 10px;color:#e6edf3;">✕</button>
+            </div>
+          </div>
+          <div class="price-tag-cards" id="priceTagCardsContainer"></div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target.id === 'btnClosePrintTag') {
+          modal.classList.remove('open');
+        }
+      });
+
+      document.getElementById('btnDoPrintTag')?.addEventListener('click', () => {
+        window.print();
+      });
     }
   }
 
+  function renderAndOpenPrintTags() {
+    ensurePrintTagModalAndStyles();
+    const q = window.__LAST_TAG_DATA;
+    if (!q) return;
+
+    const container = document.getElementById('priceTagCardsContainer');
+    if (!container) return;
+
+    const count = Math.max(1, Number(q.setsQty) || 1);
+    const singleCardHtml = `
+      <div class="price-tag-card">
+        <div class="pt-logo-slot" id="ptLogoSlot"></div>
+        <div class="pt-row">
+          <span class="pt-lbl">Модель:</span>
+          <span class="pt-val pt-model-val">${q.modelName}</span>
+        </div>
+        <div class="pt-row">
+          <span class="pt-lbl">Цвет:</span>
+          <span class="pt-val pt-sub-val">${q.colorName}</span>
+        </div>
+        <div class="pt-row">
+          <span class="pt-lbl">Покрытие:</span>
+          <span class="pt-val pt-sub-val">${q.coatingDesc}</span>
+        </div>
+        <div class="pt-row">
+          <span class="pt-lbl">Цена дверного<br/>полотна:</span>
+          <span class="pt-val"><span class="pt-leaf-price">${q.leafPriceStr}</span></span>
+        </div>
+        <div class="pt-row">
+          <span class="pt-lbl">Коробка:</span>
+          <span class="pt-val pt-sub-val">${q.boxPriceStr}</span>
+        </div>
+        <div class="pt-row">
+          <span class="pt-lbl">Наличник:</span>
+          <span class="pt-val pt-sub-val">${q.casingPriceStr}</span>
+        </div>
+        <div class="pt-row" style="margin-top:8px;">
+          <span class="pt-lbl">стоимость<br/>комплекта*:<br/>без фурнитуры</span>
+          <span class="pt-val"><span class="pt-total-price">${q.setPriceStr}</span></span>
+        </div>
+        <div class="pt-country">Страна производитель: Россия</div>
+      </div>
+    `;
+
+    container.innerHTML = Array.from({ length: count }, () => singleCardHtml).join('');
+    document.getElementById('printTagModal')?.classList.add('open');
+  }
+
+  function getCollectionSizeBounds(col, model) {
+    if (col?.size_limits) {
+      return {
+        minW: Number(col.size_limits.min_w) || 400,
+        maxW: Number(col.size_limits.max_w) || 950,
+        minH: Number(col.size_limits.min_h) || 1800,
+        maxH: Number(col.size_limits.max_h) || 2500
+      };
+    }
+
+    const wNums = [];
+    (col?.std_sizes?.widths || [400, 500, 600, 700, 800, 900]).forEach(x => wNums.push(Number(x)));
+    (col?.width_rules || []).forEach(r => {
+      if (typeof r.min === 'number') wNums.push(r.min);
+      if (typeof r.max === 'number') wNums.push(r.max);
+    });
+
+    const hNums = [];
+    (col?.std_sizes?.heights || [1800, 1850, 1900, 1950, 2000]).forEach(x => hNums.push(Number(x)));
+    (col?.height_rules || []).forEach(r => {
+      if (typeof r.min === 'number') hNums.push(r.min);
+      if (typeof r.max === 'number') hNums.push(r.max);
+    });
+
+    let maxH = hNums.length ? Math.max(...hNums) : 2500;
+    const codeNorm = normKey(model?.code || '');
+    if (codeNorm === 'in9' && state.coatingType === 'grunt') {
+      maxH = Math.min(maxH, 2300);
+    }
+
+    return {
+      minW: wNums.length ? Math.min(...wNums) : 400,
+      maxW: wNums.length ? Math.max(...wNums) : 950,
+      minH: hNums.length ? Math.min(...hNums) : 1800,
+      maxH
+    };
+  }
+
   function ensureLightboxModal() {
-    cleanupBetaOverlays();
     if (document.getElementById('lightboxModal')) return;
     const modal = document.createElement('div');
     modal.id = 'lightboxModal';
@@ -282,6 +505,7 @@
 
   function ensureControlsAndContainers() {
     ensureLightboxModal();
+    ensurePrintTagModalAndStyles();
 
     const typeTabs = document.getElementById('typeTabs');
     if (typeTabs && !typeTabs.querySelector('[data-type="grunt"]')) {
@@ -300,6 +524,17 @@
         resBox.id = 'searchResults';
         resBox.className = 'search-results hidden';
         searchWrap.parentNode.insertBefore(resBox, searchWrap.nextSibling);
+      }
+    }
+
+    if (!document.getElementById('sizeLimitWarning')) {
+      const sizeHint = document.getElementById('sizeRuleHint');
+      const warn = document.createElement('div');
+      warn.id = 'sizeLimitWarning';
+      warn.className = 'restriction-note warn hidden';
+      warn.style.marginTop = '8px';
+      if (sizeHint && sizeHint.parentNode) {
+        sizeHint.parentNode.insertBefore(warn, sizeHint);
       }
     }
 
@@ -381,6 +616,23 @@
           rList.parentNode.insertBefore(fSec, rList);
         } else {
           summaryCard.appendChild(fSec);
+        }
+      }
+
+      if (!document.getElementById('btnPrintPriceTag')) {
+        const btnCopy = document.getElementById('btnCopyQuote');
+        const btnPrint = document.createElement('button');
+        btnPrint.type = 'button';
+        btnPrint.id = 'btnPrintPriceTag';
+        btnPrint.className = 'btn-primary';
+        btnPrint.style.marginTop = '8px';
+        btnPrint.style.background = '#1f2630';
+        btnPrint.style.border = '1px solid #30363d';
+        btnPrint.textContent = 'Печать ценника';
+        if (btnCopy && btnCopy.parentNode) {
+          btnCopy.parentNode.insertBefore(btnPrint, btnCopy.nextSibling);
+        } else {
+          summaryCard.appendChild(btnPrint);
         }
       }
     }
@@ -657,7 +909,6 @@
   }
 
   function renderModelDetails() {
-    cleanupBetaOverlays();
     const col = getCurrentCollection();
     const model = getCurrentModel();
     if (!model) return;
@@ -671,9 +922,18 @@
     if (imgEl) {
       imgEl.style.filter = 'none';
       imgEl.style.cursor = 'zoom-in';
-      if (model.image) {
-        imgEl.src = model.image;
+      const resolvedSrc = resolveModelImage(col, model);
+      if (resolvedSrc) {
+        imgEl.src = resolvedSrc;
         imgEl.style.display = 'block';
+        imgEl.onerror = () => {
+          const fallbackSrc = resolveModelImage(col, null);
+          if (imgEl.getAttribute('src') !== fallbackSrc) {
+            imgEl.src = fallbackSrc;
+          } else {
+            imgEl.style.display = 'none';
+          }
+        };
       } else {
         imgEl.style.display = 'none';
       }
@@ -796,21 +1056,23 @@
     return p.type1 ?? p.type2 ?? p.enamel ?? 0;
   }
 
-  function calcSizeSurcharge(col, baseLeaf, w, h) {
+  function calcSizeSurcharge(col, baseLeaf, w, h, bounds) {
     const stdW = col.std_sizes?.widths || [400, 500, 600, 700, 800, 900];
     const stdH = col.std_sizes?.heights || [1800, 1850, 1900, 1950, 2000];
+    const effW = Math.min(Math.max(w, bounds.minW), bounds.maxW);
+    const effH = Math.min(Math.max(h, bounds.minH), bounds.maxH);
 
     let wSurcharge = 0;
     let wDesc = 'стандарт';
-    if (!stdW.includes(w)) {
+    if (!stdW.includes(effW)) {
       let matchedPct = 0;
       for (const r of (col.width_rules || [])) {
-        if (r.kind === 'range' && w >= r.min && w <= r.max) matchedPct = Math.max(matchedPct, r.pct);
+        if (r.kind === 'range' && effW >= r.min && effW <= r.max) matchedPct = Math.max(matchedPct, r.pct);
       }
       if (matchedPct === 0) matchedPct = 10;
       wSurcharge = baseLeaf * (matchedPct / 100);
-      wDesc = `нестандарт ${w} мм (+${matchedPct}%)`;
-    } else if (w === 900) {
+      wDesc = `нестандарт ${effW} мм (+${matchedPct}%)`;
+    } else if (effW === 900) {
       const r900 = (col.width_rules || []).find(r => r.kind === 'exact_900');
       wSurcharge = r900 ? r900.fixed_rub : 285;
       wDesc = `ширина 900 мм (+${fmtRub(wSurcharge)})`;
@@ -818,18 +1080,18 @@
 
     let hPct = 0;
     let hDesc = 'стандарт';
-    if (!stdH.includes(h)) {
+    if (!stdH.includes(effH)) {
       for (const r of (col.height_rules || [])) {
-        if (h >= r.min && h <= r.max) hPct = Math.max(hPct, r.pct);
+        if (effH >= r.min && effH <= r.max) hPct = Math.max(hPct, r.pct);
       }
-      if (hPct === 0 && h > 2000) hPct = 10;
-      hDesc = `нестандарт ${h} мм (+${hPct}%)`;
+      if (hPct === 0 && effH > 2000) hPct = 10;
+      hDesc = `нестандарт ${effH} мм (+${hPct}%)`;
     }
 
     const hSurcharge = baseLeaf * (hPct / 100);
-    if (wSurcharge >= hSurcharge && wSurcharge > 0) return { amount: wSurcharge, label: `Размер (${wDesc}, макс. из Ш/В)` };
-    if (hSurcharge > wSurcharge && hSurcharge > 0) return { amount: hSurcharge, label: `Размер (${hDesc}, макс. из Ш/В)` };
-    return { amount: 0, label: `Размер ${w}×${h} мм (стандарт)` };
+    if (wSurcharge >= hSurcharge && wSurcharge > 0) return { amount: wSurcharge, label: `Размер (${wDesc}, макс. из Ш/В)`, effW, effH };
+    if (hSurcharge > wSurcharge && hSurcharge > 0) return { amount: hSurcharge, label: `Размер (${hDesc}, макс. из Ш/В)`, effW, effH };
+    return { amount: 0, label: `Размер ${effW}×${effH} мм (стандарт)`, effW, effH };
   }
 
   function resolvePogonazhUnitPrice(item) {
@@ -921,12 +1183,38 @@
 
     const w = Number(document.getElementById('widthInput')?.value) || 800;
     const h = Number(document.getElementById('heightInput')?.value) || 2000;
-    const sizeRes = calcSizeSurcharge(col, baseLeaf, w, h);
+    const bounds = getCollectionSizeBounds(col, model);
+    const sizeWarnings = [];
+    if (w > bounds.maxW) {
+      sizeWarnings.push(`Ширина ${w} мм не изготавливается для ${col.name} (макс. по прайсу ${bounds.maxW} мм)`);
+    } else if (w < bounds.minW) {
+      sizeWarnings.push(`Ширина ${w} мм меньше минимальной по прайсу (${bounds.minW} мм)`);
+    }
+    if (h > bounds.maxH) {
+      sizeWarnings.push(`Высота ${h} мм отсутствует в прайсе для ${col.name} (макс. по прайсу ${bounds.maxH} мм)`);
+    } else if (h < bounds.minH) {
+      sizeWarnings.push(`Высота ${h} мм меньше минимальной по прайсу (${bounds.minH} мм)`);
+    }
+
+    const sizeWarnEl = document.getElementById('sizeLimitWarning');
+    if (sizeWarnEl) {
+      if (sizeWarnings.length > 0) {
+        sizeWarnEl.textContent = sizeWarnings.join(' • ');
+        sizeWarnEl.classList.remove('hidden');
+      } else {
+        sizeWarnEl.textContent = '';
+        sizeWarnEl.classList.add('hidden');
+      }
+    }
+
+    const sizeRes = calcSizeSurcharge(col, baseLeaf, w, h, bounds);
     leafExtra += sizeRes.amount;
     if (sizeRes.amount > 0) leafSubLines.push({ name: sizeRes.label, val: sizeRes.amount });
 
     const sizeHint = document.getElementById('sizeRuleHint');
-    if (sizeHint) sizeHint.textContent = 'Наценки за нестандартную ширину и высоту не суммируются — применяется наибольшая.';
+    if (sizeHint) {
+      sizeHint.textContent = `Допустимые размеры по прайсу для ${col.name}: ширина ${bounds.minW}–${bounds.maxW} мм, высота ${bounds.minH}–${bounds.maxH} мм. Наценки за Ш/В не суммируются.`;
+    }
 
     const tSel = document.getElementById('thicknessSelect');
     const tMode = tSel?.value || 'base';
@@ -1145,11 +1433,14 @@
     const quoteLines = [
       `Модель: ${variant.full_name} (${col.name})`,
       `Цвет: ${coatingLabel}${enamelExtraText}`,
-      `Размер: ${w}×${h} мм`,
+      `Размер: ${sizeRes.effW}×${sizeRes.effH} мм`,
       `Толщина: ${thicknessText}`,
       `Кромка: ${edgeText}`,
       `Полотно: ${fmtRub(retailLeaf)}`
     ];
+    if (sizeWarnings.length > 0) {
+      quoteLines.push(`Примечание по размеру: ${sizeWarnings.join('; ')}`);
+    }
     if (factorySmart > 0) {
       quoteLines.push(`${smartLabel}: ${fmtRub(factorySmart * multiplier)}`);
     }
@@ -1164,6 +1455,17 @@
     quoteLines.push(`Итого за 1 шт.: ${fmtRub(retailUnit)}`);
     if (setsQty > 1) quoteLines.push(`Итого за заказ (${setsQty} шт.): ${fmtRub(retailOrder)}`);
     window.__LAST_QUOTE_TEXT = quoteLines.join('\n');
+
+    window.__LAST_TAG_DATA = {
+      modelName: `${variant.full_name} (${col.name})`,
+      colorName: `${coatingLabel}${enamelExtraText}`,
+      coatingDesc: `${thicknessText}, ${edgeText}, ${sizeRes.effW}×${sizeRes.effH} мм`,
+      leafPriceStr: fmtRub(retailLeaf),
+      boxPriceStr: isSet && retailBox > 0 ? `${fmtRub(retailBox)} / комплект` : '—',
+      casingPriceStr: isSet && retailCasings > 0 ? `${fmtRub(retailCasings)} / комплект` : '—',
+      setPriceStr: fmtRub(retailUnit),
+      setsQty
+    };
   }
 
   function runSearch(q) {
@@ -1256,6 +1558,11 @@
     });
 
     document.addEventListener('click', (e) => {
+      if (e.target.closest('#btnPrintPriceTag')) {
+        renderAndOpenPrintTags();
+        return;
+      }
+
       if (e.target.closest('#modelImg') || e.target.closest('.hero-img-box')) {
         openLightbox();
         return;
@@ -1379,7 +1686,9 @@
         if (loaded && Array.isArray(loaded.collections) && loaded.collections.length > 0) {
           DB = loaded;
           ensureGruntCatalogEntries();
-          state.markupPct = Number(DB.meta?.default_markup_pct ?? 70);
+          state.markupPct = Number(DB.meta?.default_markup_pct ?? 60);
+          const mInp = document.getElementById('markupInput');
+          if (mInp) mInp.value = state.markupPct;
           const metaEl = document.getElementById('priceMeta');
           if (metaEl) metaEl.textContent = DB.meta?.price_title || 'Прайс WestStyle';
         }
@@ -1398,7 +1707,6 @@
     selectCollection(state.collectionIdx, state.modelId);
     updateBoxQtyVisibility();
     syncSmartThresholdState();
-    cleanupBetaOverlays();
     recalculate();
   }
 
