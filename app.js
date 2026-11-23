@@ -176,168 +176,23 @@
       .trim();
   }
 
-  function getCoatingVisualStyle(coatingObj, coatingType) {
-    if (coatingType === 'grunt') {
-      return {
-        filter: 'brightness(1.04) contrast(0.95) saturate(0.25)',
-        tintBg: 'rgba(186, 194, 202, 0.24)',
-        badge: coatingObj?.color || 'Грунт под эмаль'
-      };
-    }
-    const name = (coatingObj?.color || '').toLowerCase();
-    const label = coatingObj ? `${coatingObj.color}` : coatingType;
-
-    if (name.includes('бел') || name.includes('снеж') || name.includes('облач') || name.includes('вуаль') || name.includes('меринос') || name.includes('айс') || name.includes('бьянко')) {
-      return { filter: 'brightness(1.06) contrast(0.96) saturate(0.35)', tintBg: 'rgba(248, 250, 252, 0.22)', badge: label };
-    }
-    if (name.includes('черн') || name.includes('оникс') || name.includes('кварц') || name.includes('ночь') || name.includes('шифон')) {
-      return { filter: 'brightness(0.76) contrast(1.12) saturate(0.55)', tintBg: 'rgba(24, 28, 36, 0.26)', badge: label };
-    }
-    if (name.includes('графит') || name.includes('сер') || name.includes('бетон') || name.includes('камень') || name.includes('гальк') || name.includes('дым') || name.includes('гавань')) {
-      return { filter: 'brightness(0.9) contrast(1.04) saturate(0.45)', tintBg: 'rgba(100, 116, 139, 0.18)', badge: label };
-    }
-    if (name.includes('орех') || name.includes('венге') || name.includes('каштан') || name.includes('трюфель') || name.includes('брандо') || name.includes('мехико')) {
-      return { filter: 'brightness(0.86) contrast(1.08) sepia(0.28) saturate(1.15)', tintBg: 'rgba(120, 72, 42, 0.18)', badge: label };
-    }
-    if (name.includes('дуб') || name.includes('клен') || name.includes('санлемо') || name.includes('золот') || name.includes('песч') || name.includes('макиато') || name.includes('глясе') || name.includes('ваниль')) {
-      return { filter: 'brightness(0.98) contrast(1.02) sepia(0.18) saturate(1.08)', tintBg: 'rgba(217, 179, 124, 0.16)', badge: label };
-    }
-    if (name.includes('бургунди') || name.includes('роз')) {
-      return { filter: 'brightness(0.92) contrast(1.05) sepia(0.22) saturate(1.2)', tintBg: 'rgba(159, 63, 86, 0.16)', badge: label };
-    }
-    if (name.includes('нефрит') || name.includes('океан') || name.includes('лазур')) {
-      return { filter: 'brightness(0.94) contrast(1.04) saturate(1.1)', tintBg: 'rgba(56, 132, 150, 0.15)', badge: label };
-    }
-    return { filter: 'none', tintBg: 'transparent', badge: label };
-  }
-
-  function getGlassVisualStyle(variantObj) {
-    const txt = (variantObj?.full_name || variantObj?.label || '').toLowerCase();
-    const hasGlass = [
-      'ст.', 'ст ', 'ст№', 'стекл', 'сатинат', 'зеркал', 'lacobel',
-      'matelac', 'триплекс', 'фацет', 'сияние', 'кризет', 'витраж',
-      'прозрачн', 'бронз', 'графит', 'уф'
-    ].some(k => txt.includes(k));
-
-    if (!hasGlass) return null;
-
-    let glassBg = 'linear-gradient(135deg, rgba(255,255,255,0.42) 0%, rgba(226,232,240,0.22) 55%, rgba(255,255,255,0.38) 100%)';
-    let glassBorder = 'rgba(148, 163, 184, 0.65)';
-    let blur = 'blur(1.5px)';
-    let badge = 'Стекло';
-
-    if (txt.includes('бронз')) {
-      glassBg = 'linear-gradient(135deg, rgba(180,120,70,0.45) 0%, rgba(120,75,40,0.32) 100%)';
-      glassBorder = 'rgba(180, 120, 70, 0.8)';
-      badge = 'Бронза';
-    } else if (txt.includes('графит')) {
-      glassBg = 'linear-gradient(135deg, rgba(55,65,81,0.55) 0%, rgba(31,41,55,0.42) 100%)';
-      glassBorder = 'rgba(75, 85, 99, 0.85)';
-      badge = 'Графит';
-    } else if (txt.includes('зеркал')) {
-      glassBg = 'linear-gradient(135deg, rgba(241,245,249,0.78) 0%, rgba(148,163,184,0.45) 50%, rgba(248,250,252,0.75) 100%)';
-      glassBorder = 'rgba(203, 213, 225, 0.9)';
-      blur = 'none';
-      badge = 'Зеркало';
-    } else if (txt.includes('черн')) {
-      glassBg = 'linear-gradient(135deg, rgba(15,23,42,0.72) 0%, rgba(30,41,59,0.58) 100%)';
-      glassBorder = 'rgba(15, 23, 42, 0.9)';
-      blur = 'none';
-      badge = 'Чёрное стекло';
-    } else if (txt.includes('сатинат') || txt.includes('бел') || txt.includes('сияние')) {
-      glassBg = 'linear-gradient(135deg, rgba(255,255,255,0.68) 0%, rgba(241,245,249,0.52) 100%)';
-      glassBorder = 'rgba(203, 213, 225, 0.85)';
-      blur = 'blur(3px)';
-      badge = 'Сатинат / Белое';
-    } else if (txt.includes('прозрачн')) {
-      glassBg = 'linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(224,242,254,0.12) 100%)';
-      glassBorder = 'rgba(186, 230, 253, 0.7)';
-      blur = 'none';
-      badge = 'Прозрачное';
-    }
-
-    const matchLabel = variantObj?.label || variantObj?.full_name || badge;
-    return { glassBg, glassBorder, blur, badge: matchLabel };
-  }
-
-  function ensurePreviewLayers() {
+  function cleanupBetaOverlays() {
+    ['colorTintLayer', 'glassOverlayLayer', 'previewSwatchBar', 'lightboxTint', 'lightboxGlass'].forEach(id => {
+      document.getElementById(id)?.remove();
+    });
     const imgEl = document.getElementById('modelImg');
-    if (!imgEl || !imgEl.parentNode) return;
-    const box = imgEl.parentNode;
-    box.style.position = 'relative';
-    box.style.overflow = 'hidden';
-    box.style.cursor = 'zoom-in';
-
-    if (!document.getElementById('colorTintLayer')) {
-      const tint = document.createElement('div');
-      tint.id = 'colorTintLayer';
-      tint.style.cssText = 'position:absolute;inset:8px;pointer-events:none;border-radius:6px;transition:background 0.2s ease;';
-      box.appendChild(tint);
+    if (imgEl) {
+      imgEl.style.filter = 'none';
+      imgEl.style.cursor = 'zoom-in';
     }
-
-    if (!document.getElementById('glassOverlayLayer')) {
-      const gl = document.createElement('div');
-      gl.id = 'glassOverlayLayer';
-      gl.style.cssText = 'position:absolute;left:22%;right:22%;top:16%;bottom:18%;pointer-events:none;border-radius:4px;opacity:0;transition:all 0.2s ease;display:flex;align-items:flex-end;justify-content:center;padding:4px;';
-      box.appendChild(gl);
-    }
-
-    if (!document.getElementById('previewSwatchBar')) {
-      const bar = document.createElement('div');
-      bar.id = 'previewSwatchBar';
-      bar.style.cssText = 'position:absolute;left:8px;right:8px;bottom:8px;display:flex;flex-wrap:wrap;gap:4px;pointer-events:none;';
-      box.appendChild(bar);
-    }
-  }
-
-  function updatePreviewVisuals() {
-    ensurePreviewLayers();
-    const imgEl = document.getElementById('modelImg');
-    const tintEl = document.getElementById('colorTintLayer');
-    const glassEl = document.getElementById('glassOverlayLayer');
-    const swatchEl = document.getElementById('previewSwatchBar');
-    if (!imgEl) return;
-
-    const coatingObj = (DB.coatings || []).find(c => c.id === state.coatingId);
-    const cStyle = getCoatingVisualStyle(coatingObj, state.coatingType);
-    imgEl.style.filter = cStyle.filter;
-    imgEl.style.transition = 'filter 0.2s ease';
-
-    if (tintEl) {
-      tintEl.style.background = cStyle.tintBg;
-    }
-
-    const model = getCurrentModel();
-    const variant = model?.variants?.[state.variantIdx] || model?.variants?.[0];
-    const gStyle = getGlassVisualStyle(variant);
-
-    if (glassEl) {
-      if (gStyle) {
-        glassEl.style.opacity = '1';
-        glassEl.style.background = gStyle.glassBg;
-        glassEl.style.border = `1.5px solid ${gStyle.glassBorder}`;
-        glassEl.style.backdropFilter = gStyle.blur;
-      } else {
-        glassEl.style.opacity = '0';
-        glassEl.style.background = 'transparent';
-        glassEl.style.border = 'none';
-        glassEl.style.backdropFilter = 'none';
-      }
-    }
-
-    if (swatchEl) {
-      const parts = [];
-      if (cStyle.badge) {
-        parts.push(`<span style="background:rgba(13,17,23,0.84);color:#e6edf3;font-size:10px;padding:2px 6px;border-radius:5px;border:1px solid rgba(255,255,255,0.16);">${cStyle.badge}</span>`);
-      }
-      if (gStyle) {
-        parts.push(`<span style="background:rgba(59,130,246,0.88);color:#ffffff;font-size:10px;padding:2px 6px;border-radius:5px;">${gStyle.badge}</span>`);
-      }
-      swatchEl.innerHTML = parts.join('');
+    const lbImg = document.getElementById('lightboxImg');
+    if (lbImg) {
+      lbImg.style.filter = 'none';
     }
   }
 
   function ensureLightboxModal() {
+    cleanupBetaOverlays();
     if (document.getElementById('lightboxModal')) return;
     const modal = document.createElement('div');
     modal.id = 'lightboxModal';
@@ -345,11 +200,7 @@
     modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px;z-index:999;';
     modal.innerHTML = `
       <button type="button" id="btnCloseLightbox" aria-label="Закрыть" style="position:fixed;top:14px;right:14px;width:40px;height:40px;border-radius:999px;border:1px solid rgba(255,255,255,0.25);background:rgba(22,27,34,0.9);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
-      <div id="lightboxStage" style="position:relative;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;padding:10px;border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,0.65);">
-        <img id="lightboxImg" src="" alt="Предпросмотр двери" style="max-width:92vw;max-height:78vh;object-fit:contain;display:block;" />
-        <div id="lightboxTint" style="position:absolute;inset:10px;pointer-events:none;border-radius:6px;"></div>
-        <div id="lightboxGlass" style="position:absolute;left:22%;right:22%;top:16%;bottom:18%;pointer-events:none;border-radius:4px;opacity:0;"></div>
-      </div>
+      <img id="lightboxImg" src="" alt="Предпросмотр двери" style="max-width:95vw;max-height:84vh;object-fit:contain;border-radius:10px;background:#ffffff;padding:8px;box-shadow:0 12px 40px rgba(0,0,0,0.65);" />
       <div id="lightboxCaption" style="margin-top:10px;color:#e6edf3;font-size:14px;font-weight:600;text-align:center;"></div>
     `;
     document.body.appendChild(modal);
@@ -379,39 +230,14 @@
 
     const modal = document.getElementById('lightboxModal');
     const lbImg = document.getElementById('lightboxImg');
-    const lbTint = document.getElementById('lightboxTint');
-    const lbGlass = document.getElementById('lightboxGlass');
     const lbCap = document.getElementById('lightboxCaption');
-
-    const coatingObj = (DB.coatings || []).find(c => c.id === state.coatingId);
-    const cStyle = getCoatingVisualStyle(coatingObj, state.coatingType);
-    const model = getCurrentModel();
-    const variant = model?.variants?.[state.variantIdx] || model?.variants?.[0];
-    const gStyle = getGlassVisualStyle(variant);
+    const titleText = document.getElementById('modelTitle')?.textContent || '';
 
     if (lbImg) {
       lbImg.src = imgEl.getAttribute('src');
-      lbImg.style.filter = cStyle.filter;
+      lbImg.style.filter = 'none';
     }
-    if (lbTint) {
-      lbTint.style.background = cStyle.tintBg;
-    }
-    if (lbGlass) {
-      if (gStyle) {
-        lbGlass.style.opacity = '1';
-        lbGlass.style.background = gStyle.glassBg;
-        lbGlass.style.border = `1.5px solid ${gStyle.glassBorder}`;
-        lbGlass.style.backdropFilter = gStyle.blur;
-      } else {
-        lbGlass.style.opacity = '0';
-      }
-    }
-
-    const titleText = document.getElementById('modelTitle')?.textContent || '';
-    const extraParts = [cStyle.badge, gStyle?.badge].filter(Boolean);
-    if (lbCap) {
-      lbCap.textContent = extraParts.length ? `${titleText} • ${extraParts.join(' / ')}` : titleText;
-    }
+    if (lbCap) lbCap.textContent = titleText;
 
     if (modal) {
       modal.classList.remove('hidden');
@@ -456,7 +282,6 @@
 
   function ensureControlsAndContainers() {
     ensureLightboxModal();
-    ensurePreviewLayers();
 
     const typeTabs = document.getElementById('typeTabs');
     if (typeTabs && !typeTabs.querySelector('[data-type="grunt"]')) {
@@ -832,6 +657,7 @@
   }
 
   function renderModelDetails() {
+    cleanupBetaOverlays();
     const col = getCurrentCollection();
     const model = getCurrentModel();
     if (!model) return;
@@ -843,6 +669,7 @@
 
     const imgEl = document.getElementById('modelImg');
     if (imgEl) {
+      imgEl.style.filter = 'none';
       imgEl.style.cursor = 'zoom-in';
       if (model.image) {
         imgEl.src = model.image;
@@ -882,7 +709,6 @@
     }
 
     renderColorsForType();
-    updatePreviewVisuals();
   }
 
   function renderColorsForType() {
@@ -934,7 +760,6 @@
     }
 
     updateCoatingRestrictionMessage();
-    updatePreviewVisuals();
   }
 
   function updateCoatingRestrictionMessage() {
@@ -1062,7 +887,6 @@
   function recalculate() {
     ensureControlsAndContainers();
     syncSmartThresholdState();
-    updatePreviewVisuals();
 
     const col = getCurrentCollection();
     const model = getCurrentModel();
@@ -1457,14 +1281,12 @@
 
     document.getElementById('variantSelect')?.addEventListener('change', e => {
       state.variantIdx = Number(e.target.value) || 0;
-      updatePreviewVisuals();
       recalculate();
     });
 
     document.getElementById('colorSelect')?.addEventListener('change', e => {
       state.coatingId = e.target.value;
       updateCoatingRestrictionMessage();
-      updatePreviewVisuals();
       recalculate();
     });
 
@@ -1576,7 +1398,7 @@
     selectCollection(state.collectionIdx, state.modelId);
     updateBoxQtyVisibility();
     syncSmartThresholdState();
-    updatePreviewVisuals();
+    cleanupBetaOverlays();
     recalculate();
   }
 
