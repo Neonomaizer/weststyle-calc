@@ -248,6 +248,116 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
     document.getElementById('printTagModal')?.classList.add('open');
   }
 
+  const FRAMUGA_PATTERN_COLLECTIONS = new Set([
+    'industrial', 'arcana', 'moderno', 'prime', 'venezia', 'monte', 'eliss', 'novva', 'demiss', 'amare', 'enigma'
+  ]);
+
+  function getAvailableFramugaItems(col, model) {
+    const cName = col?.name || '';
+    const cKey = cName.toLowerCase();
+    const mCode = model?.code || '';
+    const boxName = (document.getElementById('boxSelect')?.selectedOptions?.[0]?.textContent || '').toLowerCase();
+    const isCoplanarBox = boxName.includes('компланарн');
+
+    const list = [
+      {
+        id: 'ff_smooth_std',
+        kind: 'standard',
+        name: 'Фальш-фрамуга Гладкая (универсальная, до 750×900 мм)',
+        prices: { type1: 4120, type2: 4620, type3: 5290, enamel: 6250, grunt: 4120 }
+      },
+      {
+        id: 'ff_smooth_m2',
+        kind: 'standard_m2',
+        name: 'Фальш-фрамуга Гладкая нестандарт (за м²)',
+        prices: { type1: 6800, type2: 7550, type3: 8600, enamel: 10200, grunt: 6800 }
+      }
+    ];
+
+    if (FRAMUGA_PATTERN_COLLECTIONS.has(cKey) && mCode) {
+      list.push({
+        id: 'ff_model_pattern',
+        kind: 'model_pattern',
+        name: `Фальш-фрамуга в дизайне модели ${mCode} (с продолжением рисунка/молдинга)`,
+        prices: { type1: 5290, type2: 5890, type3: 6750, enamel: 7990, grunt: 5290 }
+      });
+    }
+
+    if (isCoplanarBox) {
+      list.push({
+        id: 'ff_coplanar',
+        kind: 'coplanar',
+        name: 'Компланарная фальш-фрамуга (только под компланарный короб)',
+        prices: { type1: 5050, type2: 5620, type3: 6420, enamel: 7590, grunt: 5050 }
+      });
+    }
+
+    return list;
+  }
+
+  function checkFramugaCoatingAvailability(framugaItem) {
+    if (!framugaItem) return { allowed: true, reason: '' };
+    if (state.coatingType === 'grunt') {
+      return { allowed: true, reason: 'Доступно в исполнении Грунт' };
+    }
+    const coatingObj = (DB?.coatings || []).find(c => c.id === state.coatingId);
+    if (!coatingObj || !coatingObj.rules) return { allowed: true, reason: '' };
+
+    const ruleKey = framugaItem.kind === 'coplanar' ? 'Компланарная Фальш Фрамуга' : 'Фальш Фрамуга';
+    const rule = coatingObj.rules[ruleKey];
+    if (rule && rule.available === false) {
+      return {
+        allowed: false,
+        reason: `Покрытие «${coatingObj.color}» не применяется для «${ruleKey}» по таблице покрытий`
+      };
+    }
+    return { allowed: true, reason: '' };
+  }
+
+  function resolveFramugaUnitPrice(item) {
+    if (!item) return 0;
+    const pr = item.prices || {};
+    let base = 0;
+    if (state.coatingType === 'grunt') base = pr.grunt ?? pr.enamel ?? pr.type3 ?? pr.type2 ?? pr.type1 ?? 0;
+    else if (state.coatingType === 'enamel') base = pr.enamel ?? pr.type3 ?? pr.type2 ?? pr.type1 ?? 0;
+    else if (state.coatingType === 'type1') base = pr.type1 ?? pr.type2 ?? pr.type3 ?? pr.enamel ?? 0;
+    else if (state.coatingType === 'type2') base = pr.type2 ?? pr.type1 ?? pr.type3 ?? pr.enamel ?? 0;
+    else if (state.coatingType === 'type3') base = pr.type3 ?? pr.type2 ?? pr.type1 ?? pr.enamel ?? 0;
+    else base = pr.type1 ?? 0;
+
+    if (item.kind === 'standard_m2') {
+      const w = (Number(document.getElementById('widthInput')?.value) || 800) / 1000;
+      const fh = (Number(document.getElementById('framugaHeightInput')?.value) || 400) / 1000;
+      const area = Math.max(0.25, w * fh);
+      return Math.round(base * area);
+    }
+    return base;
+  }
+
+  function populateFramugaSelect() {
+    const sel = document.getElementById('framugaSelect');
+    if (!sel) return;
+    const col = getCurrentCollection();
+    const model = getCurrentModel();
+    const items = getAvailableFramugaItems(col, model);
+    const prev = sel.value || state.framugaId;
+
+    sel.innerHTML = '';
+    items.forEach(fm => {
+      const opt = document.createElement('option');
+      opt.value = fm.id;
+      opt.textContent = fm.name;
+      sel.appendChild(opt);
+    });
+
+    if (prev && items.some(x => x.id === prev)) {
+      sel.value = prev;
+    } else if (items[0]) {
+      sel.value = items[0].id;
+    }
+    state.framugaId = sel.value;
+  }
+
   const SMART_THRESHOLD_RULES = {
     'cezanne': { allowed: false, note: 'Не применимо по прайсу' },
     'palladium': { allowed: false, note: 'Не применимо по прайсу' },
@@ -403,6 +513,7 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
     twoToneEnamel: false,
     calcMode: 'leaf',
     hardwareId: '',
+    framugaId: '',
     smartThreshold: false,
     smartModelId: 'seal_800',
     smartCutOnly: false,
@@ -640,6 +751,38 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
           <select id="hardwareSelect" class="select-control"></select>
         `;
         calcModeCard.appendChild(wrap);
+      }
+
+      if (!document.getElementById('framugaBox')) {
+        const fBox = document.createElement('div');
+        fBox.id = 'framugaBox';
+        fBox.className = 'sub-box';
+        fBox.style.marginTop = '10px';
+        fBox.innerHTML = `
+          <label class="check-row" style="margin-bottom:6px;">
+            <input type="checkbox" id="framugaChk" />
+            <span><strong>Фальш-фрамуга / фрамуга</strong> (добавить в расчёт)</span>
+          </label>
+          <div id="framugaOptions" class="hidden">
+            <div class="field-row" style="margin-bottom:6px;">
+              <label class="field-label">Вариант исполнения фрамуги</label>
+              <select id="framugaSelect" class="select-control"></select>
+            </div>
+            <div class="grid-2">
+              <div class="field-row" id="framugaHeightWrap" class="hidden" style="margin-bottom:6px;">
+                <label class="field-label">Высота фрамуги, мм</label>
+                <input type="number" id="framugaHeightInput" class="input-control" step="10" min="200" max="1200" value="400" />
+              </div>
+              <div class="field-row" style="margin-bottom:6px;">
+                <label class="field-label">Кол-во, шт.</label>
+                <input type="number" id="framugaQty" class="input-control" step="1" min="1" max="20" value="1" />
+              </div>
+            </div>
+            <div id="framugaWarning" class="restriction-note warn hidden" style="margin-top:4px;"></div>
+          </div>
+        `;
+        calcModeCard.appendChild(fBox);
+        populateFramugaSelect();
       }
     }
 
@@ -1339,6 +1482,46 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
     const factoryHw = hwItem ? Number(hwItem.price) || 0 : 0;
     const hwCleanName = hwItem ? stripHandlesText(hwItem.label) : '';
 
+    // Фальш-фрамуга / фрамуга (с учётом модели, короба и таблицы покрытий)
+    populateFramugaSelect();
+    const framugaActive = Boolean(document.getElementById('framugaChk')?.checked);
+    const framugaOpts = document.getElementById('framugaOptions');
+    if (framugaOpts) framugaOpts.classList.toggle('hidden', !framugaActive);
+
+    let factoryFramuga = 0;
+    let framugaLabel = '';
+    const fWarnEl = document.getElementById('framugaWarning');
+    if (framugaActive) {
+      const fSel = document.getElementById('framugaSelect');
+      const availItems = getAvailableFramugaItems(col, model);
+      const fItem = availItems.find(item => item.id === fSel?.value) || availItems[0];
+      const hWrap = document.getElementById('framugaHeightWrap');
+      if (hWrap) hWrap.classList.toggle('hidden', fItem?.kind !== 'standard_m2');
+
+      const coatCheck = checkFramugaCoatingAvailability(fItem);
+      if (fWarnEl) {
+        if (!coatCheck.allowed) {
+          fWarnEl.textContent = coatCheck.reason;
+          fWarnEl.classList.remove('hidden');
+        } else {
+          fWarnEl.textContent = '';
+          fWarnEl.classList.add('hidden');
+        }
+      }
+
+      if (coatCheck.allowed && fItem) {
+        const fQty = Math.max(1, Number(document.getElementById('framugaQty')?.value) || 1);
+        const fUnit = resolveFramugaUnitPrice(fItem);
+        factoryFramuga = fUnit * fQty;
+        const fhVal = Number(document.getElementById('framugaHeightInput')?.value) || 400;
+        framugaLabel = fItem.kind === 'standard_m2'
+          ? `${fItem.name} (${w}×${fhVal} мм, ${fQty} шт.)`
+          : `${fItem.name} (${fQty} шт.)`;
+      }
+    } else if (fWarnEl) {
+      fWarnEl.classList.add('hidden');
+    }
+
     const factoryLeaf = baseLeaf + leafExtra + factorySmart;
     const pct = Number(state.markupPct) || 0;
     const multiplier = 1 + (pct / 100);
@@ -1402,7 +1585,7 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
       }
     }
 
-    const factoryUnit = factoryLeaf + factoryHw + factoryBox + factoryCasings + factoryExt;
+    const factoryUnit = factoryLeaf + factoryFramuga + factoryHw + factoryBox + factoryCasings + factoryExt;
     const retailLeaf = factoryLeaf * multiplier;
     const retailHw = factoryHw * multiplier;
     const retailBox = factoryBox * multiplier;
@@ -1427,6 +1610,9 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
           if (factorySmart > 0) {
             fListEl.innerHTML += `<div class="breakdown-row"><span>${smartLabel} (завод):</span><span>${fmtRub(factorySmart)}</span></div>`;
           }
+          if (factoryFramuga > 0) {
+            fListEl.innerHTML += `<div class="breakdown-row"><span>Фрамуга: ${framugaLabel} (завод):</span><span>${fmtRub(factoryFramuga)}</span></div>`;
+          }
           if (factoryHw > 0) {
             fListEl.innerHTML += `<div class="breakdown-row"><span>Врезка и фурнитура (${hwCleanName}) (завод):</span><span>${fmtRub(factoryHw)}</span></div>`;
           }
@@ -1448,6 +1634,9 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
       rListEl.innerHTML += `<div class="breakdown-row"><span>Полотно (${variant.full_name})${suffix}</span><span>${fmtRub(retailLeaf)}</span></div>`;
       if (factorySmart > 0) {
         rListEl.innerHTML += `<div class="breakdown-row"><span>${smartLabel}${suffix}</span><span>${fmtRub(factorySmart * multiplier)}</span></div>`;
+      }
+      if (factoryFramuga > 0) {
+        rListEl.innerHTML += `<div class="breakdown-row"><span>Фрамуга: ${framugaLabel}${suffix}</span><span>${fmtRub(factoryFramuga * multiplier)}</span></div>`;
       }
       if (factoryHw > 0) {
         rListEl.innerHTML += `<div class="breakdown-row"><span>Врезка и фурнитура (${hwCleanName})${suffix}</span><span>${fmtRub(retailHw)}</span></div>`;
@@ -1498,6 +1687,9 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
     }
     if (factorySmart > 0) {
       quoteLines.push(`${smartLabel}: ${fmtRub(factorySmart * multiplier)}`);
+    }
+    if (factoryFramuga > 0) {
+      quoteLines.push(`Фрамуга (${framugaLabel}): ${fmtRub(factoryFramuga * multiplier)}`);
     }
     if (factoryHw > 0) {
       quoteLines.push(`Врезка и фурнитура (${hwCleanName}): ${fmtRub(retailHw)}`);
@@ -1612,6 +1804,11 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
       recalculate();
     });
 
+    document.getElementById('framugaChk')?.addEventListener('change', () => {
+      populateFramugaSelect();
+      recalculate();
+    });
+
     document.addEventListener('click', (e) => {
       if (e.target.closest('#btnPrintPriceTag')) {
         renderAndOpenPrintTags();
@@ -1664,7 +1861,7 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
 
     ['ralModeSelect', 'twoToneEnamelChk', 'widthInput', 'heightInput',
      'edgeSelect', 'kp58Chk', 'moldingChk', 'hardwareSelect',
-     'smartThresholdModelSelect', 'smartCutOnlyChk', 'boxQty',
+     'smartThresholdModelSelect', 'smartCutOnlyChk', 'framugaSelect', 'framugaHeightInput', 'framugaQty', 'boxQty',
      'casingSelect', 'casingQty', 'extSelect', 'extQty', 'setsQty'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
@@ -1730,6 +1927,7 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
     ensureControlsAndContainers();
     ensureGruntCatalogEntries();
     populateSmartThresholdSelect();
+    populateFramugaSelect();
     bindEvents();
     setCoatingType('type1');
     setCalcMode('leaf');
@@ -1771,3 +1969,5 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
     boot();
   }
 })();
+Выполняю анализ
+-
