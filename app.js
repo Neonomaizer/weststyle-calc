@@ -2119,4 +2119,3 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
     boot();
   }
 })();
-Выполняю анализ
