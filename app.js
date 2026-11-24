@@ -72,58 +72,88 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
         }
         .price-tag-card {
           background: #ffffff;
-          color: #111827;
-          border: 2px solid #374151;
-          border-radius: 6px;
-          padding: 18px 20px;
-          font-family: Arial, Helvetica, sans-serif;
+          color: #000000;
+          border: 1.5px solid #222222;
+          border-radius: 0px;
+          padding: 22px 24px 18px;
+          font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
         }
         .pt-logo-slot {
-          min-height: 54px;
-          margin-bottom: 12px;
+          min-height: 64px;
+          margin-bottom: 16px;
           display: flex;
           align-items: center;
-          justify-content: flex-start;
+          justify-content: center;
         }
         .pt-logo-slot img {
-          max-height: 54px;
-          max-width: 240px;
+          max-height: 68px;
+          max-width: 280px;
           object-fit: contain;
           display: block;
         }
         .pt-row {
           display: flex;
-          justify-content: space-between;
-          align-items: baseline;
-          gap: 12px;
-          margin-bottom: 8px;
-          font-size: 14px;
+          justify-content: flex-start;
+          align-items: center;
+          gap: 14px;
+          margin-bottom: 12px;
+          font-size: 13px;
+          line-height: 1.25;
         }
-        .pt-lbl { color: #374151; flex: 0 0 135px; }
-        .pt-val { font-weight: 700; color: #111827; text-align: left; flex: 1; }
-        .pt-model-val { font-size: 20px; font-weight: 800; text-decoration: underline; }
-        .pt-sub-val { font-size: 15px; font-weight: 700; text-decoration: underline; }
-        .pt-leaf-price {
+        .pt-lbl {
+          color: #111111;
+          font-size: 13px;
+          font-weight: 400;
+          line-height: 1.15;
+          flex: 0 0 112px;
+          text-align: left;
+        }
+        .pt-val {
+          font-weight: 700;
+          color: #000000;
+          text-align: left;
+          flex: 1;
+        }
+        .pt-model-val {
           font-size: 28px;
-          font-weight: 800;
-          color: #dc2626;
-          border-bottom: 3px solid #dc2626;
+          font-weight: 700;
+          line-height: 1.08;
+          text-decoration: underline;
+          text-underline-offset: 4px;
+          text-decoration-thickness: 2px;
+        }
+        .pt-sub-val {
+          font-size: 20px;
+          font-weight: 700;
+          line-height: 1.15;
+          text-decoration: underline;
+          text-underline-offset: 3px;
+          text-decoration-thickness: 1.5px;
+        }
+        .pt-leaf-price {
+          font-size: 44px;
+          font-weight: 700;
+          line-height: 1.05;
+          color: #c80000;
+          border-bottom: 4px solid #c80000;
           padding-bottom: 2px;
           display: inline-block;
         }
         .pt-total-price {
-          font-size: 28px;
-          font-weight: 800;
-          color: #111827;
-          border-bottom: 3px solid #111827;
+          font-size: 40px;
+          font-weight: 700;
+          line-height: 1.05;
+          color: #000000;
+          border-bottom: 4px solid #000000;
           padding-bottom: 2px;
           display: inline-block;
         }
         .pt-country {
-          margin-top: 14px;
+          margin-top: 22px;
           text-align: center;
-          font-size: 12px;
-          color: #374151;
+          font-size: 13px;
+          font-weight: 400;
+          color: #222222;
         }
         @media print {
           body > *:not(#printTagModal) { display: none !important; }
@@ -925,14 +955,132 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
     recalculate();
   }
 
+  function normalizePogonazhCatalog() {
+    if (!DB || !Array.isArray(DB.pogonazh)) return;
+
+    // 1. Добавляем стандартный телескопический наличник 10*70*2150, если его нет в выгрузке
+    const hasStd70 = DB.pogonazh.some(p => /наличник.*70\*2150/i.test(p.name) && /телескоп/i.test(p.name));
+    if (!hasStd70) {
+      DB.pogonazh.unshift({
+        id: 'pog_std_tel_70_2150',
+        category: 'casing',
+        name: 'Наличник телескопический 10*70*2150 мм (стандарт)',
+        prices: { type1: 360, type2: 475, type3: 570, enamel: 980, enamel_alt: 1080, enamel_ton: 930 }
+      });
+    }
+
+    // 2. Очищаем мусорные строки прайса (примечания, размеры, опции) и переносим компланарные наличники в наличники
+    const cleaned = [];
+    const seenNames = new Set();
+
+    DB.pogonazh.forEach(item => {
+      const nm = String(item.name || '').trim();
+      const low = nm.toLowerCase();
+
+      // Отсеиваем строки-примечания, заголовки и опции без цены изделия
+      if (
+        low.startsWith('опция ') ||
+        low.startsWith('при заказе ') ||
+        low === 'ширина наличника' ||
+        low === 'изделия' ||
+        low.startsWith('введите ') ||
+        low.startsWith('от 1 ') ||
+        low.startsWith('цена прайса') ||
+        low.includes('замковый')
+      ) {
+        return;
+      }
+
+      // Проверяем, что у позиции есть хотя бы одна реальная цена изделия (> 100 руб.)
+      const pr = item.prices || {};
+      const validPrices = Object.values(pr).filter(v => typeof v === 'number' && v >= 100);
+      if (validPrices.length === 0) return;
+
+      // Определяем точную категорию по названию
+      let cat = item.category;
+      if (low.includes('наличник')) {
+        cat = 'casing';
+      } else if (low.includes('короб')) {
+        cat = 'box';
+      } else if (low.includes('добор')) {
+        cat = 'extension';
+      }
+
+      // Убираем дубликаты компланарных наличников
+      const normKeyName = low.replace(/\s*\([^\)]*\)/g, '').replace(/\s*мм$/g, '').trim();
+      if (seenNames.has(cat + ':' + normKeyName)) return;
+      seenNames.add(cat + ':' + normKeyName);
+
+      cleaned.push({ ...item, category: cat });
+    });
+
+    // Сортируем наличники так, чтобы стандартные телескопические (10*70*2150, 10*80*2200) и плоский 8*70*2150 шли первыми
+    cleaned.sort((a, b) => {
+      if (a.category === 'casing' && b.category === 'casing') {
+        const rank = (x) => {
+          const s = x.name.toLowerCase();
+          if (s.includes('10*70*2150')) return 1;
+          if (s.includes('10*80*2200')) return 2;
+          if (s.includes('плоский 8*70*2150')) return 3;
+          if (s.includes('телескоп')) return 4;
+          return 5;
+        };
+        return rank(a) - rank(b);
+      }
+      if (a.category === 'box' && b.category === 'box') {
+        const rankB = (x) => {
+          const s = x.name.toLowerCase();
+          if (s.includes('телескоп ns 2100 (комплект 2,5')) return 1;
+          if (s.includes('телескопический ns 36*75*2100')) return 2;
+          if (s.includes('телескоп')) return 3;
+          return 4;
+        };
+        return rankB(a) - rankB(b);
+      }
+      return 0;
+    });
+
+    DB.pogonazh = cleaned;
+  }
+
+  function populateCasingsForSelectedBox() {
+    const boxSel = document.getElementById('boxSelect');
+    const casSel = document.getElementById('casingSelect');
+    if (!casSel) return;
+
+    const selectedBoxText = (boxSel?.selectedOptions?.[0]?.textContent || '').toLowerCase();
+    const isCoplanarBox = selectedBoxText.includes('компланарн');
+    const prevCasId = casSel.value;
+
+    casSel.innerHTML = '';
+    const casings = (DB.pogonazh || []).filter(item => {
+      if (item.category !== 'casing') return false;
+      const isCoplanarCasing = item.name.toLowerCase().includes('компланарн');
+      return isCoplanarCasing ? isCoplanarBox : true;
+    });
+
+    casings.forEach(item => {
+      const opt = document.createElement('option');
+      opt.value = item.id;
+      opt.textContent = item.name;
+      casSel.appendChild(opt);
+    });
+
+    if (prevCasId && casings.some(c => c.id === prevCasId)) {
+      casSel.value = prevCasId;
+    } else if (casings[0]) {
+      casSel.value = casings[0].id;
+    }
+  }
+
   function populatePogonazhAndHardware() {
+    normalizePogonazhCatalog();
     const boxSel = document.getElementById('boxSelect');
     const casSel = document.getElementById('casingSelect');
     const extSel = document.getElementById('extSelect');
 
     if (boxSel && casSel && extSel) {
       boxSel.innerHTML = '';
-      casSel.innerHTML = '';
       extSel.innerHTML = '';
 
       (DB.pogonazh || []).forEach(item => {
@@ -940,9 +1088,10 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
         opt.value = item.id;
         opt.textContent = item.name;
         if (item.category === 'box') boxSel.appendChild(opt);
-        else if (item.category === 'casing') casSel.appendChild(opt.cloneNode(true));
         else if (item.category === 'extension') extSel.appendChild(opt.cloneNode(true));
       });
+
+      populateCasingsForSelectedBox();
     }
 
     const hwSel = document.getElementById('hardwareSelect');
@@ -1850,6 +1999,7 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
     });
 
     document.getElementById('boxSelect')?.addEventListener('change', () => {
+      populateCasingsForSelectedBox();
       updateBoxQtyVisibility();
       recalculate();
     });
@@ -1970,4 +2120,3 @@ const LOGO_DVER_LINE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAFECA
   }
 })();
 Выполняю анализ
--
