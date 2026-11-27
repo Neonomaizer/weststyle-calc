@@ -223,10 +223,10 @@
       const folderModel = parts.length >= 2 ? parts[parts.length - 2] : '';
       const folderCol = parts.length >= 3 ? parts[parts.length - 3] : '';
 
-      // Извлекаем базовый код модели из папки вида "Межкомнатная_дверь_M39_H_МАТ_МЧ" -> "M39_H"
-      const cleanFolder = normToken(folderModel);
+      // Извлекаем базовый код модели из папки вида "Межкомнатная_дверь_INDASTRIAL_IN40" -> "IN40"
+      const cleanFolder = normToken(fixCommonTypos(folderModel));
       const modelCodeGuess = cleanFolder
-        .replace(/\b(мат|мч|мехико|hk|50mm|38mm|42mm|58mm)\b/gi, '')
+        .replace(/\b(industrial|moderno|arcana|venezia|мат|мч|мехико|hk|50mm|38mm|42mm|58mm)\b/gi, '')
         .replace(/стекло.*/gi, '')
         .trim() || cleanFolder || baseName;
 
@@ -259,10 +259,13 @@
   }
 
   function hasPhotoForColor(col, model, coatingObj) {
-    const mCompact = compactModelCode(model?.code || '');
-    const pool = PHOTO_INDEX_MAP.get(mCompact) || [];
+    const mCompact = compactModelCode(fixCommonTypos(model?.code || ''));
+    let pool = PHOTO_INDEX_MAP.get(mCompact) || [];
+    if (!pool.length && mCompact) {
+      pool = PHOTO_INDEX.filter(r => r.modelCompact.includes(mCompact) || r.rawMeta.includes(mCompact));
+    }
     if (!pool.length || !coatingObj) return false;
-    const cName = normToken(coatingObj.color || '');
+    const cName = normToken(fixCommonTypos(coatingObj.color || '')).replace(/[¹²³⁴⁵⁶⁷⁸⁹⁰]+$/g, '').trim();
     if (!cName) return false;
     return pool.some(rec => rec.colorNorm.includes(cName) || cName.includes(rec.colorNorm) || rec.rawMeta.includes(cName));
   }
@@ -276,8 +279,8 @@
     }
 
     const coatingObj = getSelectedCoatingObj();
-    const colorTarget = normToken(coatingObj?.color || '');
-    const seriesTarget = normToken(coatingObj?.series || '');
+    const colorTarget = normToken(fixCommonTypos(coatingObj?.color || '')).replace(/[¹²³⁴⁵⁶⁷⁸⁹⁰]+$/g, '').trim();
+    const seriesTarget = normToken(fixCommonTypos(coatingObj?.series || ''));
 
     const variantObj = getSelectedVariantObj(model);
     const variantName = variantObj?.full_name || '';
@@ -294,7 +297,7 @@
       let score = 1;
 
       // Совпадение по плёнке / цвету
-      if (colorTarget && (rec.colorNorm === colorTarget || rec.colorNorm.includes(colorTarget) || rec.rawMeta.includes(colorTarget))) {
+      if (colorTarget && (rec.colorNorm === colorTarget || rec.colorNorm.includes(colorTarget) || colorTarget.includes(rec.colorNorm) || rec.rawMeta.includes(colorTarget))) {
         score += 100;
       } else if (seriesTarget && rec.rawMeta.includes(seriesTarget)) {
         score += 25;
@@ -374,7 +377,7 @@
     }
     if (badgeEl) {
       if (PHOTO_INDEX.length > 0) {
-        badgeEl.textContent = preview.details;
+        badgeEl.textContent = preview.details || (pool.length ? 'фото из папки модели' : 'нет фото для модели в папке');
         badgeEl.style.color = preview.matched ? '#34d399' : '#94a3b8';
       } else {
         badgeEl.textContent = '';
@@ -1995,7 +1998,6 @@
       updateBoxQtyVisibility();
       recalculate();
     });
-
     document.getElementById('thicknessSelect')?.addEventListener('change', () => {
       syncEdgeFieldVisibility(getCurrentCollection());
       updateDoorPreviewImage();
