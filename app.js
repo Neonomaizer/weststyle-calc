@@ -140,6 +140,19 @@
   let PHOTO_INDEX = [];
   const PHOTO_INDEX_MAP = new Map();
 
+  function fixCommonTypos(val) {
+    return String(val ?? '')
+      .replace(/ё/g, 'е')
+      .replace(/indastrial|indusrial/gi, 'industrial')
+      .replace(/tuch/gi, 'touch')
+      .replace(/coverfleks|koverfleks/gi, 'coverflex')
+      .replace(/emleir|emleier/gi, 'emlayer')
+      .replace(/vudeks|woodex/gi, 'вудекс')
+      .replace(/venecia|veneciya/gi, 'venezia')
+      .replace(/ekzotika/gi, 'экзотика')
+      .trim();
+  }
+
   function normToken(s) {
     return String(s || '')
       .toLowerCase()
@@ -377,7 +390,7 @@
     }
     if (badgeEl) {
       if (PHOTO_INDEX.length > 0) {
-        badgeEl.textContent = preview.details || (pool.length ? 'фото из папки модели' : 'нет фото для модели в папке');
+        badgeEl.textContent = preview.details || 'нет фото для модели в папке';
         badgeEl.style.color = preview.matched ? '#34d399' : '#94a3b8';
       } else {
         badgeEl.textContent = '';
@@ -1985,7 +1998,6 @@
       updateDoorPreviewImage();
       recalculate();
     });
-
     document.getElementById('colorSelect')?.addEventListener('change', e => {
       state.coatingId = e.target.value;
       updateCoatingRestrictionMessage();
@@ -1998,6 +2010,7 @@
       updateBoxQtyVisibility();
       recalculate();
     });
+
     document.getElementById('thicknessSelect')?.addEventListener('change', () => {
       syncEdgeFieldVisibility(getCurrentCollection());
       updateDoorPreviewImage();
