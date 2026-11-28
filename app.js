@@ -357,16 +357,30 @@
     const st = document.createElement('style');
     st.id = 'previewEnhancementStyle';
     st.textContent = `
+      .hero-card-with-badge {
+        position: relative !important;
+        padding-bottom: 42px !important;
+      }
+      .hero-layout-fixed {
+        display: flex !important;
+        align-items: center !important;
+        gap: 24px !important;
+      }
       .hero-img-box {
-        width: 280px !important;
-        min-width: 280px !important;
-        height: 400px !important;
-        padding: 8px !important;
+        flex: 0 0 260px !important;
+        width: 260px !important;
+        min-width: 260px !important;
+        height: 380px !important;
+        padding: 6px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         overflow: hidden !important;
         box-sizing: border-box !important;
+      }
+      .hero-layout-fixed > :not(.hero-img-box):not(#previewMatchBadge) {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
       }
       #modelImg {
         width: 100% !important;
@@ -374,15 +388,11 @@
         max-width: 100% !important;
         max-height: 100% !important;
         object-fit: contain !important;
-        transform: scale(1.12);
+        transform: scale(1.22);
         transition: transform 0.2s ease;
       }
       .hero-img-box:hover #modelImg {
-        transform: scale(1.16);
-      }
-      .hero-card-with-badge {
-        position: relative !important;
-        padding-bottom: 42px !important;
+        transform: scale(1.26);
       }
       #previewMatchBadge {
         position: absolute;
@@ -412,7 +422,13 @@
         display: none;
       }
       @media (max-width: 640px) {
+        .hero-layout-fixed {
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 14px !important;
+        }
         .hero-img-box {
+          flex: 0 0 auto !important;
           width: 100% !important;
           min-width: 0 !important;
           height: 360px !important;
@@ -463,7 +479,11 @@
     }
 
     const imgBox = imgEl.closest('.hero-img-box') || imgEl.parentNode;
-    const heroCard = imgBox?.closest('.card, .hero-card, section') || imgBox?.parentNode;
+    const layoutRow = imgBox?.parentNode;
+    if (layoutRow) {
+      layoutRow.classList.add('hero-layout-fixed');
+    }
+    const heroCard = imgBox?.closest('.card, .hero-card, section') || layoutRow;
     if (heroCard) {
       heroCard.classList.add('hero-card-with-badge');
     }
