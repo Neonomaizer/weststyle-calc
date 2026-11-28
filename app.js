@@ -352,7 +352,88 @@
     };
   }
 
+  function ensurePreviewStyles() {
+    if (document.getElementById('previewEnhancementStyle')) return;
+    const st = document.createElement('style');
+    st.id = 'previewEnhancementStyle';
+    st.textContent = `
+      .hero-img-box {
+        width: 280px !important;
+        min-width: 280px !important;
+        height: 400px !important;
+        padding: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+      }
+      #modelImg {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        object-fit: contain !important;
+        transform: scale(1.12);
+        transition: transform 0.2s ease;
+      }
+      .hero-img-box:hover #modelImg {
+        transform: scale(1.16);
+      }
+      .hero-card-with-badge {
+        position: relative !important;
+        padding-bottom: 42px !important;
+      }
+      #previewMatchBadge {
+        position: absolute;
+        right: 14px;
+        bottom: 12px;
+        max-width: calc(100% - 28px);
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        line-height: 1.3;
+        font-weight: 500;
+        background: rgba(15, 23, 42, 0.78);
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        color: #94a3b8;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        pointer-events: none;
+        z-index: 2;
+      }
+      #previewMatchBadge.matched {
+        color: #34d399;
+        background: rgba(16, 185, 129, 0.12);
+        border-color: rgba(52, 211, 153, 0.32);
+      }
+      #previewMatchBadge:empty {
+        display: none;
+      }
+      @media (max-width: 640px) {
+        .hero-img-box {
+          width: 100% !important;
+          min-width: 0 !important;
+          height: 360px !important;
+        }
+        .hero-card-with-badge {
+          padding-bottom: 16px !important;
+        }
+        #previewMatchBadge {
+          position: static;
+          display: inline-block;
+          margin-top: 10px;
+          max-width: 100%;
+          white-space: normal;
+        }
+      }
+    `;
+    document.head.appendChild(st);
+  }
+
   function updateDoorPreviewImage() {
+    ensurePreviewStyles();
     const col = getCurrentCollection();
     const model = getCurrentModel();
     const imgEl = document.getElementById('modelImg');
@@ -381,19 +462,28 @@
       imgEl.style.display = 'none';
     }
 
+    const imgBox = imgEl.closest('.hero-img-box') || imgEl.parentNode;
+    const heroCard = imgBox?.closest('.card, .hero-card, section') || imgBox?.parentNode;
+    if (heroCard) {
+      heroCard.classList.add('hero-card-with-badge');
+    }
+
     let badgeEl = document.getElementById('previewMatchBadge');
-    if (!badgeEl && imgEl.parentNode) {
+    if (!badgeEl && heroCard) {
       badgeEl = document.createElement('div');
       badgeEl.id = 'previewMatchBadge';
-      badgeEl.style.cssText = 'margin-top:6px;font-size:11px;color:#94a3b8;text-align:center;';
-      imgEl.parentNode.appendChild(badgeEl);
+      heroCard.appendChild(badgeEl);
+    } else if (badgeEl && heroCard && badgeEl.parentNode !== heroCard) {
+      heroCard.appendChild(badgeEl);
     }
+
     if (badgeEl) {
       if (PHOTO_INDEX.length > 0) {
         badgeEl.textContent = preview.details || 'нет фото для модели в папке';
-        badgeEl.style.color = preview.matched ? '#34d399' : '#94a3b8';
+        badgeEl.classList.toggle('matched', Boolean(preview.matched));
       } else {
         badgeEl.textContent = '';
+        badgeEl.classList.remove('matched');
       }
     }
   }
@@ -1998,6 +2088,7 @@
       updateDoorPreviewImage();
       recalculate();
     });
+
     document.getElementById('colorSelect')?.addEventListener('change', e => {
       state.coatingId = e.target.value;
       updateCoatingRestrictionMessage();
