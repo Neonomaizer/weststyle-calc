@@ -115,6 +115,7 @@
     variantIdx: 0,
     coatingType: 'type1',
     coatingId: null,
+    doorlineFilmName: '',
     ralMode: 'standard',
     twoToneEnamel: false,
     calcMode: 'leaf',
@@ -399,6 +400,15 @@
       .hero-img-box:hover #modelImg {
         transform: scale(1.26);
       }
+      .hero-img-box.doorline-preview {
+        padding: 12px !important;
+      }
+      .hero-img-box.doorline-preview #modelImg {
+        transform: scale(1) !important;
+      }
+      .hero-img-box.doorline-preview:hover #modelImg {
+        transform: scale(1.03) !important;
+      }
       #previewMatchBadge {
         position: absolute;
         right: 14px;
@@ -511,6 +521,9 @@
     }
 
     const imgBox = imgEl.closest('.hero-img-box') || imgEl.parentNode;
+    if (imgBox) {
+      imgBox.classList.toggle('doorline-preview', state.factory === 'doorline');
+    }
     const layoutRow = imgBox?.parentNode;
     if (layoutRow) {
       layoutRow.classList.add('hero-layout-fixed');
@@ -530,7 +543,10 @@
     }
 
     if (badgeEl) {
-      if (PHOTO_INDEX.length > 0) {
+      if (state.factory === 'doorline') {
+        badgeEl.textContent = '';
+        badgeEl.classList.remove('matched');
+      } else if (PHOTO_INDEX.length > 0) {
         badgeEl.textContent = preview.details || 'нет фото для модели в папке';
         badgeEl.classList.toggle('matched', Boolean(preview.matched));
       } else {
@@ -1000,9 +1016,16 @@
       }
     }
 
+    const typeTabsEl = document.getElementById('typeTabs');
+    if (typeTabsEl) {
+      typeTabsEl.classList.toggle('hidden', factoryKey === 'doorline');
+    }
+
     populatePogonazhAndHardware();
     renderCollectionsBar();
-    setCoatingType('type1');
+    if (factoryKey === 'weststyle') {
+      setCoatingType('type1');
+    }
     selectCollection(state.collectionIdx, state.modelId);
     updateBoxQtyVisibility();
     syncSmartThresholdState();
@@ -1569,8 +1592,49 @@
     const model = getCurrentModel();
     const colorSel = document.getElementById('colorSelect');
     const ralBox = document.getElementById('ralOptionsBox');
+    const typeTabsEl = document.getElementById('typeTabs');
     if (!colorSel) return;
 
+    if (typeTabsEl) {
+      typeTabsEl.classList.toggle('hidden', state.factory === 'doorline');
+    }
+
+    if (state.factory === 'doorline' && model && Array.isArray(model.films) && model.films.length > 0) {
+      if (ralBox) ralBox.classList.add('hidden');
+      const testWrap = document.getElementById('testPhotosLoaderWrap');
+      if (testWrap) testWrap.style.display = 'none';
+
+      const tiersUsed = new Set(model.films.map(f => f.tier));
+      const tierLabels = { type1: 'Цена 1', type2: 'Цена 2', type3: 'Цена 3', grunt: 'Грунт' };
+
+      colorSel.innerHTML = '';
+      model.films.forEach((f, idx) => {
+        const opt = document.createElement('option');
+        opt.value = `dl_film_${idx}`;
+        opt.dataset.tier = f.tier;
+        opt.dataset.filmName = f.name;
+        const prefix = tiersUsed.size > 1 ? `[${tierLabels[f.tier] || f.tier}] ` : '';
+        opt.textContent = prefix + f.name;
+        colorSel.appendChild(opt);
+      });
+
+      let selectedIdx = 0;
+      if (state.doorlineFilmName) {
+        const found = model.films.findIndex(f => f.name.toLowerCase() === state.doorlineFilmName.toLowerCase());
+        if (found >= 0) selectedIdx = found;
+      }
+      const chosen = model.films[selectedIdx] || model.films[0];
+      colorSel.value = `dl_film_${selectedIdx}`;
+      state.coatingId = `dl_film_${selectedIdx}`;
+      state.coatingType = chosen.tier || 'type1';
+      state.doorlineFilmName = chosen.name;
+
+      updateCoatingRestrictionMessage();
+      return;
+    }
+
+    const testWrap = document.getElementById('testPhotosLoaderWrap');
+    if (testWrap) testWrap.style.display = 'flex';
     if (ralBox) ralBox.classList.toggle('hidden', state.coatingType !== 'enamel');
     if (colorSel.parentNode && !document.getElementById('testPhotosLoaderWrap')) {
       const wrap = document.createElement('div');
@@ -1637,6 +1701,13 @@
     const model = getCurrentModel();
     const box = document.getElementById('coatingRestrictionBox');
     if (!box) return;
+
+    if (state.factory === 'doorline') {
+      const cnt = Array.isArray(model?.films) ? model.films.length : 0;
+      box.textContent = `Доступно пленок для модели ${model?.code || ''}: ${cnt} (цена зависит от выбранной пленки)`;
+      box.className = 'restriction-note';
+      return;
+    }
 
     if (state.coatingType === 'grunt') {
       box.textContent = 'Исполнение «Грунт» — полотно с грунтованием под покраску / эмаль (в т.ч. для скрытых коробов и IN9)';
@@ -2062,9 +2133,11 @@
     if (rOrderEl) rOrderEl.textContent = fmtRub(retailOrder);
 
     const selectedCoating = (DB.coatings || []).find(c => c.id === state.coatingId);
-    const coatingLabel = state.coatingType === 'grunt'
-      ? `Грунт — ${selectedCoating?.color || 'Грунт под эмаль'}`
-      : (selectedCoating ? `${selectedCoating.type} — ${(selectedCoating.series ? selectedCoating.series + ' ' : '')}${selectedCoating.color}` : state.coatingType);
+    const coatingLabel = state.factory === 'doorline'
+      ? (state.doorlineFilmName || selectedCoating?.color || 'Пленка')
+      : (state.coatingType === 'grunt'
+        ? `Грунт — ${selectedCoating?.color || 'Грунт под эмаль'}`
+        : (selectedCoating ? `${selectedCoating.type} — ${(selectedCoating.series ? selectedCoating.series + ' ' : '')}${selectedCoating.color}` : state.coatingType));
 
     let enamelExtraText = '';
     if (state.coatingType === 'enamel') {
@@ -2218,6 +2291,11 @@
 
     document.getElementById('colorSelect')?.addEventListener('change', e => {
       state.coatingId = e.target.value;
+      if (state.factory === 'doorline') {
+        const opt = e.target.selectedOptions?.[0];
+        if (opt?.dataset?.tier) state.coatingType = opt.dataset.tier;
+        if (opt?.dataset?.filmName) state.doorlineFilmName = opt.dataset.filmName;
+      }
       updateCoatingRestrictionMessage();
       updateDoorPreviewImage();
       recalculate();
