@@ -102,9 +102,14 @@
   };
 
   let DB = FALLBACK_DB;
+  const DATABASES = {
+    weststyle: FALLBACK_DB,
+    doorline: null
+  };
   let currentTagLogo = 'none';
 
   const state = {
+    factory: 'weststyle',
     collectionIdx: 0,
     modelId: null,
     variantIdx: 0,
@@ -420,6 +425,33 @@
       }
       #previewMatchBadge:empty {
         display: none;
+      }
+      .factory-switcher {
+        display: flex;
+        gap: 8px;
+        margin: 10px 0 12px;
+      }
+      .factory-btn {
+        flex: 1 1 0;
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid #30363d;
+        background: #161b22;
+        color: #c9d1d9;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .factory-btn.active {
+        background: #2563eb;
+        border-color: #3b82f6;
+        color: #ffffff;
+        box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
+      }
+      .factory-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
       }
       @media (max-width: 640px) {
         .hero-layout-fixed {
@@ -903,7 +935,82 @@
     state.framugaId = sel.value;
   }
 
+  function applyCustomBranding() {
+    const titleText = 'Калькулятор заказных позиций по прайсам WestStyle и DoorLine';
+    document.title = titleText;
+    const brandTitle = document.getElementById('brandTitle') || document.querySelector('.brand-title');
+    if (brandTitle) brandTitle.textContent = titleText;
+  }
+
+  function ensureFactorySwitcher() {
+    ensurePreviewStyles();
+    applyCustomBranding();
+    if (document.getElementById('factorySwitcher')) return;
+
+    const sw = document.createElement('div');
+    sw.id = 'factorySwitcher';
+    sw.className = 'factory-switcher';
+    sw.innerHTML = `
+      <button type="button" class="factory-btn active" data-factory="weststyle">WestStyle</button>
+      <button type="button" class="factory-btn" data-factory="doorline">Дверь Line</button>
+    `;
+
+    const searchWrap = document.querySelector('.search-wrap');
+    const colBar = document.getElementById('collectionsBar');
+    if (searchWrap && searchWrap.parentNode) {
+      searchWrap.parentNode.insertBefore(sw, searchWrap);
+    } else if (colBar && colBar.parentNode) {
+      colBar.parentNode.insertBefore(sw, colBar);
+    }
+
+    sw.querySelectorAll('.factory-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        switchFactory(btn.dataset.factory);
+      });
+    });
+  }
+
+  function switchFactory(factoryKey) {
+    const targetDb = DATABASES[factoryKey];
+    if (!targetDb) return;
+    state.factory = factoryKey;
+    DB = targetDb;
+    ensureGruntCatalogEntries();
+
+    document.querySelectorAll('#factorySwitcher .factory-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.factory === factoryKey);
+    });
+
+    const metaEl = document.getElementById('priceMeta');
+    if (metaEl) {
+      metaEl.textContent = DB.meta?.price_title || (factoryKey === 'doorline' ? 'Прайс Дверная Линия / DoorLine (с 01.11.2026)' : 'Прайс WestStyle');
+    }
+
+    state.collectionIdx = 0;
+    state.modelId = null;
+    state.variantIdx = 0;
+    state.coatingId = null;
+
+    if (factoryKey === 'weststyle') {
+      const indIdx = DB.collections.findIndex(c => c.name.toLowerCase() === 'industrial');
+      if (indIdx >= 0) {
+        state.collectionIdx = indIdx;
+        const in40 = DB.collections[indIdx].models.find(m => m.code.toUpperCase() === 'IN40');
+        if (in40) state.modelId = in40.id;
+      }
+    }
+
+    populatePogonazhAndHardware();
+    renderCollectionsBar();
+    setCoatingType('type1');
+    selectCollection(state.collectionIdx, state.modelId);
+    updateBoxQtyVisibility();
+    syncSmartThresholdState();
+    recalculate();
+  }
+
   function ensureControlsAndContainers() {
+    ensureFactorySwitcher();
     ensureLightboxModal();
     ensurePrintTagModalAndStyles();
 
@@ -2216,30 +2323,26 @@
       if (res.ok) {
         const loaded = await res.json();
         if (loaded && Array.isArray(loaded.collections) && loaded.collections.length > 0) {
-          DB = loaded;
-          ensureGruntCatalogEntries();
-          state.markupPct = Number(DB.meta?.default_markup_pct ?? 60);
-          const mInp = document.getElementById('markupInput');
-          if (mInp) mInp.value = state.markupPct;
-          const metaEl = document.getElementById('priceMeta');
-          if (metaEl) metaEl.textContent = DB.meta?.price_title || 'Прайс WestStyle';
+          DATABASES.weststyle = loaded;
         }
       }
     } catch (_) {}
 
-    const indIdx = DB.collections.findIndex(c => c.name.toLowerCase() === 'industrial');
-    if (indIdx >= 0) {
-      state.collectionIdx = indIdx;
-      const in40 = DB.collections[indIdx].models.find(m => m.code.toUpperCase() === 'IN40');
-      if (in40) state.modelId = in40.id;
-    }
+    try {
+      const resDl = await fetch('data_doorline.json?v=' + Date.now());
+      if (resDl.ok) {
+        const loadedDl = await resDl.json();
+        if (loadedDl && Array.isArray(loadedDl.collections) && loadedDl.collections.length > 0) {
+          DATABASES.doorline = loadedDl;
+        }
+      }
+    } catch (_) {}
 
-    populatePogonazhAndHardware();
-    renderCollectionsBar();
-    selectCollection(state.collectionIdx, state.modelId);
-    updateBoxQtyVisibility();
-    syncSmartThresholdState();
-    recalculate();
+    state.markupPct = 60;
+    const mInp = document.getElementById('markupInput');
+    if (mInp) mInp.value = 60;
+
+    switchFactory('weststyle');
   }
 
   if (document.readyState === 'loading') {
